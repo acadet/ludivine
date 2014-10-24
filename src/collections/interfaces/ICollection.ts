@@ -1,25 +1,20 @@
 /// <reference path="../../ref.ts" />
 
-// enum SchedulerValue {
-// 	Greater = 1,
-// 	Equal = 0,
-// 	Lower = -1
-// }
 
-interface ICollection<T> {
-	select(selector : Func<T, boolean>) : ICollection<T>;
+interface ICollection<T, S extends ICollection<any, any>> {
+	select(selector : Func<T, boolean>) : S;
 
 	forEach(action : Action<T>) : void;
 
 	find(selector : Func<T, boolean>) : T;
 
-	map<U>(action : Func<T, U>) : ICollection<U>;
+	map(action : Func<T, T>) : S;
 
-	orderBy<U>(getter : Func<T, U>) : ICollection<T>;
+	orderBy<U>(getter : Func<T, U>) : S;
 
-	orderByDesc<U>(getter : Func<T, U>) : ICollection<T>;
+	orderByDesc<U>(getter : Func<T, U>) : S;
 
-	reverse() : ICollection<T>;
+	reverse() : S;
 
 	sum(getter : Func<T, number>) : number;
 

@@ -60,8 +60,8 @@ module.exports = function(grunt) {
 				}
 			},
 			tester : {
-				files : ['src/*.ts', 'src/**/*.ts', 'testing/*.ts', 'testing/**.ts'],
-				tasks : ['ts:testing', 'clean:commands'],
+				files : ['src/*.ts', 'src/**/*.ts', 'testing/*.ts', 'testing/**/*.ts'],
+				tasks : ['ts:testing', 'clean:commands', 'shell:testing'],
 				options : {
 					interrupt : true,
 					atBegin : true

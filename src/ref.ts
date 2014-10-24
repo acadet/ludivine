@@ -7,6 +7,7 @@
 /// <reference path="StringBuffer.ts" />
 /// <reference path="Timer.ts" />
 /// <reference path="collections/impl/Queue.ts" />
+/// <reference path="collections/impl/Stack.ts" />
 /// <reference path="collections/interfaces/ICollection.ts" />
 /// <reference path="collections/utils/ArrayUtils.ts" />
 //grunt-end

@@ -52,7 +52,7 @@ module QueueUtils {
 	}
 }
 
-class Queue<T> implements ICollection<T> {
+class Queue<T> implements ICollection<T, Queue<T>> {
 	//region Fields
 
 	private _top : QueueUtils.QueueElement<T>;
@@ -127,7 +127,7 @@ class Queue<T> implements ICollection<T> {
 
 	//region ICollection
 
-	select(selector : Func<T, boolean>) : ICollection<T> {
+	select(selector : Func<T, boolean>) : Queue<T> {
 		var outcome : Queue<T>;
 
 		outcome = new Queue<T>();
@@ -191,10 +191,10 @@ class Queue<T> implements ICollection<T> {
 		return null;
 	}
 
-	map<U>(action : Func<T, U>) : ICollection<U> {
-		var outcome : Queue<U>;
+	map(action : Func<T, T>) : Queue<T> {
+		var outcome : Queue<T>;
 
-		outcome = new Queue<U>();
+		outcome = new Queue<T>();
 
 		this.forEach(
 			(e) => {
@@ -205,20 +205,21 @@ class Queue<T> implements ICollection<T> {
 		return outcome;
 	}
 
-	orderBy<U>(getter : Func<T, U>) : ICollection<T> {
+	orderBy<U>(getter : Func<T, U>) : Queue<T> {
 		var a : Array<T>;
 		var outcome : Queue<T>;
 
+		outcome = new Queue<T>();
+
+		if (this.getSize() === 0) {
+			return outcome;
+		}
+
 		a = new Array<T>();
 
-		this.forEach(
-			(e) => {
-				a.push(e);
-			}
-		);
+		this.forEach(e => a.push(e));
 
 		CollectionUtils.ArrayUtils.sort(a, getter);
-		outcome = new Queue<T>();
 
 		for (var i = 0; i < a.length; i++) {
 			outcome.push(a[i]);
@@ -227,20 +228,21 @@ class Queue<T> implements ICollection<T> {
 		return outcome;
 	}
 
-	orderByDesc<U>(getter : Func<T, U>) : ICollection<T> {
+	orderByDesc<U>(getter : Func<T, U>) : Queue<T> {
 		var a : Array<T>;
 		var outcome : Queue<T>;
 
+		outcome = new Queue<T>();
+
+		if (this.getSize() === 0) {
+			return outcome;
+		}
+
 		a = new Array<T>();
 
-		this.forEach(
-			(e) => {
-				a.push(e);
-			}
-		);
+		this.forEach(e => a.push(e));
 
-		CollectionUtils.ArrayUtils.sort(a, getter, false);
-		outcome = new Queue<T>();
+		CollectionUtils.ArrayUtils.sort(a, getter, false);		
 
 		for (var i = 0; i < a.length; i++) {
 			outcome.push(a[i]);
@@ -249,23 +251,23 @@ class Queue<T> implements ICollection<T> {
 		return outcome;
 	}
 
-	reverse() : ICollection<T> {
+	reverse() : Queue<T> {
 		var outcome : Queue<T>;
-		var builder : Action0;
+		var a : Array<T>;
 
 		outcome = new Queue<T>();
-		builder = () => { return; };
 
-		this.forEach(
-			(e) => {
-				builder = () => {
-					outcome.push(e);
-					builder();
-				};
-			}
-		);
+		if (this.getSize() === 0) {
+			return outcome;
+		}
 
-		builder();
+		a = new Array<T>();
+		this.forEach(x => a.push(x));
+
+		for (var i = a.length - 1; i >= 0; i--) {
+			outcome.push(a[i]);
+		}
+
 		return outcome;
 	}
 
@@ -273,11 +275,7 @@ class Queue<T> implements ICollection<T> {
 		var total : number;
 
 		total = 0;
-		this.forEach(
-			(e) => {
-				total += getter(e);
-			}
-		);
+		this.forEach(e => total += getter(e));
 
 		return total;
 	}

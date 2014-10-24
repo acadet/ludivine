@@ -16,26 +16,33 @@ module CollectionUtils {
 			comparator : Func2<U, U, boolean>,
 			first : number,
 			last : number,
-			base : number) : number {
+			pivot : number) : number {
 
 			var j : number;
 			var baseValue : U;
 
-			ArrayUtils._swap(source, base, last);
-			j = first;
-			baseValue = getter(source[last]);
+			j = pivot;
+			baseValue = getter(source[pivot]);
 
-			for (var i = first; i < last - 1; i++) {
-				var a : U;
+			for (var i = first; i <= last; i++) {
+				var value : U;
 
-				a = getter(source[i]);
-				if (comparator(a, baseValue)) {
-					ArrayUtils._swap(source, i, j);
-					j++;
+				value = getter(source[i]);
+
+				if (comparator(value, baseValue)) {
+					if (j < i) {
+						ArrayUtils._swap(source, j + 1, i);
+						ArrayUtils._swap(source, j, j + 1);
+						j++;
+					}
+				} else {
+					if (i < j) {
+						ArrayUtils._swap(source, i, j);
+						j = i;
+					}
 				}
 			}
 
-			ArrayUtils._swap(source, j, last);
 			return j;
 		}
 
@@ -47,13 +54,13 @@ module CollectionUtils {
 			last : number) : void {
 
 			if (first < last) {
-				var base : number;
+				var pivot : number;
 
-				base = Math.round(Math.random() * (last - first));
-				base = ArrayUtils._partition(source, getter, comparator, first, last, base);
+				pivot = Math.round(Math.random() * (last - first));
+				pivot = ArrayUtils._partition(source, getter, comparator, first, last, pivot);
 
-				ArrayUtils._sort(source, getter, comparator, first, base - 1);
-				ArrayUtils._sort(source, getter, comparator, base + 1, last);
+				ArrayUtils._sort(source, getter, comparator, first, pivot - 1);
+				ArrayUtils._sort(source, getter, comparator, pivot + 1, last);
 			}
 		}
 
