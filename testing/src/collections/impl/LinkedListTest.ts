@@ -2,14 +2,86 @@
 
 class LinkedListTest extends UnitTestClass {
 	private _list : LinkedList<number>;
+	private _element : LinkedListUtils.LinkedListElement<string>;
 
 	setUp() : void {
 		this._list = new LinkedList<number>();
+		this._element = new LinkedListUtils.LinkedListElement<string>();
 	}
 
 	tearDown() : void {
 		this._list = null;
+		this._element = null;
 	}
+
+	//region LinkedListElement
+
+	LinkedListElementConstructorTest() : void {
+		// Arrange
+		var element : LinkedListUtils.LinkedListElement<string>;
+	
+		// Act
+		element = new LinkedListUtils.LinkedListElement<string>('foo');
+	
+		// Assert
+		Assert.isNotNull(element);
+		Assert.areEqual('foo', element.getContent());
+		Assert.isFalse(element.hasNext());
+	}
+
+	LinkedListElementContentTest() : void {
+		// Arrange
+		var value : string, outcome : string;
+
+		value = 'foo';
+	
+		// Act
+		this._element.setContent(value);
+		outcome = this._element.getContent();
+	
+		// Assert
+		Assert.areEqual(value, outcome);
+	}
+
+	LinkedListElementNextTest() : void {
+		// Arrange
+		var value : LinkedListUtils.LinkedListElement<string>, outcome : LinkedListUtils.LinkedListElement<string>;
+
+		value = new LinkedListUtils.LinkedListElement<string>();
+	
+		// Act
+		this._element.setNext(value);
+		outcome = this._element.getNext();
+	
+		// Assert
+		Assert.areEqual(value, outcome);
+	}
+
+	LinkedListElementHasNextTest() : void {
+		// Arrange
+		var outcome : boolean;
+
+		this._element.setNext(new LinkedListUtils.LinkedListElement<string>());
+	
+		// Act
+		outcome = this._element.hasNext();
+
+		// Assert
+		Assert.isTrue(outcome);
+	}
+
+	LinkedListElementHasNextNoElementTest() : void {
+		// Arrange
+		var outcome : boolean;
+	
+		// Act
+		outcome = this._element.hasNext();
+	
+		// Assert
+		Assert.isFalse(outcome);
+	}
+
+	//endregion LinkedListElement
 
 	LinkedListConstructorTest() : void {
 		// Arrange

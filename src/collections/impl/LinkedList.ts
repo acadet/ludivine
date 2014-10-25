@@ -1,11 +1,11 @@
 /// <reference path="../../ref.ts" />
 
 module LinkedListUtils {
-	export class LinkedElement<T> {
+	export class LinkedListElement<T> {
 		//region Fields
 
 		private _content : T;
-		private _next : LinkedElement<T>;
+		private _next : LinkedListElement<T>;
 		
 		//endregion Fields
 		
@@ -34,11 +34,11 @@ module LinkedListUtils {
 			this._content = value;
 		}
 
-		getNext() : LinkedElement<T> {
+		getNext() : LinkedListElement<T> {
 			return this._next;
 		}
 
-		setNext(value : LinkedElement<T>) : void {
+		setNext(value : LinkedListElement<T>) : void {
 			this._next = value;
 		}
 
@@ -55,8 +55,8 @@ module LinkedListUtils {
 class LinkedList<T> implements IList<T, LinkedList<T>> {
 	//region Fields
 
-	private _head : LinkedListUtils.LinkedElement<T>;
-	private _tail : LinkedListUtils.LinkedElement<T>;
+	private _head : LinkedListUtils.LinkedListElement<T>;
+	private _tail : LinkedListUtils.LinkedListElement<T>;
 	private _size : number;
 	
 	//endregion Fields
@@ -78,9 +78,9 @@ class LinkedList<T> implements IList<T, LinkedList<T>> {
 	//region Public Methods
 
 	add(value : T) : void {
-		var e : LinkedListUtils.LinkedElement<T>;
+		var e : LinkedListUtils.LinkedListElement<T>;
 
-		e = new LinkedListUtils.LinkedElement(value);
+		e = new LinkedListUtils.LinkedListElement(value);
 
 		if (this.getLength() === 0) {
 			this._head = e;
@@ -94,7 +94,7 @@ class LinkedList<T> implements IList<T, LinkedList<T>> {
 	}
 
 	getAt(index : number) : T {
-		var e : LinkedListUtils.LinkedElement<T>;
+		var e : LinkedListUtils.LinkedListElement<T>;
 
 		if (index < 0 || index >= this._size) {
 			throw new CollectionException('Unbound index');
@@ -121,10 +121,10 @@ class LinkedList<T> implements IList<T, LinkedList<T>> {
 		if (index >= this.getLength()) {
 			this.add(value);
 		} else {
-			var prev : LinkedListUtils.LinkedElement<T>, current : LinkedListUtils.LinkedElement<T>;
-			var e : LinkedListUtils.LinkedElement<T>;
+			var prev : LinkedListUtils.LinkedListElement<T>, current : LinkedListUtils.LinkedListElement<T>;
+			var e : LinkedListUtils.LinkedListElement<T>;
 
-			e = new LinkedListUtils.LinkedElement(value);
+			e = new LinkedListUtils.LinkedListElement(value);
 			current = this._head;
 
 			for (var i = 0; i < this.getLength(); i++) {
@@ -148,7 +148,7 @@ class LinkedList<T> implements IList<T, LinkedList<T>> {
 	}
 
 	remove(value : T) : void {
-		var prev : LinkedListUtils.LinkedElement<T>, current : LinkedListUtils.LinkedElement<T>;
+		var prev : LinkedListUtils.LinkedListElement<T>, current : LinkedListUtils.LinkedListElement<T>;
 
 		current = this._head;
 
@@ -169,7 +169,7 @@ class LinkedList<T> implements IList<T, LinkedList<T>> {
 	}
 
 	removeAt(index : number) : void {
-		var prev : LinkedListUtils.LinkedElement<T>, current : LinkedListUtils.LinkedElement<T>;
+		var prev : LinkedListUtils.LinkedListElement<T>, current : LinkedListUtils.LinkedListElement<T>;
 
 		if (index < 0 || index >= this.getLength()) {
 			throw new CollectionException('Unbound index');
@@ -195,7 +195,7 @@ class LinkedList<T> implements IList<T, LinkedList<T>> {
 	}
 
 	removeIf(func : Func<T, boolean>) : void {
-		var prev : LinkedListUtils.LinkedElement<T>, current : LinkedListUtils.LinkedElement<T>;
+		var prev : LinkedListUtils.LinkedListElement<T>, current : LinkedListUtils.LinkedListElement<T>;
 
 		prev = null;
 		current = this._head;
@@ -234,7 +234,7 @@ class LinkedList<T> implements IList<T, LinkedList<T>> {
 	}
 
 	forEach(action : Action<T>) : void {
-		var cursor : LinkedListUtils.LinkedElement<T>;
+		var cursor : LinkedListUtils.LinkedListElement<T>;
 
 		if (this.getLength() === 0) {
 			return;
@@ -250,7 +250,7 @@ class LinkedList<T> implements IList<T, LinkedList<T>> {
 	}
 
 	find(selector : Func<T, boolean>) : T {
-		var cursor : LinkedListUtils.LinkedElement<T>;
+		var cursor : LinkedListUtils.LinkedListElement<T>;
 		var e : T;
 
 		if (this.getLength() === 0) {
