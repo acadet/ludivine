@@ -275,18 +275,21 @@ class QueueTest extends UnitTestClass {
 
 	QueueForEachTest() : void {
 		// Arrange
-		var acc : number;
+		var acc : Array<number>;
 
-		acc = 0;
+		acc = new Array<number>();
 		this._queue.push(1);
 		this._queue.push(2);
 		this._queue.push(3);
 	
 		// Act
-		this._queue.forEach(x => acc += x);
+		this._queue.forEach(x => acc.push(x));
 	
 		// Assert
-		Assert.areEqual(6, acc);
+		Assert.areEqual(3, acc.length);
+		Assert.areEqual(1, acc[0]);
+		Assert.areEqual(2, acc[1]);
+		Assert.areEqual(3, acc[2]);
 	}
 
 	QueueForEachEmptyTest() : void {
@@ -311,7 +314,7 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(4);
 	
 		// Act
-		outcome = this._queue.find(x => x === 3);
+		outcome = this._queue.find(x => x <= 4);
 	
 		// Assert
 		Assert.areEqual(3, outcome);
@@ -475,6 +478,25 @@ class QueueTest extends UnitTestClass {
 		Assert.isNotNull(outcome);
 		Assert.areEqual(0, outcome.getSize());
 		Assert.areNotEqual(this._queue, outcome);
+	}
+
+	QueueToArrayTest() : void {
+		// Arrange
+		var outcome : Array<number>;
+
+		this._queue.push(45);
+		this._queue.push(67);
+		this._queue.push(32);
+	
+		// Act
+		outcome = this._queue.toArray();
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(3, outcome.length);
+		Assert.areEqual(45, outcome[0]);
+		Assert.areEqual(67, outcome[1]);
+		Assert.areEqual(32, outcome[2]);
 	}
 
 	QueueSumTest() : void {

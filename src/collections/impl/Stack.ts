@@ -186,6 +186,7 @@ class Stack<T> implements ICollection<T, Stack<T>> {
 			if (selector(e)) {
 				return e;
 			}
+			cursor = cursor.getPrev();
 		}
 
 		e = cursor.getContent();
@@ -210,10 +211,15 @@ class Stack<T> implements ICollection<T, Stack<T>> {
 		var outcome : Stack<T>;
 		var a : Array<T>;
 
+		outcome = new Stack<T>();
+
+		if (this.getSize() === 0) {
+			return outcome;
+		}
+
 		a = new Array<T>();
 		this.forEach(e => a.push(e));
 		CollectionUtils.ArrayUtils.sort(a, getter);
-		outcome = new Stack<T>();
 
 		for (var i = a.length - 1; i >= 0; i--) {
 			outcome.push(a[i]);
@@ -226,10 +232,15 @@ class Stack<T> implements ICollection<T, Stack<T>> {
 		var outcome : Stack<T>;
 		var a : Array<T>;
 
+		outcome = new Stack<T>();
+
+		if (this.getSize() === 0) {
+			return outcome;
+		}
+
 		a = new Array<T>();
 		this.forEach(e => a.push(e));
-		CollectionUtils.ArrayUtils.sort(a, getter);
-		outcome = new Stack<T>();
+		CollectionUtils.ArrayUtils.sort(a, getter);		
 
 		for (var i =0; i < a.length; i++) {
 			outcome.push(a[i]);
@@ -247,9 +258,19 @@ class Stack<T> implements ICollection<T, Stack<T>> {
 		return outcome;
 	}
 
+	toArray() : Array<T> {
+		var outcome : Array<T>;
+
+		outcome = new Array<T>();
+		this.forEach(x => outcome.push(x));
+
+		return outcome;
+	}
+
 	sum(getter : Func<T, number>) : number {
 		var total : number;
 
+		total = 0;
 		this.forEach(x => total += getter(x));
 
 		return total;

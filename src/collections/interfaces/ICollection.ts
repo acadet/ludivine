@@ -16,6 +16,12 @@ interface ICollection<T, S extends ICollection<any, any>> {
 
 	reverse() : S;
 
+	/**
+	 * Casts list to an array
+	 * @return {Array<T>} [description]
+	 */
+	toArray() : Array<T>;
+
 	sum(getter : Func<T, number>) : number;
 
 	min(getter : Func<T, number>) : T;

@@ -271,6 +271,15 @@ class Queue<T> implements ICollection<T, Queue<T>> {
 		return outcome;
 	}
 
+	toArray() : Array<T> {
+		var outcome : Array<T>;
+
+		outcome = new Array<T>();
+		this.forEach(x => outcome.push(x));
+
+		return outcome;
+	}
+
 	sum(getter : Func<T, number>) : number {
 		var total : number;
 
