@@ -52,7 +52,7 @@ module QueueUtils {
 	}
 }
 
-class Queue<T> implements ICollection<T, Queue<T>> {
+class Queue<T> implements ISortableCollection<T, Queue<T>> {
 	//region Fields
 
 	private _top : QueueUtils.QueueElement<T>;

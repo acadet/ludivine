@@ -1,6 +1,7 @@
 /// <reference path="../../ref.ts" />
 
-class ArrayList<T> implements IList<T, ArrayList<T>> {
+class ArrayList<T>
+	implements IList<T>, ISortableCollection<T, ArrayList<T>> {
 	//region Fields
 
 	private _content : Array<T>;

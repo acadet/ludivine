@@ -1,6 +1,5 @@
 /// <reference path="../../ref.ts" />
 
-
 interface ICollection<T, S extends ICollection<any, any>> {
 	select(selector : Func<T, boolean>) : S;
 
@@ -9,12 +8,6 @@ interface ICollection<T, S extends ICollection<any, any>> {
 	find(selector : Func<T, boolean>) : T;
 
 	map(action : Func<T, T>) : S;
-
-	orderBy<U>(getter : Func<T, U>) : S;
-
-	orderByDesc<U>(getter : Func<T, U>) : S;
-
-	reverse() : S;
 
 	/**
 	 * Casts list to an array

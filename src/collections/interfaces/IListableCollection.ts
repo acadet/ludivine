@@ -1,6 +1,6 @@
 /// <reference path="../../ref.ts" />
 
-interface IList<T, S extends IList<any, any>> extends ICollection<T, S>  {
+interface IListableCollection<T> extends ISortableCollection<T, IListableCollection<T>> {
 	/**
 	 * Adds a new item to list
 	 * @param {T} t [description]
@@ -19,13 +19,6 @@ interface IList<T, S extends IList<any, any>> extends ICollection<T, S>  {
 	 * @return {number} [description]
 	 */
 	getLength() : number;
-
-	/**
-	 * Inserts an element at specified index
-	 * @param {number} index [description]
-	 * @param {T}      t     [description]
-	 */
-	insertAt(index : number, value : T) : void;
 
 	/**
 	 * Removes an element from list

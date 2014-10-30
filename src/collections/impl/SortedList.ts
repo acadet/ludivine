@@ -102,7 +102,8 @@ module SortedListUtils {
 	}
 }
 
-class SortedList<A, B> {
+class SortedList<A, B>
+	implements IListableCollection<A>, ISortableCollection<A, SortedList<A, B>> {
 	//region Fields
 
 	private _head : SortedListUtils.SortedListElement<A>;
@@ -139,9 +140,10 @@ class SortedList<A, B> {
 		}
 
 		current = this._head;
+		prev = null;
 		while (current.hasNext()) {
 			if (func(new SortedListUtils.SortedListCursor(prev, current))) {
-				return;
+				return true;
 			}
 			prev = current;
 			current = current.getNext();
@@ -178,11 +180,18 @@ class SortedList<A, B> {
 
 			success = this._forEach(
 				(cursor) => {
+					var current : SortedListUtils.SortedListElement<A>;
+
+					current = cursor.getCurrent();
 					latestCursor = cursor;
 
-					if (comparator(this._getter(cursor.getCurrent().getContent()), this._getter(value))) {
-						cursor.getPrevious().setNext(e);
-						e.setNext(cursor.getCurrent());
+					if (comparator(this._getter(value), this._getter(current.getContent()))) {
+						if (cursor.hasPrevious()) {
+							cursor.getPrevious().setNext(e);
+						} else {
+							this._head = e;
+						}
+						e.setNext(current);
 
 						return true;
 					} else {
@@ -215,9 +224,9 @@ class SortedList<A, B> {
 					outcome = cursor.getCurrent().getContent();
 					return true;
 				} else {
+					i++;
 					return false;
 				}
-				i++;
 			}
 		);
 
@@ -233,7 +242,16 @@ class SortedList<A, B> {
 
 		done = this._forEach(
 			(cursor) => {
-				return cursor.getCurrent().getContent() === value;
+				if (cursor.getCurrent().getContent() === value) {
+					if (cursor.hasPrevious()) {
+						cursor.getPrevious().setNext(cursor.getCurrent().getNext());
+					} else {
+						this._head = cursor.getCurrent().getNext();
+					}
+					return true;
+				} else {
+					return false;
+				}
 			}
 		);
 
@@ -275,11 +293,13 @@ class SortedList<A, B> {
 
 	removeIf(func : Func<A, boolean>) : void {
 		var prev : SortedListUtils.SortedListElement<A>, current : SortedListUtils.SortedListElement<A>;
+		var size : number;
 
+		size = this.getLength();
 		prev = null;
 		current = this._head;
 
-		for (var i = 0; i < this.getLength(); i++) {
+		for (var i = 0; i < size; i++) {
 			if (func(current.getContent())) {
 				if (prev !== null && prev !== undefined) {
 					prev.setNext(current.getNext());
@@ -301,7 +321,7 @@ class SortedList<A, B> {
 	select(selector : Func<A, boolean>) : SortedList<A, B> {
 		var outcome : SortedList<A, B>;
 
-		outcome = new SortedList<A, B>(this._getter);
+		outcome = new SortedList<A, B>(this._getter, this._asc);
 		this.forEach(
 			(e) => {
 				if (selector(e)) {
@@ -348,7 +368,7 @@ class SortedList<A, B> {
 	map(action : Func<A, A>) : SortedList<A, B> {
 		var outcome : SortedList<A, B>;
 
-		outcome = new SortedList<A, B>(this._getter);
+		outcome = new SortedList<A, B>(this._getter, this._asc);
 
 		this.forEach(
 			(e) => {
@@ -380,7 +400,7 @@ class SortedList<A, B> {
 	reverse() : SortedList<A, B> {
 		var outcome : SortedList<A, B>;
 
-		outcome = new SortedList<A, B>(this._getter, false);
+		outcome = new SortedList<A, B>(this._getter, !this._asc);
 		this.forEach(e => outcome.add(e));
 
 		return outcome;

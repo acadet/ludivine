@@ -14,7 +14,10 @@
 /// <reference path="collections/impl/SortedList.ts" />
 /// <reference path="collections/impl/Stack.ts" />
 /// <reference path="collections/interfaces/ICollection.ts" />
+/// <reference path="collections/interfaces/IDictionary.ts" />
 /// <reference path="collections/interfaces/IList.ts" />
+/// <reference path="collections/interfaces/IListableCollection.ts" />
+/// <reference path="collections/interfaces/ISortableCollection.ts" />
 /// <reference path="collections/utils/ArrayUtils.ts" />
 /// <reference path="collections/utils/CollectionError.ts" />
 //grunt-end

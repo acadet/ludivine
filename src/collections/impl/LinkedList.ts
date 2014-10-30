@@ -52,7 +52,8 @@ module LinkedListUtils {
 	}
 }
 
-class LinkedList<T> implements IList<T, LinkedList<T>> {
+class LinkedList<T>
+	implements IList<T>, ISortableCollection<T, LinkedList<T>> {
 	//region Fields
 
 	private _head : LinkedListUtils.LinkedListElement<T>;

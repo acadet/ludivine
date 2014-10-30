@@ -52,7 +52,7 @@ module StackUtils {
 	}
 }
 
-class Stack<T> implements ICollection<T, Stack<T>> {
+class Stack<T> implements ISortableCollection<T, Stack<T>> {
 	//region Fields
 
 	private _tail : StackUtils.StackElement<T>;
