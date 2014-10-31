@@ -8,3 +8,4 @@ tscommand*.txt
 
 # Exclude from repo
 out/
+ludivine.*.zip

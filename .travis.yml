@@ -1,0 +1,24 @@
+language: node_js
+node_js:
+    - "0.11"
+notifications:
+    email:
+        on_success: never
+        on_failure: always
+        
+before_install:
+    - "npm install -g grunt-cli"
+install:
+    - "npm install grunt-ts"
+    - "npm install grunt-contrib-uglify"
+    - "npm install typescript"
+script:
+    - "grunt ts:build --verbose --force"
+    - "node out/ludivine.js"
+    - "grunt uglify:release --verbose --force"
+    - "node out/ludivine.min.js"
+    - "grunt ts:testing --verbose --force"
+    - "python out/buildLauncher.py out/testing.js testing 0 5000 true"
+    - "node out/testing.js"
+    - "python tsMinifier.py src ref.ts ludivine.min.ts"
+    - "tsc ludivine.min.ts"
