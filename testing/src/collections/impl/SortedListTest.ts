@@ -345,6 +345,21 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foobar', this._ascList.getAt(1));
 	}
 
+	SortedListAscRemoveAtHeadTest() : void {
+		// Arrange
+		this._ascList.add('foo');
+		this._ascList.add('foobar');
+		this._ascList.add('bar');
+	
+		// Act
+		this._ascList.removeAt(0);
+	
+		// Assert
+		Assert.areEqual(2, this._ascList.getLength());
+		Assert.areEqual('bar', this._ascList.getAt(0));
+		Assert.areEqual('foobar', this._ascList.getAt(1));
+	}
+
 	SortedListAscRemoveAtNegativeIndexTest() : void {
 		// Arrange
 		var f : Action0;
@@ -829,6 +844,21 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foo', this._descList.getAt(1));
 	}
 
+	SortedListDescRemoveAtHeadTest() : void {
+		// Arrange
+		this._descList.add('foo');
+		this._descList.add('bar');
+		this._descList.add('foobar');
+	
+		// Act
+		this._descList.removeAt(0);
+	
+		// Assert
+		Assert.areEqual(2, this._descList.getLength());
+		Assert.areEqual('foo', this._descList.getAt(0));
+		Assert.areEqual('bar', this._descList.getAt(1));
+	}
+
 	SortedListDescRemoveAtNegativeIndexTest() : void {
 		// Arrange
 		var f : Action0;
@@ -921,7 +951,7 @@ class SortedListTest extends UnitTestClass {
 		// Arrange
 		var acc : Array<string>;
 
-		acc = new Array<string>();		
+		acc = new Array<string>();
 		this._descList.add('bar');
 		this._descList.add('foo');
 		this._descList.add('foobar');

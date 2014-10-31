@@ -518,8 +518,8 @@ class QueueTest extends UnitTestClass {
 		// Arrange
 		var outcome : number;
 
-		this._queue.push(5);
 		this._queue.push(56);
+		this._queue.push(5);		
 		this._queue.push(-60);
 	
 		// Act
