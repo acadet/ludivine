@@ -18,7 +18,7 @@ script:
     - "grunt uglify:release --verbose --force"
     - "node out/ludivine.min.js"
     - "grunt ts:testing --verbose --force"
-    - "python out/buildLauncher.py out/testing.js testing 0 5000 true"
+    - "python buildLauncher.py out/testing.js testing/src 0 5000 true"
     - "node out/testing.js"
     - "python tsMinifier.py src ref.ts ludivine.min.ts"
     - "tsc ludivine.min.ts"

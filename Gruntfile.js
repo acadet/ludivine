@@ -24,10 +24,7 @@ module.exports = function(grunt) {
 		},
 		shell : {
 			testing : {
-				command : [
-					'cd out/',
-					'python buildLauncher.py testing.js ../testing/src 1 5000 false'
-				].join('&&')
+				command : 'python buildLauncher.py out/testing.js testing/src 1 5000 false'
 			},
 			release : {
 				command : 'python tsMinifier.py src ref.ts ' + tsOut
