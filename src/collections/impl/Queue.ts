@@ -1,17 +1,32 @@
 /// <reference path="../../ref.ts" />
 
+/**
+ * Inner content for Queue
+ */
 module QueueUtils {
+
+	/**
+	 * @class QueueElement
+	 * @brief Queue element with simple chain
+	 */
 	export class QueueElement<T> {
 		//region Fields
 
+		/**
+		 * Inner content
+		 */
 		private _content : T;
+
+		/**
+		 * Neighbor
+		 */
 		private _next : QueueElement<T>;
 		
 		//endregion Fields
 		
 		//region Constructors
 
-		constructor(content : T = null) {
+		constructor(content? : T) {
 			this._content = content;
 			this._next = null;
 		}
@@ -26,22 +41,42 @@ module QueueUtils {
 		
 		//region Public Methods
 
+		/**
+		 * Returns wrapped content
+		 * @return {T} Wrapped content
+		 */
 		getContent() : T {
 			return this._content;
 		}
 
+		/**
+		 * Sets wrapped content
+		 * @param {T} value Value
+		 */
 		setContent(value : T) : void {
 			this._content = value;
 		}
 
+		/**
+		 * Returns neighbor
+		 * @return {QueueElement<T>} Neighbor
+		 */
 		getNext() : QueueElement<T> {
 			return this._next;
 		}
 
+		/**
+		 * Sets neighbor
+		 * @param {QueueElement<T>} value Value
+		 */
 		setNext(value : QueueElement<T>) : void {
 			this._next = value;
 		}
 
+		/**
+		 * Returns true if there is a neighbor
+		 * @return {boolean} True if there is neighborhood
+		 */
 		hasNext() : boolean {
 			return (this._next !== null && this._next !== undefined);
 		}
@@ -52,11 +87,26 @@ module QueueUtils {
 	}
 }
 
+/**
+ * @class Queue
+ * @brief Queue structure
+ */
 class Queue<T> implements ISortableCollection<T, Queue<T>> {
 	//region Fields
 
+	/**
+	 * Oldest element
+	 */
 	private _top : QueueUtils.QueueElement<T>;
+
+	/**
+	 * Newest element
+	 */
 	private _bottom : QueueUtils.QueueElement<T>;
+
+	/**
+	 * Current size
+	 */
 	private _size : number;
 	
 	//endregion Fields
@@ -77,10 +127,18 @@ class Queue<T> implements ISortableCollection<T, Queue<T>> {
 	
 	//region Public Methods
 
+	/**
+	 * Returns current size
+	 * @return {number} Size
+	 */
 	getSize() : number {
 		return this._size;
 	}
 
+	/**
+	 * Gets oldest element without removing it from queue
+	 * @return {T} Top element
+	 */
 	top() : T {
 		if (this._size === 0) {
 			return null;
@@ -89,6 +147,10 @@ class Queue<T> implements ISortableCollection<T, Queue<T>> {
 		}
 	}
 
+	/**
+	 * Gets oldest element and removes it from queue
+	 * @return {T} Oldest element
+	 */
 	pop() : T {
 		if (this._size === 0) {
 			return null;
@@ -109,6 +171,10 @@ class Queue<T> implements ISortableCollection<T, Queue<T>> {
 		}
 	}
 
+	/**
+	 * Adds element in queue
+	 * @param {T} value Value
+	 */
 	push(value : T) : void {
 		var e : QueueUtils.QueueElement<T>;
 
@@ -125,9 +191,10 @@ class Queue<T> implements ISortableCollection<T, Queue<T>> {
 		this._size++;
 	}
 
-	//region ICollection
+	//region ISortableCollection
 
-	select(selector : Func<T, boolean>) : Queue<T> {
+	orderBy<U>(getter : Func<T, U>) : Queue<T> {
+		var a : Array<T>;
 		var outcome : Queue<T>;
 
 		outcome = new Queue<T>();
@@ -135,6 +202,67 @@ class Queue<T> implements ISortableCollection<T, Queue<T>> {
 		if (this.getSize() === 0) {
 			return outcome;
 		}
+
+		a = new Array<T>();
+		this.forEach(e => a.push(e));
+		CollectionUtils.ArrayUtils.sort(a, getter);
+
+		for (var i = 0; i < a.length; i++) {
+			outcome.push(a[i]);
+		}
+
+		return outcome;
+	}
+
+	orderByDesc<U>(getter : Func<T, U>) : Queue<T> {
+		var a : Array<T>;
+		var outcome : Queue<T>;
+
+		outcome = new Queue<T>();
+
+		if (this.getSize() === 0) {
+			return outcome;
+		}
+
+		a = new Array<T>();
+		this.forEach(e => a.push(e));
+		CollectionUtils.ArrayUtils.sort(a, getter, false);
+
+		for (var i = 0; i < a.length; i++) {
+			outcome.push(a[i]);
+		}
+
+		return outcome;
+	}
+
+	reverse() : Queue<T> {
+		var outcome : Queue<T>;
+		var a : Array<T>;
+
+		outcome = new Queue<T>();
+
+		if (this.getSize() === 0) {
+			return outcome;
+		}
+
+		a = new Array<T>();
+		this.forEach(x => a.push(x));
+
+		for (var i = a.length - 1; i >= 0; i--) {
+			outcome.push(a[i]);
+		}
+
+		return outcome;
+	}
+
+	//endregion ISortableCollection
+
+	//region ICollection
+
+	select(selector : Func<T, boolean>) : Queue<T> {
+		var outcome : Queue<T>;
+
+		outcome = new Queue<T>();
 
 		this.forEach(
 			(e) => {
@@ -201,72 +329,6 @@ class Queue<T> implements ISortableCollection<T, Queue<T>> {
 				outcome.push(action(e));
 			}
 		);
-
-		return outcome;
-	}
-
-	orderBy<U>(getter : Func<T, U>) : Queue<T> {
-		var a : Array<T>;
-		var outcome : Queue<T>;
-
-		outcome = new Queue<T>();
-
-		if (this.getSize() === 0) {
-			return outcome;
-		}
-
-		a = new Array<T>();
-
-		this.forEach(e => a.push(e));
-
-		CollectionUtils.ArrayUtils.sort(a, getter);
-
-		for (var i = 0; i < a.length; i++) {
-			outcome.push(a[i]);
-		}
-
-		return outcome;
-	}
-
-	orderByDesc<U>(getter : Func<T, U>) : Queue<T> {
-		var a : Array<T>;
-		var outcome : Queue<T>;
-
-		outcome = new Queue<T>();
-
-		if (this.getSize() === 0) {
-			return outcome;
-		}
-
-		a = new Array<T>();
-
-		this.forEach(e => a.push(e));
-
-		CollectionUtils.ArrayUtils.sort(a, getter, false);		
-
-		for (var i = 0; i < a.length; i++) {
-			outcome.push(a[i]);
-		}
-
-		return outcome;
-	}
-
-	reverse() : Queue<T> {
-		var outcome : Queue<T>;
-		var a : Array<T>;
-
-		outcome = new Queue<T>();
-
-		if (this.getSize() === 0) {
-			return outcome;
-		}
-
-		a = new Array<T>();
-		this.forEach(x => a.push(x));
-
-		for (var i = a.length - 1; i >= 0; i--) {
-			outcome.push(a[i]);
-		}
 
 		return outcome;
 	}

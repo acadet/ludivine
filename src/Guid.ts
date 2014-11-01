@@ -1,5 +1,9 @@
 /// <reference path="ref.ts" />
 
+/**
+ * @class Guid
+ * @brief Procudes unique Guid
+ */
 class Guid {
 	//region Fields
 	
@@ -13,6 +17,11 @@ class Guid {
 	
 	//region Private Methods
 	
+	/**
+	 * Returns a random string using provided charset
+	 * @param  {number} length Desired length
+	 * @return {string}        Random string
+	 */
 	static _randomString(length : number) : string {
 		if (length < 1) {
 			return null;
@@ -20,7 +29,7 @@ class Guid {
 			var charSet : string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 			var outcome : string = '';
 
-			for(var i = 0; i < length; i++) {
+			for (var i = 0; i < length; i++) {
 				var index : number;
 
 				index = Math.floor(Math.random() * charSet.length);
@@ -35,6 +44,10 @@ class Guid {
 	
 	//region Public Methods
 	
+	/**
+	 * Produces a new guid
+	 * @return {string} [description]
+	 */
 	static newGuid() : string {
 		var outcome : StringBuffer;
 

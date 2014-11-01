@@ -260,19 +260,6 @@ class QueueTest extends UnitTestClass {
 		Assert.areEqual(67, outcome.pop());
 	}
 
-	QueueSelectEmptyTest() : void {
-		// Arrange
-		var outcome : Queue<number>;
-	
-		// Act
-		outcome = this._queue.select(x => true);
-	
-		// Assert
-		Assert.isNotNull(outcome);
-		Assert.areNotEqual(this._queue, outcome);
-		Assert.areEqual(0, outcome.getSize());
-	}
-
 	QueueForEachTest() : void {
 		// Arrange
 		var acc : Array<number>;

@@ -1,10 +1,25 @@
 /// <reference path="../../ref.ts" />
 
+/**
+ * Inner content for SortedList
+ */
 module SortedListUtils {
+
+	/**
+	 * @class SortedListElement
+	 * @brief Element for SortedList using simply chain
+	 */
 	export class SortedListElement<T> {
 		//region Fields
 
+		/**
+		 * Wrapped content
+		 */
 		private _content : T;
+
+		/**
+		 * Neighbor
+		 */
 		private _next : SortedListElement<T>;
 		
 		//endregion Fields
@@ -26,22 +41,42 @@ module SortedListUtils {
 		
 		//region Public Methods
 
+		/**
+		 * Returns wrapped content
+		 * @return {T} Wrapped content
+		 */
 		getContent() : T {
 			return this._content;
 		}
 
+		/**
+		 * Sets wrapped content
+		 * @param {T} value Value
+		 */
 		setContent(value : T) : void {
 			this._content = value;
 		}
 
+		/**
+		 * Returns neighbor
+		 * @return {SortedListElement<T>} Neighbor
+		 */
 		getNext() : SortedListElement<T> {
 			return this._next;
 		}
 
+		/**
+		 * Sets neighbor
+		 * @param {SortedListElement<T>} value Value
+		 */
 		setNext(value : SortedListElement<T>) : void {
 			this._next = value;
 		}
 
+		/**
+		 * Returns true if there is a neighbor
+		 * @return {boolean} True if neighbor
+		 */
 		hasNext() : boolean {
 			return this._next !== null && this._next !== undefined;
 		}
@@ -51,10 +86,21 @@ module SortedListUtils {
 		//endregion Methods
 	}
 
+	/**
+	 * @class SortedListCursor
+	 * @brief Cursor when browsing SortedList
+	 */
 	export class SortedListCursor<T> {
 		//region Fields
 
+		/**
+		 * Previous element
+		 */
 		private _previous : SortedListElement<T>;
+
+		/**
+		 * Current element
+		 */
 		private _current : SortedListElement<T>;
 		
 		//endregion Fields
@@ -76,22 +122,42 @@ module SortedListUtils {
 		
 		//region Public Methods
 
+		/**
+		 * Returns previous element
+		 * @return {SortedListElement<T>} Previous element
+		 */
 		getPrevious() : SortedListElement<T> {
 			return this._previous;
 		}
 
+		/**
+		 * Sets previous element
+		 * @param {SortedListElement<T>} value Value
+		 */
 		setPrevious(value : SortedListElement<T>) : void {
 			this._previous = value;
 		}
 
+		/**
+		 * Returns true if cursor has previous
+		 * @return {boolean} True if element has previous
+		 */
 		hasPrevious() : boolean {
 			return this._previous !== null && this._previous !== undefined;
 		}
 
+		/**
+		 * Gets current element
+		 * @return {SortedListElement<T>} Current element
+		 */
 		getCurrent() : SortedListElement<T> {
 			return this._current;
 		}
 
+		/**
+		 * Sets current element
+		 * @param {SortedListElement<T>} value Value
+		 */
 		setCurrent(value : SortedListElement<T>) : void {
 			this._current = value;
 		}
@@ -102,19 +168,44 @@ module SortedListUtils {
 	}
 }
 
+/**
+ * @class SortedList
+ * @description Sorted list. Double typed: first one is for wrapped elements,
+ * other one is for comparable value
+ */
 class SortedList<A, B>
 	implements IListableCollection<A>, ISortableCollection<A, SortedList<A, B>> {
 	//region Fields
 
+	/**
+	 * Head of list
+	 */
 	private _head : SortedListUtils.SortedListElement<A>;
+
+	/**
+	 * Returns comparable value from any element
+	 */
 	private _getter : Func<A, B>;
+
+	/**
+	 * Current size
+	 */
 	private _size : number;
+
+	/**
+	 * True if list is ascending sorted
+	 */
 	private _asc : boolean;
 	
 	//endregion Fields
 	
 	//region Constructors
 
+	/**
+	 * Creates new sorted list
+	 * @param {Func<A, B>} getter Returns comparable value from any element of list
+	 * @param {boolean} ascending True if list has to be ascending (default)
+	 */
 	constructor(getter : Func<A, B>, ascending? : boolean) {
 		this._getter = getter;
 		this._size = 0;
@@ -132,6 +223,12 @@ class SortedList<A, B>
 	
 	//region Private Methods
 
+	/**
+	 * Browses list and applies provided function with a cursor. Stops when action
+	 * returns true
+	 * @param  {Func<SortedListUtils.SortedListCursor<A>, boolean>} func Action to apply
+	 * @return {boolean} Outcome from action
+	 */
 	private _forEach(func : Func<SortedListUtils.SortedListCursor<A>, boolean>) : boolean {
 		var prev : SortedListUtils.SortedListElement<A>, current : SortedListUtils.SortedListElement<A>;
 
@@ -143,6 +240,7 @@ class SortedList<A, B>
 		prev = null;
 		while (current.hasNext()) {
 			if (func(new SortedListUtils.SortedListCursor(prev, current))) {
+				// Stop browsing
 				return true;
 			}
 			prev = current;
@@ -155,6 +253,8 @@ class SortedList<A, B>
 	//endregion Private Methods
 	
 	//region Public Methods
+
+	//region IListableCollection
 
 	add(value : A) : void {
 		var e : SortedListUtils.SortedListElement<A>;
@@ -189,6 +289,7 @@ class SortedList<A, B>
 						if (cursor.hasPrevious()) {
 							cursor.getPrevious().setNext(e);
 						} else {
+							// Element is new head
 							this._head = e;
 						}
 						e.setNext(current);
@@ -201,6 +302,7 @@ class SortedList<A, B>
 			);
 
 			if (!success) {
+				// No slot found before, append element
 				latestCursor.getCurrent().setNext(e);
 			}
 		}
@@ -246,6 +348,7 @@ class SortedList<A, B>
 					if (cursor.hasPrevious()) {
 						cursor.getPrevious().setNext(cursor.getCurrent().getNext());
 					} else {
+						// Element was head, neighbor is new one
 						this._head = cursor.getCurrent().getNext();
 					}
 					return true;
@@ -256,6 +359,7 @@ class SortedList<A, B>
 		);
 
 		if (done) {
+			// Decrease size if elemnt has been removed
 			this._size--;
 		}
 	}
@@ -279,6 +383,7 @@ class SortedList<A, B>
 					if (cursor.hasPrevious()) {
 						cursor.getPrevious().setNext(e);
 					} else {
+						// Element was head, set head as neighbor
 						this._head = e;
 					}
 
@@ -304,17 +409,52 @@ class SortedList<A, B>
 				if (prev !== null && prev !== undefined) {
 					prev.setNext(current.getNext());
 				} else {
+					// Element was head, set neighbor as new one
 					this._head = current.getNext();
 				}
 
 				this._size--;
 			} else {
+				// Go further if no element has been removed
 				prev = current;
 			}
 
 			current = current.getNext();
 		}
 	}
+
+	//endregion IListableCollection
+
+	//region ISortableCollection
+
+	orderBy<C>(getter : Func<A, C>) : SortedList<A, C> {
+		var outcome : SortedList<A, C>;
+
+		outcome = new SortedList<A, C>(getter);
+		this.forEach(e => outcome.add(e));
+
+		return outcome;
+	}
+
+	orderByDesc<C>(getter : Func<A, C>) : SortedList<A, C> {
+		var outcome : SortedList<A, C>;
+
+		outcome = new SortedList<A, C>(getter, false);
+		this.forEach(e => outcome.add(e));
+
+		return outcome;
+	}
+
+	reverse() : SortedList<A, B> {
+		var outcome : SortedList<A, B>;
+
+		outcome = new SortedList<A, B>(this._getter, !this._asc);
+		this.forEach(e => outcome.add(e));
+
+		return outcome;
+	}
+
+	//endregion ISortableCollection
 
 	//region ICollection
 
@@ -375,33 +515,6 @@ class SortedList<A, B>
 				outcome.add(action(e));
 			}
 		);
-
-		return outcome;
-	}
-
-	orderBy<C>(getter : Func<A, C>) : SortedList<A, C> {
-		var outcome : SortedList<A, C>;
-
-		outcome = new SortedList<A, C>(getter);
-		this.forEach(e => outcome.add(e));
-
-		return outcome;
-	}
-
-	orderByDesc<C>(getter : Func<A, C>) : SortedList<A, C> {
-		var outcome : SortedList<A, C>;
-
-		outcome = new SortedList<A, C>(getter, false);
-		this.forEach(e => outcome.add(e));
-
-		return outcome;
-	}
-
-	reverse() : SortedList<A, B> {
-		var outcome : SortedList<A, B>;
-
-		outcome = new SortedList<A, B>(this._getter, !this._asc);
-		this.forEach(e => outcome.add(e));
 
 		return outcome;
 	}

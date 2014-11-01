@@ -83,6 +83,8 @@ class LinkedListTest extends UnitTestClass {
 
 	//endregion LinkedListElement
 
+	//region IList
+
 	LinkedListConstructorTest() : void {
 		// Arrange
 		var list : LinkedList<number>;
@@ -94,6 +96,68 @@ class LinkedListTest extends UnitTestClass {
 		Assert.isNotNull(list);
 		Assert.areEqual(0, list.getLength());
 	}
+
+	LinkedListInsertAtTest() : void {
+		// Arrange
+		this._list.add(45);
+		this._list.add(67);
+		this._list.add(2);
+	
+		// Act
+		this._list.insertAt(1, 34);
+	
+		// Assert
+		Assert.areEqual(4, this._list.getLength());
+		Assert.areEqual(45, this._list.getAt(0));
+		Assert.areEqual(34, this._list.getAt(1));
+		Assert.areEqual(67, this._list.getAt(2));
+		Assert.areEqual(2, this._list.getAt(3));
+	}
+
+	LinkedListInsertAtBeginningTest() : void {
+		// Arrange
+		this._list.add(43);
+		this._list.add(32);
+	
+		// Act
+		this._list.insertAt(0, 2);
+	
+		// Assert
+		Assert.areEqual(3, this._list.getLength());
+		Assert.areEqual(2, this._list.getAt(0));
+		Assert.areEqual(43, this._list.getAt(1));
+		Assert.areEqual(32, this._list.getAt(2));
+	}
+
+	LinkedListInsertAtEndTest() : void {
+		// Arrange
+		this._list.add(45);
+		this._list.add(46);
+	
+		// Act
+		this._list.insertAt(56, 34);
+	
+		// Assert
+		Assert.areEqual(3, this._list.getLength());
+		Assert.areEqual(45, this._list.getAt(0));
+		Assert.areEqual(46, this._list.getAt(1));
+		Assert.areEqual(34, this._list.getAt(2));
+	}
+
+	LinkedListInsertAtNegativeIndexTest() : void {
+		// Arrange
+		var f : Action0;
+	
+		// Act
+		f = () => this._list.insertAt(-34, 2);
+	
+		// Assert
+		Assert.throws(f);
+	}
+
+	//endregion IList
+
+	//region IListableCollection
 
 	LinkedListAddTest() : void {
 		// Arrange
@@ -184,64 +248,6 @@ class LinkedListTest extends UnitTestClass {
 		Assert.areEqual(0, outcome);
 	}
 
-	LinkedListInsertAtTest() : void {
-		// Arrange
-		this._list.add(45);
-		this._list.add(67);
-		this._list.add(2);
-	
-		// Act
-		this._list.insertAt(1, 34);
-	
-		// Assert
-		Assert.areEqual(4, this._list.getLength());
-		Assert.areEqual(45, this._list.getAt(0));
-		Assert.areEqual(34, this._list.getAt(1));
-		Assert.areEqual(67, this._list.getAt(2));
-		Assert.areEqual(2, this._list.getAt(3));
-	}
-
-	LinkedListInsertAtBeginningTest() : void {
-		// Arrange
-		this._list.add(43);
-		this._list.add(32);
-	
-		// Act
-		this._list.insertAt(0, 2);
-	
-		// Assert
-		Assert.areEqual(3, this._list.getLength());
-		Assert.areEqual(2, this._list.getAt(0));
-		Assert.areEqual(43, this._list.getAt(1));
-		Assert.areEqual(32, this._list.getAt(2));
-	}
-
-	LinkedListInsertAtEndTest() : void {
-		// Arrange
-		this._list.add(45);
-		this._list.add(46);
-	
-		// Act
-		this._list.insertAt(56, 34);
-	
-		// Assert
-		Assert.areEqual(3, this._list.getLength());
-		Assert.areEqual(45, this._list.getAt(0));
-		Assert.areEqual(46, this._list.getAt(1));
-		Assert.areEqual(34, this._list.getAt(2));
-	}
-
-	LinkedListInsertAtNegativeIndexTest() : void {
-		// Arrange
-		var f : Action0;
-	
-		// Act
-		f = () => this._list.insertAt(-34, 2);
-	
-		// Assert
-		Assert.throws(f);
-	}
-
 	LinkedListRemoveTest() : void {
 		// Arrange
 		this._list.add(34);
@@ -287,6 +293,38 @@ class LinkedListTest extends UnitTestClass {
 		Assert.areEqual(10, this._list.getAt(1));
 	}
 
+	LinkedListRemoveLastElementTest() : void {
+		// Arrange
+		this._list.add(35);
+		this._list.add(32);
+		this._list.add(21);
+	
+		// Act
+		this._list.remove(21);
+	
+		// Assert
+		Assert.areEqual(2, this._list.getLength());
+		Assert.areEqual(35, this._list.getAt(0));
+		Assert.areEqual(32, this._list.getAt(1));
+		this._list.add(23);
+		Assert.areEqual(3, this._list.getLength());
+		Assert.areEqual(23, this._list.getAt(2));
+	}
+
+	LinkedListRemoveSingleElementListTest() : void {
+		// Arrange
+		this._list.add(45);
+	
+		// Act
+		this._list.remove(45);
+	
+		// Assert
+		Assert.areEqual(0, this._list.getLength());
+		this._list.add(4);
+		Assert.areEqual(1, this._list.getLength());
+		Assert.areEqual(4, this._list.getAt(0));
+	}
+
 	LinkedListRemoveEmptyTest() : void {
 		// Arrange
 	
@@ -325,6 +363,38 @@ class LinkedListTest extends UnitTestClass {
 		Assert.areEqual(2, this._list.getLength());
 		Assert.areEqual(32, this._list.getAt(0));
 		Assert.areEqual(34, this._list.getAt(1));
+	}
+
+	LinkedListRemoveAtLastIndexTest() : void {
+		// Arrange
+		this._list.add(45);
+		this._list.add(67);
+		this._list.add(21);
+	
+		// Act
+		this._list.removeAt(2);
+	
+		// Assert
+		Assert.areEqual(2, this._list.getLength());
+		Assert.areEqual(45, this._list.getAt(0));
+		Assert.areEqual(67, this._list.getAt(1));
+		this._list.add(12);
+		Assert.areEqual(3, this._list.getLength());
+		Assert.areEqual(12, this._list.getAt(2));
+	}
+
+	LinkedListRemoveAtSingleElementListTest() : void {
+		// Arrange
+		this._list.add(4);
+	
+		// Act
+		this._list.removeAt(0);
+	
+		// Assert
+		Assert.areEqual(0, this._list.getLength());
+		this._list.add(34);
+		Assert.areEqual(1, this._list.getLength());
+		Assert.areEqual(34, this._list.getAt(0));
 	}
 
 	LinkedListRemoveAtNegativeIndexTest() : void {
@@ -377,6 +447,38 @@ class LinkedListTest extends UnitTestClass {
 		Assert.areEqual(21, this._list.getAt(0));
 	}
 
+	LinkedListRemoveIfLastElementTest() : void {
+		// Arrange
+		this._list.add(4);
+		this._list.add(56);
+		this._list.add(120);
+	
+		// Act
+		this._list.removeIf(x => x > 100);
+	
+		// Assert
+		Assert.areEqual(2, this._list.getLength());
+		Assert.areEqual(4, this._list.getAt(0));
+		Assert.areEqual(56, this._list.getAt(1));
+		this._list.add(45);
+		Assert.areEqual(3, this._list.getLength());
+		Assert.areEqual(45, this._list.getAt(2));
+	}
+
+	LinkedListRemoveIfSingleElementListTest() : void {
+		// Arrange
+		this._list.add(45);
+	
+		// Act
+		this._list.removeIf(x => true);
+	
+		// Assert
+		Assert.areEqual(0, this._list.getLength());
+		this._list.add(23);
+		Assert.areEqual(1, this._list.getLength());
+		Assert.areEqual(23, this._list.getAt(0));
+	}
+
 	LinkedListRemoveIfEmptyTest() : void {
 		// Arrange
 	
@@ -386,6 +488,93 @@ class LinkedListTest extends UnitTestClass {
 		// Assert
 		Assert.areEqual(0, this._list.getLength());
 	}
+
+	//endregion IListableCollection
+
+	//region ISortableCollection
+
+	LinkedListOrderByTest() : void {
+		// Arrange
+		var outcome : LinkedList<number>;
+
+		this._list.add(2);
+		this._list.add(-3);
+		this._list.add(56);
+	
+		// Act
+		outcome = this._list.orderBy(x => x * x);
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(3, outcome.getLength());
+		Assert.areEqual(2, outcome.getAt(0));
+		Assert.areEqual(-3, outcome.getAt(1));
+		Assert.areEqual(56, outcome.getAt(2));
+	}
+
+	LinkedListOrderByEmptyTest() : void {
+		// Arrange
+		var outcome : LinkedList<number>;
+	
+		// Act
+		outcome = this._list.orderBy(x => x);
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(0, outcome.getLength());
+	}
+
+	LinkedListOrderByDescTest() : void {
+		// Arrange
+		var outcome : LinkedList<number>;
+
+		this._list.add(-4);
+		this._list.add(3);
+		this._list.add(56);
+	
+		// Act
+		outcome = this._list.orderByDesc(x => x * x);
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(3, outcome.getLength());
+		Assert.areEqual(56, outcome.getAt(0));
+		Assert.areEqual(-4, outcome.getAt(1));
+		Assert.areEqual(3, outcome.getAt(2));
+	}
+
+	LinkedListOrderByDescEmptyTest() : void {
+		// Arrange
+		var outcome : LinkedList<number>;
+	
+		// Act
+		outcome = this._list.orderByDesc(x => x);
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(0, outcome.getLength());
+	}
+
+	LinkedListReverseTest() : void {
+		// Arrange
+		var outcome : LinkedList<number>;
+
+		this._list.add(45);
+		this._list.add(43);
+		this._list.add(32);
+	
+		// Act
+		outcome = this._list.reverse();
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(3, outcome.getLength());
+		Assert.areEqual(32, outcome.getAt(0));
+		Assert.areEqual(43, outcome.getAt(1));
+		Assert.areEqual(45, outcome.getAt(2));
+	}
+
+	//endregion ISortableCollection
 
 	//region ICollection
 
@@ -513,87 +702,6 @@ class LinkedListTest extends UnitTestClass {
 		Assert.areEqual(1, outcome.getAt(0));
 		Assert.areEqual(2 * 2, outcome.getAt(1));
 		Assert.areEqual(3 * 3, outcome.getAt(2));
-	}
-
-	LinkedListOrderByTest() : void {
-		// Arrange
-		var outcome : LinkedList<number>;
-
-		this._list.add(2);
-		this._list.add(-3);
-		this._list.add(56);
-	
-		// Act
-		outcome = this._list.orderBy(x => x * x);
-	
-		// Assert
-		Assert.isNotNull(outcome);
-		Assert.areEqual(3, outcome.getLength());
-		Assert.areEqual(2, outcome.getAt(0));
-		Assert.areEqual(-3, outcome.getAt(1));
-		Assert.areEqual(56, outcome.getAt(2));
-	}
-
-	LinkedListOrderByEmptyTest() : void {
-		// Arrange
-		var outcome : LinkedList<number>;
-	
-		// Act
-		outcome = this._list.orderBy(x => x);
-	
-		// Assert
-		Assert.isNotNull(outcome);
-		Assert.areEqual(0, outcome.getLength());
-	}
-
-	LinkedListOrderByDescTest() : void {
-		// Arrange
-		var outcome : LinkedList<number>;
-
-		this._list.add(-4);
-		this._list.add(3);
-		this._list.add(56);
-	
-		// Act
-		outcome = this._list.orderByDesc(x => x * x);
-	
-		// Assert
-		Assert.isNotNull(outcome);
-		Assert.areEqual(3, outcome.getLength());
-		Assert.areEqual(56, outcome.getAt(0));
-		Assert.areEqual(-4, outcome.getAt(1));
-		Assert.areEqual(3, outcome.getAt(2));
-	}
-
-	LinkedListOrderByDescEmptyTest() : void {
-		// Arrange
-		var outcome : LinkedList<number>;
-	
-		// Act
-		outcome = this._list.orderByDesc(x => x);
-	
-		// Assert
-		Assert.isNotNull(outcome);
-		Assert.areEqual(0, outcome.getLength());
-	}
-
-	LinkedListReverseTest() : void {
-		// Arrange
-		var outcome : LinkedList<number>;
-
-		this._list.add(45);
-		this._list.add(43);
-		this._list.add(32);
-	
-		// Act
-		outcome = this._list.reverse();
-	
-		// Assert
-		Assert.isNotNull(outcome);
-		Assert.areEqual(3, outcome.getLength());
-		Assert.areEqual(32, outcome.getAt(0));
-		Assert.areEqual(43, outcome.getAt(1));
-		Assert.areEqual(45, outcome.getAt(2));
 	}
 
 	LinkedListToArrayTest() : void {

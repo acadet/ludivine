@@ -1,15 +1,28 @@
 /// <reference path="ref.ts" />
 
+/**
+ * @class Timer
+ * @brief Class timer
+ */
 class Timer<T> {
 	//region Fields
 
+	/**
+	 * Inner timer
+	 */
 	private _timer : any;
 	
 	//endregion Fields
 	
 	//region Constructors
 
-	constructor(handler : Action<T>, delay : number, argument : T = null) {
+	/**
+	 * Builds and starts a timer
+	 * @param {Action<T>} handler  Action to run
+	 * @param {number}    delay    Delay
+	 * @param {T}         argument Optional argument for handler
+	 */
+	constructor(handler : Action<T>, delay : number, argument? : T) {
 		this._timer = 
 			setTimeout(
 				() => {
@@ -29,6 +42,9 @@ class Timer<T> {
 	
 	//region Public Methods
 
+	/**
+	 * Stops timer
+	 */
 	stop() : void {
 		clearTimeout(this._timer);
 	}

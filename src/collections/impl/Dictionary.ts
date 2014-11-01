@@ -1,11 +1,18 @@
 /// <reference path="../../ref.ts" />
 
+/**
+ * @class Dictionary
+ * @brief Implementation of IDictionary
+ */
 class Dictionary<K, V>
 	implements
 		IDictionary<K, V>,
 		ICollection<KeyValuePair<K, V>, Dictionary<K, V>> {
 	//region Fields
 
+	/**
+	 * Inner content
+	 */
 	private _content : Array<KeyValuePair<K, V>>;
 	
 	//endregion Fields
@@ -33,6 +40,7 @@ class Dictionary<K, V>
 
 		size = this._content.length;
 
+		// Check if key is already existing
 		for (var i = 0; i < size; i++) {
 			var pair : KeyValuePair<K, V>;
 
@@ -83,6 +91,7 @@ class Dictionary<K, V>
 		}
 
 		if (a.length === size) {
+			// No element has been removed
 			throw new CollectionException('Unable to remove pair: key does not exist');
 		}
 

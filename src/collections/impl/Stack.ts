@@ -1,10 +1,25 @@
 /// <reference path="../../ref.ts" />
 
+/**
+ * Inner content for stack
+ */
 module StackUtils {
+
+	/**
+	 * @class StackElement
+	 * @brief Stack element with simple chain
+	 */
 	export class StackElement<T> {
 		//region Fields
 
+		/**
+		 * Neighbor
+		 */
 		private _prev : StackElement<T>;
+
+		/**
+		 * Wrapped content
+		 */
 		private _content : T;
 		
 		//endregion Fields
@@ -26,22 +41,42 @@ module StackUtils {
 		
 		//region Public Methods
 
+		/**
+		 * Returns wrapped content
+		 * @return {T} Wrapped content
+		 */
 		getContent() : T {
 			return this._content;
 		}
 
+		/**
+		 * Sets wrapped content
+		 * @param {T} value Value
+		 */
 		setContent(value : T) : void {
 			this._content = value;
 		}
 
+		/**
+		 * Gets neighbor
+		 * @return {StackElement<T>} Neighbor
+		 */
 		getPrev() : StackElement<T> {
 			return this._prev;
 		}
 
+		/**
+		 * Sets neighbor
+		 * @param {StackElement<T>} value Value
+		 */
 		setPrev(value : StackElement<T>) : void {
 			this._prev = value;
 		}
 
+		/**
+		 * Returns true if element has neighbor
+		 * @return {boolean} True if element has neighbor
+		 */
 		hasPrev() : boolean {
 			return this._prev !== null && this._prev !== undefined;
 		}
@@ -52,10 +87,21 @@ module StackUtils {
 	}
 }
 
+/**
+ * @class Stack
+ * @brief A simple stack structure
+ */
 class Stack<T> implements ISortableCollection<T, Stack<T>> {
 	//region Fields
 
+	/**
+	 * Tail element (newest one)
+	 */
 	private _tail : StackUtils.StackElement<T>;
+
+	/**
+	 * Current size
+	 */
 	private _size : number;
 	
 	//endregion Fields
@@ -72,6 +118,10 @@ class Stack<T> implements ISortableCollection<T, Stack<T>> {
 	
 	//region Private Methods
 
+	/**
+	 * Browses stack from oldest to newest
+	 * @param {Action<T>} action Applied to each element
+	 */
 	private _forEachInversed(action : Action<T>) : void {
 		var a : Array<T>;
 		var cursor : StackUtils.StackElement<T>;
@@ -95,10 +145,18 @@ class Stack<T> implements ISortableCollection<T, Stack<T>> {
 	
 	//region Public Methods
 
+	/**
+	 * Returns current size
+	 * @return {number} Current size
+	 */
 	getSize() : number {
 		return this._size;
 	}
 
+	/**
+	 * Gets newest element without removing it from stack
+	 * @return {T} Newest element
+	 */
 	top() : T {
 		if (this.getSize() === 0) {
 			return null;
@@ -107,6 +165,10 @@ class Stack<T> implements ISortableCollection<T, Stack<T>> {
 		}
 	}
 
+	/**
+	 * Gets newest element and removes it from stack
+	 * @return {T} Newest element
+	 */
 	pop() : T {
 		if (this.getSize() === 0) {
 			return null;
@@ -121,6 +183,10 @@ class Stack<T> implements ISortableCollection<T, Stack<T>> {
 		}
 	}
 
+	/**
+	 * Adds new value to stack 
+	 * @param {T} value Value
+	 */
 	push(value : T) : void {
 		var e : StackUtils.StackElement<T>;
 
@@ -135,6 +201,61 @@ class Stack<T> implements ISortableCollection<T, Stack<T>> {
 
 		this._size++;
 	}
+
+	//region ISortableCollection
+
+	orderBy<U>(getter : Func<T, U>) : Stack<T> {
+		var outcome : Stack<T>;
+		var a : Array<T>;
+
+		outcome = new Stack<T>();
+
+		if (this.getSize() === 0) {
+			return outcome;
+		}
+
+		a = new Array<T>();
+		this.forEach(e => a.push(e));
+		CollectionUtils.ArrayUtils.sort(a, getter);
+
+		for (var i = a.length - 1; i >= 0; i--) {
+			outcome.push(a[i]);
+		}
+
+		return outcome;
+	}
+
+	orderByDesc<U>(getter : Func<T, U>) : Stack<T> {
+		var outcome : Stack<T>;
+		var a : Array<T>;
+
+		outcome = new Stack<T>();
+
+		if (this.getSize() === 0) {
+			return outcome;
+		}
+
+		a = new Array<T>();
+		this.forEach(e => a.push(e));
+		CollectionUtils.ArrayUtils.sort(a, getter);
+
+		for (var i = 0; i < a.length; i++) {
+			outcome.push(a[i]);
+		}
+
+		return outcome;
+	}
+
+	reverse() : Stack<T> {
+		var outcome : Stack<T>;
+
+		outcome = new Stack<T>();
+		this.forEach(e => outcome.push(e));
+
+		return outcome;
+	}
+
+	//endregion ISortableCollection
 
 	//region ICollection
 
@@ -203,57 +324,6 @@ class Stack<T> implements ISortableCollection<T, Stack<T>> {
 		outcome = new Stack<T>();
 
 		this._forEachInversed(e => outcome.push(action(e)));
-
-		return outcome;
-	}
-
-	orderBy<U>(getter : Func<T, U>) : Stack<T> {
-		var outcome : Stack<T>;
-		var a : Array<T>;
-
-		outcome = new Stack<T>();
-
-		if (this.getSize() === 0) {
-			return outcome;
-		}
-
-		a = new Array<T>();
-		this.forEach(e => a.push(e));
-		CollectionUtils.ArrayUtils.sort(a, getter);
-
-		for (var i = a.length - 1; i >= 0; i--) {
-			outcome.push(a[i]);
-		}
-
-		return outcome;
-	}
-
-	orderByDesc<U>(getter : Func<T, U>) : Stack<T> {
-		var outcome : Stack<T>;
-		var a : Array<T>;
-
-		outcome = new Stack<T>();
-
-		if (this.getSize() === 0) {
-			return outcome;
-		}
-
-		a = new Array<T>();
-		this.forEach(e => a.push(e));
-		CollectionUtils.ArrayUtils.sort(a, getter);		
-
-		for (var i =0; i < a.length; i++) {
-			outcome.push(a[i]);
-		}
-
-		return outcome;
-	}
-
-	reverse() : Stack<T> {
-		var outcome : Stack<T>;
-
-		outcome = new Stack<T>();
-		this.forEach(e => outcome.push(e));
 
 		return outcome;
 	}

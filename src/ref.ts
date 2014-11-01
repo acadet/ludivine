@@ -4,6 +4,7 @@
 /// <reference path="Func.ts" />
 /// <reference path="Guid.ts" />
 /// <reference path="KeyValuePair.ts" />
+/// <reference path="Log.ts" />
 /// <reference path="PeriodicTimer.ts" />
 /// <reference path="StringBuffer.ts" />
 /// <reference path="Timer.ts" />

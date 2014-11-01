@@ -1,9 +1,16 @@
 /// <reference path="../../ref.ts" />
 
+/**
+ * @class ArrayList
+ * @brief Implementation of IList using array
+ */
 class ArrayList<T>
 	implements IList<T>, ISortableCollection<T, ArrayList<T>> {
 	//region Fields
 
+	/**
+	 * Inner content
+	 */
 	private _content : Array<T>;
 	
 	//endregion Fields
@@ -26,22 +33,6 @@ class ArrayList<T>
 
 	//region IList
 
-	add(value : T) : void {
-		this._content.push(value);
-	}
-
-	getAt(index : number) : T {
-		if (index < 0 || index >= this._content.length) {
-			throw new CollectionException('Unbound index');
-		}
-
-		return this._content[index];
-	}
-
-	getLength() : number {
-		return this._content.length;
-	}
-
 	insertAt(index : number, value : T) : void {
 		if (index < 0) {
 			throw new CollectionException('Unbound index');
@@ -57,6 +48,26 @@ class ArrayList<T>
 
 			this.insertAt(index + 1, tmp);
 		}
+	}
+
+	//endregion IList
+
+	//region IListableCollection
+
+	add(value : T) : void {
+		this._content.push(value);
+	}
+
+	getAt(index : number) : T {
+		if (index < 0 || index >= this._content.length) {
+			throw new CollectionException('Unbound index');
+		}
+
+		return this._content[index];
+	}
+
+	getLength() : number {
+		return this._content.length;
 	}
 
 	remove(value : T) : void {
@@ -82,6 +93,7 @@ class ArrayList<T>
 				a.push(e);
 			} else {
 				if (done) {
+					// Remove only single value from array
 					a.push(e);
 				} else {
 					done = true;
@@ -137,61 +149,9 @@ class ArrayList<T>
 		this._content = a;
 	}
 
-	//endregion IList
+	//endregion IListableCollection
 
-	//region ICollection
-
-	select(selector : Func<T, boolean>) : ArrayList<T> {
-		var outcome : ArrayList<T>;
-
-		outcome = new ArrayList<T>();
-
-		this.forEach(
-			(e) => {
-				if (selector(e)) {
-					outcome.add(e);
-				}
-			}
-		);
-
-		return outcome;
-	}
-
-	forEach(action : Action<T>) : void {
-		var size : number;
-
-		size = this.getLength();
-
-		for (var i = 0; i < size; i++) {
-			action(this.getAt(i));
-		}
-	}
-
-	find(selector : Func<T, boolean>) : T {
-		var size : number;
-
-		size = this.getLength();
-
-		for (var i = 0; i < size; i++) {
-			var e : T;
-
-			e = this.getAt(i);
-			if (selector(e)) {
-				return e;
-			}
-		}
-
-		return null;
-	}
-
-	map(action : Func<T, T>) : ArrayList<T> {
-		var outcome : ArrayList<T>;
-
-		outcome = new ArrayList<T>();
-		this.forEach(e => outcome.add(action(e)));
-
-		return outcome;
-	}
+	//region ISortableCollection
 
 	orderBy<U>(getter : Func<T, U>) : ArrayList<T> {
 		var a : Array<T>;
@@ -243,6 +203,62 @@ class ArrayList<T>
 		for (var i = this.getLength() - 1; i >= 0; i--) {
 			outcome.add(this.getAt(i));
 		}
+
+		return outcome;
+	}
+
+	//endregion ISortableCollection
+
+	//region ICollection
+
+	select(selector : Func<T, boolean>) : ArrayList<T> {
+		var outcome : ArrayList<T>;
+
+		outcome = new ArrayList<T>();
+
+		this.forEach(
+			(e) => {
+				if (selector(e)) {
+					outcome.add(e);
+				}
+			}
+		);
+
+		return outcome;
+	}
+
+	forEach(action : Action<T>) : void {
+		var size : number;
+
+		size = this.getLength();
+
+		for (var i = 0; i < size; i++) {
+			action(this.getAt(i));
+		}
+	}
+
+	find(selector : Func<T, boolean>) : T {
+		var size : number;
+
+		size = this.getLength();
+
+		for (var i = 0; i < size; i++) {
+			var e : T;
+
+			e = this.getAt(i);
+			if (selector(e)) {
+				return e;
+			}
+		}
+
+		return null;
+	}
+
+	map(action : Func<T, T>) : ArrayList<T> {
+		var outcome : ArrayList<T>;
+
+		outcome = new ArrayList<T>();
+		this.forEach(e => outcome.add(action(e)));
 
 		return outcome;
 	}
