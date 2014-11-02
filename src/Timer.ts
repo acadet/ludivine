@@ -17,7 +17,7 @@ class Timer<T> {
 	//region Constructors
 
 	/**
-	 * Builds and starts a timer
+	 * Builds and starts timer
 	 * @param {Action<T>} handler  Action to run
 	 * @param {number}    delay    Delay
 	 * @param {T}         argument Optional argument for handler

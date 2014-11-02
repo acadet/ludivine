@@ -1,8 +1,10 @@
+![Logo](http://ludivine.adriencadet.com/assets/img/logo-250.png)
+
 # Ludivine - A TypeScript Boilerplate [![Build Status](https://travis-ci.org/acadet/ludivine.svg?branch=master)](https://travis-ci.org/acadet/ludivine)
 
-Inspired from C#.
+> Inspired from C#.
 
-# In brief
+## In brief
 
 A great way to start your TS projects. Wraps delicious tools and structures such as:
 

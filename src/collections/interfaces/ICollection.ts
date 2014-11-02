@@ -2,8 +2,8 @@
 
 /**
  * @class ICollection
- * @description Base interface. Provides generic operations for collections.
- * Returns new instance of called collection
+ * @description Base interface for collections. Provides generic operations.
+ * Returns new instance of called collection everytime.
  */
 interface ICollection<T, S extends ICollection<any, any>> {
 
@@ -49,14 +49,14 @@ interface ICollection<T, S extends ICollection<any, any>> {
 	sum(getter : Func<T, number>) : number;
 
 	/**
-	 * Computes min from elements using provided getter
+	 * Computes minimum from elements using provided getter
 	 * @param  {Func<T, number>} getter Returns value to use for any element
 	 * @return {T} Minimum
 	 */
 	min(getter : Func<T, number>) : T;
 
 	/**
-	 * Computes max from elements using provided getter
+	 * Computes maximum from elements using provided getter
 	 * @param  {Func<T, number>} getter Returns value to use for any element
 	 * @return {T} Maximum
 	 */

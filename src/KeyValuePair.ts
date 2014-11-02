@@ -66,7 +66,7 @@ class KeyValuePair<T, U> {
 	}
 
 	/**
-	 * Returns value
+	 * Sets value
 	 * @param {U} value [description]
 	 */
 	setValue(value : U) : void {

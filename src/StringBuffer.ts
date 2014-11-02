@@ -40,7 +40,7 @@ class StringBuffer {
 	//endregion Methods
 
 	/**
-	 * Appends string to buffer
+	 * Appends string to buffer and returns this one
 	 * @param  {string}       s [description]
 	 * @return {StringBuffer}   [description]
 	 */

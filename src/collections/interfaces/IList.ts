@@ -8,7 +8,7 @@ interface IList<T> extends IListableCollection<T>  {
 	/**
 	 * Inserts value at specified index
 	 * @param {number} index Index
-	 * @param {T}      t     Value
+	 * @param {T}      value     Value
 	 */
 	insertAt(index : number, value : T) : void;
 }

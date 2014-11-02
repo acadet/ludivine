@@ -2,7 +2,7 @@
 
 /**
  * @class IListableCollection
- * @brief Interface for listable collections such as simple ones or more complex (sorted etc.)
+ * @brief Interface for listable collections, whatever complexity they have (arraylist, sortedlist etc.)
  */
 interface IListableCollection<T> extends ISortableCollection<T, IListableCollection<T>> {
 
