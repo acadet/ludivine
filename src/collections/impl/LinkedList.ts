@@ -90,8 +90,7 @@ module LinkedListUtils {
  * @class LinkedList
  * @brief Implementation of IList using linked elements
  */
-class LinkedList<T>
-	implements IList<T>, ISortableCollection<T, LinkedList<T>> {
+class LinkedList<T> implements IList<T> {
 	//region Fields
 
 	private _head : LinkedListUtils.LinkedListElement<T>;
@@ -102,8 +101,12 @@ class LinkedList<T>
 	
 	//region Constructors
 
-	constructor() {
+	constructor(source? : ICollection<T>) {
 		this._size = 0;
+
+		if (source !== null && source !== undefined) {
+			source.forEach(x => this.add(x));
+		}
 	}
 	
 	//endregion Constructors
@@ -289,7 +292,7 @@ class LinkedList<T>
 
 	//region ISortableCollection
 
-	orderBy<U>(getter : Func<T, U>) : LinkedList<T> {
+	orderBy<U>(getter : Func<T, U>) : ISortableCollection<T> {
 		var a : Array<T>;
 		var size : number;
 		var outcome : LinkedList<T>;
@@ -311,7 +314,7 @@ class LinkedList<T>
 		return outcome;
 	}
 
-	orderByDesc<U>(getter : Func<T, U>) : LinkedList<T> {
+	orderByDesc<U>(getter : Func<T, U>) : ISortableCollection<T> {
 		var a : Array<T>;
 		var size : number;
 		var outcome : LinkedList<T>;
@@ -333,7 +336,7 @@ class LinkedList<T>
 		return outcome;
 	}
 
-	reverse() : LinkedList<T> {
+	reverse() : ISortableCollection<T> {
 		var outcome : LinkedList<T>;
 		var a : Array<T>;
 
@@ -350,37 +353,6 @@ class LinkedList<T>
 	//endregion ISortableCollection
 
 	//region ICollection
-
-	select(selector : Func<T, boolean>) : LinkedList<T> {
-		var outcome : LinkedList<T>;
-
-		outcome = new LinkedList<T>();
-		this.forEach(
-			(e) => {
-				if (selector(e)) {
-					outcome.add(e);
-				}
-			}
-		);
-
-		return outcome;
-	}
-
-	forEach(action : Action<T>) : void {
-		var cursor : LinkedListUtils.LinkedListElement<T>;
-
-		if (this.getLength() === 0) {
-			return;
-		}
-
-		cursor = this._head;
-		while (cursor.hasNext()) {
-			action(cursor.getContent());
-			cursor = cursor.getNext();
-		}
-
-		action(cursor.getContent());
-	}
 
 	find(selector : Func<T, boolean>) : T {
 		var cursor : LinkedListUtils.LinkedListElement<T>;
@@ -407,7 +379,23 @@ class LinkedList<T>
 		}
 	}
 
-	map(action : Func<T, T>) : LinkedList<T> {
+	forEach(action : Action<T>) : void {
+		var cursor : LinkedListUtils.LinkedListElement<T>;
+
+		if (this.getLength() === 0) {
+			return;
+		}
+
+		cursor = this._head;
+		while (cursor.hasNext()) {
+			action(cursor.getContent());
+			cursor = cursor.getNext();
+		}
+
+		action(cursor.getContent());
+	}
+
+	map(action : Func<T, T>) : ICollection<T> {
 		var outcome : LinkedList<T>;
 
 		outcome = new LinkedList<T>();
@@ -416,22 +404,31 @@ class LinkedList<T>
 		return outcome;
 	}
 
-	toArray() : Array<T> {
-		var outcome : Array<T>;
+	max(getter : Func<T, number>) : T {
+		var max : number;
+		var current : T;
 
-		outcome = new Array<T>();
-		this.forEach(x => outcome.push(x));
+		if (this.getLength() === 0) {
+			return null;
+		}
 
-		return outcome;
-	}
+		current = this._head.getContent();
+		max = getter(current);
 
-	sum(getter : Func<T, number>) : number {
-		var acc : number;
+		this.forEach(
+			(e) => {
+				var value : number;
 
-		acc = 0;
-		this.forEach(x => acc += getter(x));
+				value = getter(e);
 
-		return acc;
+				if (value > max) {
+					max = value;
+					current = e;
+				}
+			}
+		);
+
+		return current;
 	}
 
 	min(getter : Func<T, number>) : T {
@@ -461,31 +458,50 @@ class LinkedList<T>
 		return current;
 	}
 
-	max(getter : Func<T, number>) : T {
-		var max : number;
-		var current : T;
+	select(selector : Func<T, boolean>) : ICollection<T> {
+		var outcome : LinkedList<T>;
 
-		if (this.getLength() === 0) {
-			return null;
-		}
-
-		current = this._head.getContent();
-		max = getter(current);
-
+		outcome = new LinkedList<T>();
 		this.forEach(
 			(e) => {
-				var value : number;
-
-				value = getter(e);
-
-				if (value > max) {
-					max = value;
-					current = e;
+				if (selector(e)) {
+					outcome.add(e);
 				}
 			}
 		);
 
-		return current;
+		return outcome;
+	}
+
+	sum(getter : Func<T, number>) : number {
+		var acc : number;
+
+		acc = 0;
+		this.forEach(x => acc += getter(x));
+
+		return acc;
+	}
+
+	toArray() : Array<T> {
+		var outcome : Array<T>;
+
+		outcome = new Array<T>();
+		this.forEach(x => outcome.push(x));
+
+		return outcome;
+	}
+
+	toDictionary<K, V>(keyGetter : Func<T, K>, valueGetter : Func<T, V>) : IDictionary<K, V> {
+		var outcome : IDictionary<K, V>;
+
+		outcome = new Dictionary<K, V>();
+		this.forEach(x => outcome.add(keyGetter(x), valueGetter(x)));
+
+		return outcome;
+	}
+
+	toList() : IList<T> {
+		return new ArrayList<T>(this);
 	}
 
 	//endregion ICollection

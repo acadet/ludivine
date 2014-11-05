@@ -91,7 +91,7 @@ module QueueUtils {
  * @class Queue
  * @brief Queue structure
  */
-class Queue<T> implements ISortableCollection<T, Queue<T>> {
+class Queue<T> implements ISortableCollection<T> {
 	//region Fields
 
 	/**
@@ -113,8 +113,12 @@ class Queue<T> implements ISortableCollection<T, Queue<T>> {
 	
 	//region Constructors
 
-	constructor() {
+	constructor(source? : ICollection<T>) {
 		this._size = 0;
+
+		if (source !== null && source !== undefined) {
+			source.forEach(x => this.push(x));
+		}
 	}
 	
 	//endregion Constructors
@@ -193,7 +197,7 @@ class Queue<T> implements ISortableCollection<T, Queue<T>> {
 
 	//region ISortableCollection
 
-	orderBy<U>(getter : Func<T, U>) : Queue<T> {
+	orderBy<U>(getter : Func<T, U>) : ISortableCollection<T> {
 		var a : Array<T>;
 		var outcome : Queue<T>;
 
@@ -214,7 +218,7 @@ class Queue<T> implements ISortableCollection<T, Queue<T>> {
 		return outcome;
 	}
 
-	orderByDesc<U>(getter : Func<T, U>) : Queue<T> {
+	orderByDesc<U>(getter : Func<T, U>) : ISortableCollection<T> {
 		var a : Array<T>;
 		var outcome : Queue<T>;
 
@@ -235,7 +239,7 @@ class Queue<T> implements ISortableCollection<T, Queue<T>> {
 		return outcome;
 	}
 
-	reverse() : Queue<T> {
+	reverse() : ISortableCollection<T> {
 		var outcome : Queue<T>;
 		var a : Array<T>;
 
@@ -258,39 +262,6 @@ class Queue<T> implements ISortableCollection<T, Queue<T>> {
 	//endregion ISortableCollection
 
 	//region ICollection
-
-	select(selector : Func<T, boolean>) : Queue<T> {
-		var outcome : Queue<T>;
-
-		outcome = new Queue<T>();
-
-		this.forEach(
-			(e) => {
-				if (selector(e)) {
-					outcome.push(e);
-				}
-			}
-		);
-
-		return outcome;
-	}
-
-	forEach(action : Action<T>) : void {
-		var cursor : QueueUtils.QueueElement<T>;
-
-		if (this.getSize() === 0) {
-			return;
-		}
-
-		cursor = this._top;
-
-		while (cursor.hasNext()) {
-			action(cursor.getContent());
-			cursor = cursor.getNext();
-		}
-
-		action(cursor.getContent());
-	}
 
 	find(selector : Func<T, boolean>) : T {
 		var cursor : QueueUtils.QueueElement<T>;
@@ -319,7 +290,24 @@ class Queue<T> implements ISortableCollection<T, Queue<T>> {
 		return null;
 	}
 
-	map(action : Func<T, T>) : Queue<T> {
+	forEach(action : Action<T>) : void {
+		var cursor : QueueUtils.QueueElement<T>;
+
+		if (this.getSize() === 0) {
+			return;
+		}
+
+		cursor = this._top;
+
+		while (cursor.hasNext()) {
+			action(cursor.getContent());
+			cursor = cursor.getNext();
+		}
+
+		action(cursor.getContent());
+	}
+
+	map(action : Func<T, T>) : ICollection<T> {
 		var outcome : Queue<T>;
 
 		outcome = new Queue<T>();
@@ -327,51 +315,6 @@ class Queue<T> implements ISortableCollection<T, Queue<T>> {
 		this.forEach(
 			(e) => {
 				outcome.push(action(e));
-			}
-		);
-
-		return outcome;
-	}
-
-	toArray() : Array<T> {
-		var outcome : Array<T>;
-
-		outcome = new Array<T>();
-		this.forEach(x => outcome.push(x));
-
-		return outcome;
-	}
-
-	sum(getter : Func<T, number>) : number {
-		var total : number;
-
-		total = 0;
-		this.forEach(e => total += getter(e));
-
-		return total;
-	}
-
-	min(getter : Func<T, number>) : T {
-		var min : number;
-		var outcome : T;
-
-		if (this.getSize() === 0) {
-			return null;
-		}
-
-		outcome = this._top.getContent();
-		min = getter(outcome);
-
-		this.forEach(
-			(e) => {
-				var value : number;
-
-				value = getter(e);
-
-				if (value < min) {
-					min = value;
-					outcome = e;
-				}
 			}
 		);
 
@@ -403,6 +346,80 @@ class Queue<T> implements ISortableCollection<T, Queue<T>> {
 		);
 
 		return outcome;
+	}
+
+	min(getter : Func<T, number>) : T {
+		var min : number;
+		var outcome : T;
+
+		if (this.getSize() === 0) {
+			return null;
+		}
+
+		outcome = this._top.getContent();
+		min = getter(outcome);
+
+		this.forEach(
+			(e) => {
+				var value : number;
+
+				value = getter(e);
+
+				if (value < min) {
+					min = value;
+					outcome = e;
+				}
+			}
+		);
+
+		return outcome;
+	}
+
+	select(selector : Func<T, boolean>) : ICollection<T> {
+		var outcome : Queue<T>;
+
+		outcome = new Queue<T>();
+
+		this.forEach(
+			(e) => {
+				if (selector(e)) {
+					outcome.push(e);
+				}
+			}
+		);
+
+		return outcome;
+	}
+
+	sum(getter : Func<T, number>) : number {
+		var total : number;
+
+		total = 0;
+		this.forEach(e => total += getter(e));
+
+		return total;
+	}
+
+	toArray() : Array<T> {
+		var outcome : Array<T>;
+
+		outcome = new Array<T>();
+		this.forEach(x => outcome.push(x));
+
+		return outcome;
+	}
+
+	toDictionary<K, V>(keyGetter : Func<T, K>, valueGetter : Func<T, V>) : IDictionary<K, V> {
+		var outcome : IDictionary<K, V>;
+
+		outcome = new Dictionary<K, V>();
+		this.forEach(x => outcome.add(keyGetter(x), valueGetter(x)));
+
+		return outcome;
+	}
+
+	toList() : IList<T> {
+		return new ArrayList<T>(this);
 	}
 
 	//endregionICollection

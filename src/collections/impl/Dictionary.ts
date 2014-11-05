@@ -4,10 +4,7 @@
  * @class Dictionary
  * @brief Implementation of IDictionary
  */
-class Dictionary<K, V>
-	implements
-		IDictionary<K, V>,
-		ICollection<KeyValuePair<K, V>, Dictionary<K, V>> {
+class Dictionary<K, V> implements IDictionary<K, V> {
 	//region Fields
 
 	/**
@@ -19,8 +16,12 @@ class Dictionary<K, V>
 	
 	//region Constructors
 
-	constructor() {
+	constructor(source? : ICollection<KeyValuePair<K, V>>) {
 		this._content = new Array<KeyValuePair<K, V>>();
+
+		if (source !== null && source !== undefined) {
+			source.forEach(x => this.add(x.getKey(), x.getValue()));
+		}
 	}
 	
 	//endregion Constructors
@@ -36,21 +37,11 @@ class Dictionary<K, V>
 	//region IDictionary
 
 	add(key : K, value : V) : void {
-		var size : number;
-
-		size = this._content.length;
-
-		// Check if key is already existing
-		for (var i = 0; i < size; i++) {
-			var pair : KeyValuePair<K, V>;
-
-			pair = this._content[i];
-			if (pair.getKey() === key) {
-				throw new CollectionException('Unable to add value: key already exists');
-			}
+		if (this.hasKey(key)) {
+			throw new CollectionException('Unable to add value: key already exists');
+		} else {
+			this._content.push(new KeyValuePair<K, V>(key, value));
 		}
-
-		this._content.push(new KeyValuePair<K, V>(key, value));
 	}
 
 	get(key : K) : V {
@@ -72,6 +63,22 @@ class Dictionary<K, V>
 
 	getSize() : number {
 		return this._content.length;
+	}
+
+	hasKey(key : K) : boolean {
+		var size : number;
+
+		size = this._content.length;
+		for (var i = 0; i < size; i++) {
+			var pair : KeyValuePair<K, V>;
+
+			pair = this._content[i];
+			if (pair.getKey() === key) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	remove(key : K) : void {
@@ -121,30 +128,6 @@ class Dictionary<K, V>
 
 	//region ICollection
 
-	select(selector : Func<KeyValuePair<K, V>, boolean>) : Dictionary<K, V> {
-		var outcome : Dictionary<K, V>;
-
-		outcome = new Dictionary<K, V>();
-		this.forEach(
-			(pair) => {
-				if (selector(pair)) {
-					outcome.add(pair.getKey(), pair.getValue());
-				}
-			}
-		);
-
-		return outcome;
-	}
-
-	forEach(action : Action<KeyValuePair<K, V>>) : void {
-		var size : number;
-
-		size = this._content.length;
-		for (var i = 0; i < size; i++) {
-			action(this._content[i]);
-		}
-	}
-
 	find(selector : Func<KeyValuePair<K, V>, boolean>) : KeyValuePair<K, V> {
 		var size : number;
 
@@ -161,7 +144,16 @@ class Dictionary<K, V>
 		return null;
 	}
 
-	map(action : Func<KeyValuePair<K, V>, KeyValuePair<K, V>>) : Dictionary<K, V> {
+	forEach(action : Action<KeyValuePair<K, V>>) : void {
+		var size : number;
+
+		size = this._content.length;
+		for (var i = 0; i < size; i++) {
+			action(this._content[i]);
+		}
+	}
+
+	map(action : Func<KeyValuePair<K, V>, KeyValuePair<K, V>>) : ICollection<KeyValuePair<K, V>> {
 		var outcome : Dictionary<K, V>;
 
 		outcome = new Dictionary<K, V>();
@@ -177,17 +169,29 @@ class Dictionary<K, V>
 		return outcome;
 	}
 
-	toArray() : Array<KeyValuePair<K, V>> {
-		return this._content;
-	}
+	max(getter : Func<KeyValuePair<K, V>, number>) : KeyValuePair<K, V> {
+		var max : number;
+		var e : KeyValuePair<K, V>;
 
-	sum(getter : Func<KeyValuePair<K, V>, number>) : number {
-		var acc : number;
+		if (this.getSize() === 0) {
+			return null;
+		}
 
-		acc = 0;
-		this.forEach(x => acc += getter(x));
+		e = this._content[0];
+		max = getter(e);
+		this.forEach(
+			(x) => {
+				var value : number;
 
-		return acc;
+				value = getter(x);
+				if (value > max) {
+					max = value;
+					e = x;
+				}
+			}
+		);
+
+		return e;
 	}
 
 	min(getter : Func<KeyValuePair<K, V>, number>) : KeyValuePair<K, V> {
@@ -215,29 +219,56 @@ class Dictionary<K, V>
 		return e;
 	}
 
-	max(getter : Func<KeyValuePair<K, V>, number>) : KeyValuePair<K, V> {
-		var max : number;
-		var e : KeyValuePair<K, V>;
+	select(selector : Func<KeyValuePair<K, V>, boolean>) : ICollection<KeyValuePair<K, V>> {
+		var outcome : Dictionary<K, V>;
 
-		if (this.getSize() === 0) {
-			return null;
-		}
-
-		e = this._content[0];
-		max = getter(e);
+		outcome = new Dictionary<K, V>();
 		this.forEach(
-			(x) => {
-				var value : number;
-
-				value = getter(x);
-				if (value > max) {
-					max = value;
-					e = x;
+			(pair) => {
+				if (selector(pair)) {
+					outcome.add(pair.getKey(), pair.getValue());
 				}
 			}
 		);
 
-		return e;
+		return outcome;
+	}
+
+	sum(getter : Func<KeyValuePair<K, V>, number>) : number {
+		var acc : number;
+
+		acc = 0;
+		this.forEach(x => acc += getter(x));
+
+		return acc;
+	}
+
+	toArray() : Array<KeyValuePair<K, V>> {
+		var outcome : Array<KeyValuePair<K, V>>;
+
+		outcome = new Array<KeyValuePair<K, V>>();
+		this.forEach(x => outcome.push(x));
+
+		return outcome;
+	}
+
+	toDictionary<A, B>(
+		keyGetter : Func<KeyValuePair<K, V>, A>,
+		valueGetter : Func<KeyValuePair<K, V>, B>) : IDictionary<A, B> {
+		var outcome : IDictionary<A, B>;
+
+		outcome = new Dictionary<A, B>();
+		this.forEach(x => outcome.add(keyGetter(x), valueGetter(x)));
+
+		return outcome;
+	}
+
+	/**
+	 * Reproduces collection as a list
+	 * @return {IList<T>} Outcome IList
+	 */
+	toList() : IList<KeyValuePair<K, V>> {
+		return new ArrayList<KeyValuePair<K, V>>(this);
 	}
 
 	//endregion ICollection

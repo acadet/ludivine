@@ -91,7 +91,7 @@ module StackUtils {
  * @class Stack
  * @brief A simple stack structure
  */
-class Stack<T> implements ISortableCollection<T, Stack<T>> {
+class Stack<T> implements ISortableCollection<T> {
 	//region Fields
 
 	/**
@@ -108,8 +108,12 @@ class Stack<T> implements ISortableCollection<T, Stack<T>> {
 	
 	//region Constructors
 
-	constructor() {
+	constructor(source? : ICollection<T>) {
 		this._size = 0;
+
+		if (source !== null && source !== undefined) {
+			source.forEach(x => this.push(x));
+		}
 	}
 	
 	//endregion Constructors
@@ -204,7 +208,7 @@ class Stack<T> implements ISortableCollection<T, Stack<T>> {
 
 	//region ISortableCollection
 
-	orderBy<U>(getter : Func<T, U>) : Stack<T> {
+	orderBy<U>(getter : Func<T, U>) : ISortableCollection<T> {
 		var outcome : Stack<T>;
 		var a : Array<T>;
 
@@ -225,7 +229,7 @@ class Stack<T> implements ISortableCollection<T, Stack<T>> {
 		return outcome;
 	}
 
-	orderByDesc<U>(getter : Func<T, U>) : Stack<T> {
+	orderByDesc<U>(getter : Func<T, U>) : ISortableCollection<T> {
 		var outcome : Stack<T>;
 		var a : Array<T>;
 
@@ -246,7 +250,7 @@ class Stack<T> implements ISortableCollection<T, Stack<T>> {
 		return outcome;
 	}
 
-	reverse() : Stack<T> {
+	reverse() : ISortableCollection<T> {
 		var outcome : Stack<T>;
 
 		outcome = new Stack<T>();
@@ -258,39 +262,6 @@ class Stack<T> implements ISortableCollection<T, Stack<T>> {
 	//endregion ISortableCollection
 
 	//region ICollection
-
-	select(selector : Func<T, boolean>) : Stack<T> {
-		var outcome : Stack<T>;
-
-		outcome = new Stack<T>();
-
-		this._forEachInversed(
-			(e) => {
-				if (selector(e)) {
-					outcome.push(e);
-				}
-			}
-		);
-
-		return outcome;
-	}
-
-	forEach(action : Action<T>) : void {
-		var cursor : StackUtils.StackElement<T>;
-
-		if (this.getSize() === 0) {
-			return;
-		}
-
-		cursor = this._tail;
-
-		while (cursor.hasPrev()) {
-			action(cursor.getContent());
-			cursor = cursor.getPrev();
-		}
-
-		action(cursor.getContent());
-	}
 
 	find(selector : Func<T, boolean>) : T {
 		var cursor : StackUtils.StackElement<T>;
@@ -318,7 +289,24 @@ class Stack<T> implements ISortableCollection<T, Stack<T>> {
 		}
 	}
 
-	map(action : Func<T, T>) : Stack<T> {
+	forEach(action : Action<T>) : void {
+		var cursor : StackUtils.StackElement<T>;
+
+		if (this.getSize() === 0) {
+			return;
+		}
+
+		cursor = this._tail;
+
+		while (cursor.hasPrev()) {
+			action(cursor.getContent());
+			cursor = cursor.getPrev();
+		}
+
+		action(cursor.getContent());
+	}
+
+	map(action : Func<T, T>) : ICollection<T> {
 		var outcome : Stack<T>;
 
 		outcome = new Stack<T>();
@@ -328,22 +316,30 @@ class Stack<T> implements ISortableCollection<T, Stack<T>> {
 		return outcome;
 	}
 
-	toArray() : Array<T> {
-		var outcome : Array<T>;
+	max(getter : Func<T, number>) : T {
+		var max : number;
+		var e : T;
 
-		outcome = new Array<T>();
-		this.forEach(x => outcome.push(x));
+		if (this.getSize() === 0) {
+			return null;
+		}
 
-		return outcome;
-	}
+		e = this._tail.getContent();
+		max = getter(e);
 
-	sum(getter : Func<T, number>) : number {
-		var total : number;
+		this.forEach(
+			(x) => {
+				var value : number;
 
-		total = 0;
-		this.forEach(x => total += getter(x));
+				value = getter(x);
+				if (value > max) {
+					max = value;
+					e = x;
+				}
+			}
+		);
 
-		return total;
+		return e;
 	}
 
 	min(getter : Func<T, number>) : T {
@@ -372,30 +368,51 @@ class Stack<T> implements ISortableCollection<T, Stack<T>> {
 		return e;
 	}
 
-	max(getter : Func<T, number>) : T {
-		var max : number;
-		var e : T;
+	select(selector : Func<T, boolean>) : ICollection<T> {
+		var outcome : Stack<T>;
 
-		if (this.getSize() === 0) {
-			return null;
-		}
+		outcome = new Stack<T>();
 
-		e = this._tail.getContent();
-		max = getter(e);
-
-		this.forEach(
-			(x) => {
-				var value : number;
-
-				value = getter(x);
-				if (value > max) {
-					max = value;
-					e = x;
+		this._forEachInversed(
+			(e) => {
+				if (selector(e)) {
+					outcome.push(e);
 				}
 			}
 		);
 
-		return e;
+		return outcome;
+	}
+
+	sum(getter : Func<T, number>) : number {
+		var total : number;
+
+		total = 0;
+		this.forEach(x => total += getter(x));
+
+		return total;
+	}
+
+	toArray() : Array<T> {
+		var outcome : Array<T>;
+
+		outcome = new Array<T>();
+		this.forEach(x => outcome.push(x));
+
+		return outcome;
+	}
+
+	toDictionary<K, V>(keyGetter : Func<T, K>, valueGetter : Func<T, V>) : IDictionary<K, V> {
+		var outcome : IDictionary<K, V>;
+
+		outcome = new Dictionary<K, V>();
+		this.forEach(x => outcome.add(keyGetter(x), valueGetter(x)));
+
+		return outcome;
+	}
+
+	toList() : IList<T> {
+		return new ArrayList<T>(this);
 	}
 
 	//endregion ICollection

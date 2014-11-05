@@ -4,7 +4,7 @@
  * @class IListableCollection
  * @brief Interface for listable collections, whatever complexity they have (arraylist, sortedlist etc.)
  */
-interface IListableCollection<T> extends ISortableCollection<T, IListableCollection<T>> {
+interface IListableCollection<T> extends ISortableCollection<T> {
 
 	/**
 	 * Adds new item to list

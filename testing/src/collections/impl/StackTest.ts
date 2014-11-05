@@ -4,6 +4,10 @@ class StackTest extends UnitTestClass {
 	private _stack : Stack<number>;
 	private _stackElement : StackUtils.StackElement<string>;
 
+	private _toStack<T>(source : ICollection<T>) : Stack<T> {
+		return <Stack<T>>source;
+	}
+
 	setUp() : void {
 		this._stack = new Stack<number>();
 		this._stackElement = new StackUtils.StackElement<string>();
@@ -91,6 +95,27 @@ class StackTest extends UnitTestClass {
 		// Assert
 		Assert.isNotNull(stack);
 		Assert.areEqual(0, stack.getSize());
+	}
+
+	StackConstructorWithSourceTest() : void {
+		// Arrange
+		var stack : Stack<string>;
+		var source : ArrayList<string>;
+
+		source = new ArrayList<string>();
+		source.add('foo');
+		source.add('barbar');
+		source.add('foobar');
+	
+		// Act
+		stack = new Stack<string>(source);
+	
+		// Assert
+		Assert.isNotNull(stack);
+		Assert.areEqual(3, stack.getSize());
+		Assert.areEqual('foobar', stack.pop());
+		Assert.areEqual('barbar', stack.pop());
+		Assert.areEqual('foo', stack.pop());
 	}
 
 	StackGetSizeEmptyTest() : void {
@@ -223,27 +248,89 @@ class StackTest extends UnitTestClass {
 		Assert.areEqual(34, this._stack.pop());
 	}
 
-	//region ICollection
+	//region ISortableCollection
 
-	StackSelectTest() : void {
+	StackOrderByTest() : void {
 		// Arrange
 		var outcome : Stack<number>;
 
-		this._stack.push(45);
+		this._stack.push(54);
 		this._stack.push(3);
-		this._stack.push(67);
-		this._stack.push(4);
-	
+		this._stack.push(-67);
+
 		// Act
-		outcome = this._stack.select(x => x > 10);
+		outcome = this._toStack(this._stack.orderBy(x => x * x));
 	
 		// Assert
 		Assert.isNotNull(outcome);
-		Assert.areNotEqual(this._stack, outcome);
-		Assert.areEqual(2, outcome.getSize());
-		Assert.areEqual(67, outcome.pop());
+		Assert.areEqual(3, outcome.pop());
+		Assert.areEqual(54, outcome.pop());
+		Assert.areEqual(-67, outcome.pop());
+	}
+
+	StackOrderByEmptyTest() : void {
+		// Arrange
+		var outcome : Stack<number>;
+	
+		// Act
+		outcome = this._toStack(this._stack.orderBy(x => x));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(0, outcome.getSize());
+	}
+
+	StackOrderByDescTest() : void {
+		// Arrange
+		var outcome : Stack<number>;
+
+		this._stack.push(-67);
+		this._stack.push(45);
+		this._stack.push(65);
+	
+		// Act
+		outcome = this._toStack(this._stack.orderByDesc(x => x * x));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(-67, outcome.pop());
+		Assert.areEqual(65, outcome.pop());
 		Assert.areEqual(45, outcome.pop());
 	}
+
+	StackOrderByDescEmptyTest() : void {
+		// Arrange
+		var outcome : Stack<number>;
+	
+		// Act
+		outcome = this._toStack(this._stack.orderByDesc(x => x));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(0, outcome.getSize());
+	}
+
+	StackReverseTest() : void {
+		// Arrange
+		var outcome : Stack<number>;
+
+		this._stack.push(56);
+		this._stack.push(43);
+		this._stack.push(78);
+	
+		// Act
+		outcome = this._toStack(this._stack.reverse());
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(56, outcome.pop());
+		Assert.areEqual(43, outcome.pop());
+		Assert.areEqual(78, outcome.pop());
+	}
+
+	//endregion ISortableCollection
+
+	//region ICollection
 
 	StackForEachTest() : void {
 		// Arrange
@@ -342,7 +429,7 @@ class StackTest extends UnitTestClass {
 		this._stack.push(3);
 	
 		// Act
-		outcome = this._stack.map(x => x * x);
+		outcome = this._toStack(this._stack.map(x => x * x));
 	
 		// Assert
 		Assert.isNotNull(outcome);
@@ -351,116 +438,30 @@ class StackTest extends UnitTestClass {
 		Assert.areEqual(1, outcome.pop());
 	}
 
-	StackOrderByTest() : void {
-		// Arrange
-		var outcome : Stack<number>;
-
-		this._stack.push(54);
-		this._stack.push(3);
-		this._stack.push(-67);
-
-		// Act
-		outcome = this._stack.orderBy(x => x * x);
-	
-		// Assert
-		Assert.isNotNull(outcome);
-		Assert.areEqual(3, outcome.pop());
-		Assert.areEqual(54, outcome.pop());
-		Assert.areEqual(-67, outcome.pop());
-	}
-
-	StackOrderByEmptyTest() : void {
-		// Arrange
-		var outcome : Stack<number>;
-	
-		// Act
-		outcome = this._stack.orderBy(x => x);
-	
-		// Assert
-		Assert.isNotNull(outcome);
-		Assert.areEqual(0, outcome.getSize());
-	}
-
-	StackOrderByDescTest() : void {
-		// Arrange
-		var outcome : Stack<number>;
-
-		this._stack.push(-67);
-		this._stack.push(45);
-		this._stack.push(65);
-	
-		// Act
-		outcome = this._stack.orderByDesc(x => x * x);
-	
-		// Assert
-		Assert.isNotNull(outcome);
-		Assert.areEqual(-67, outcome.pop());
-		Assert.areEqual(65, outcome.pop());
-		Assert.areEqual(45, outcome.pop());
-	}
-
-	StackOrderByDescEmptyTest() : void {
-		// Arrange
-		var outcome : Stack<number>;
-	
-		// Act
-		outcome = this._stack.orderByDesc(x => x);
-	
-		// Assert
-		Assert.isNotNull(outcome);
-		Assert.areEqual(0, outcome.getSize());
-	}
-
-	StackReverseTest() : void {
-		// Arrange
-		var outcome : Stack<number>;
-
-		this._stack.push(56);
-		this._stack.push(43);
-		this._stack.push(78);
-	
-		// Act
-		outcome = this._stack.reverse();
-	
-		// Assert
-		Assert.isNotNull(outcome);
-		Assert.areEqual(56, outcome.pop());
-		Assert.areEqual(43, outcome.pop());
-		Assert.areEqual(78, outcome.pop());
-	}
-
-	StackToArrayTest() : void {
-		// Arrange
-		var outcome : Array<number>;
-
-		this._stack.push(43);
-		this._stack.push(32);
-		this._stack.push(45);
-	
-		// Act
-		outcome = this._stack.toArray();
-	
-		// Assert
-		Assert.isNotNull(outcome);
-		Assert.areEqual(3, outcome.length);
-		Assert.areEqual(45, outcome[0]);
-		Assert.areEqual(32, outcome[1]);
-		Assert.areEqual(43, outcome[2]);
-	}
-
-	StackSumTest() : void {
+	StackMaxTest() : void {
 		// Arrange
 		var outcome : number;
 
-		this._stack.push(1);
+		this._stack.push(-10);
+		this._stack.push(5);
 		this._stack.push(2);
-		this._stack.push(3);
 	
 		// Act
-		outcome = this._stack.sum(x => x * x);
+		outcome = this._stack.max(x => x * x);
 	
 		// Assert
-		Assert.areEqual(9 + 4 + 1, outcome);
+		Assert.areEqual(-10, outcome);
+	}
+
+	StackMaxEmptyTest() : void {
+		// Arrange
+		var outcome : number;
+	
+		// Act
+		outcome = this._stack.max(x => x);
+	
+		// Assert
+		Assert.isNull(outcome);
 	}
 
 	StackMinTest() : void {
@@ -489,30 +490,99 @@ class StackTest extends UnitTestClass {
 		Assert.isNull(outcome);
 	}
 
-	StackMaxTest() : void {
+	StackSelectTest() : void {
 		// Arrange
-		var outcome : number;
+		var outcome : Stack<number>;
 
-		this._stack.push(-10);
-		this._stack.push(5);
-		this._stack.push(2);
+		this._stack.push(45);
+		this._stack.push(3);
+		this._stack.push(67);
+		this._stack.push(4);
 	
 		// Act
-		outcome = this._stack.max(x => x * x);
+		outcome = this._toStack(this._stack.select(x => x > 10));
 	
 		// Assert
-		Assert.areEqual(-10, outcome);
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._stack, outcome);
+		Assert.areEqual(2, outcome.getSize());
+		Assert.areEqual(67, outcome.pop());
+		Assert.areEqual(45, outcome.pop());
 	}
 
-	StackMaxEmptyTest() : void {
+	StackSumTest() : void {
 		// Arrange
 		var outcome : number;
+
+		this._stack.push(1);
+		this._stack.push(2);
+		this._stack.push(3);
 	
 		// Act
-		outcome = this._stack.max(x => x);
+		outcome = this._stack.sum(x => x * x);
 	
 		// Assert
-		Assert.isNull(outcome);
+		Assert.areEqual(9 + 4 + 1, outcome);
+	}
+
+	StackToArrayTest() : void {
+		// Arrange
+		var outcome : Array<number>;
+
+		this._stack.push(43);
+		this._stack.push(32);
+		this._stack.push(45);
+	
+		// Act
+		outcome = this._stack.toArray();
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(3, outcome.length);
+		Assert.areEqual(45, outcome[0]);
+		Assert.areEqual(32, outcome[1]);
+		Assert.areEqual(43, outcome[2]);
+	}
+
+	StackToDictionaryTest() : void {
+		// Arrange
+		var outcome : IDictionary<number, number>;
+
+		this._stack.push(34);
+		this._stack.push(35);
+		this._stack.push(46);
+	
+		// Act
+		outcome = this._stack.toDictionary(
+			(x) => { return x; },
+			(x) => { return x % 2; }
+		);
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(3, outcome.getSize());
+		Assert.areEqual(0, outcome.get(34));
+		Assert.areEqual(1, outcome.get(35));
+		Assert.areEqual(0, outcome.get(46));
+	}
+
+	StackToListTest() : void {
+		// Arrange
+		var outcome : IList<number>;
+
+		this._stack.push(21);
+		this._stack.push(9);
+		this._stack.push(8);
+	
+		// Act
+		outcome = this._stack.toList();
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(3, outcome.getLength());
+		Assert.areEqual(8, outcome.getAt(0));
+		Assert.areEqual(9, outcome.getAt(1));
+		Assert.areEqual(21, outcome.getAt(2));
 	}
 
 	//endregion ICollection

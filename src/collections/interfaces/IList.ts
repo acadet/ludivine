@@ -4,7 +4,7 @@
  * @class IList
  * @brief Interface for simple lists
  */
-interface IList<T> extends IListableCollection<T>  {
+interface IList<T> extends IListableCollection<T> {
 	/**
 	 * Inserts value at specified index
 	 * @param {number} index Index

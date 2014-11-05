@@ -5,21 +5,7 @@
  * @description Base interface for collections. Provides generic operations.
  * Returns new instance of called collection everytime.
  */
-interface ICollection<T, S extends ICollection<any, any>> {
-
-	/**
-	 * Applies a filter on collection
-	 * @param  {Func<T, boolean>} selector Returns true if element must be kept
-	 * @return {S} New filtered collection
-	 */
-	select(selector : Func<T, boolean>) : S;
-
-	/**
-	 * Applies provided action to each element of collection.
-	 * Mind order of collection is preserved
-	 * @param {Action<T>} action Application
-	 */
-	forEach(action : Action<T>) : void;
+interface ICollection<T> {
 
 	/**
 	 * Finds first element matching condition. Default result is null
@@ -29,24 +15,25 @@ interface ICollection<T, S extends ICollection<any, any>> {
 	find(selector : Func<T, boolean>) : T;
 
 	/**
+	 * Applies provided action to each element of collection.
+	 * Mind order of collection is preserved
+	 * @param {Action<T>} action Application
+	 */
+	forEach(action : Action<T>) : void;
+
+	/**
 	 * Applies operation to each element and returns edited collection
 	 * @param  {Func<T, T>} action Map operation
 	 * @return {S} New edited collection
 	 */
-	map(action : Func<T, T>) : S;
+	map(action : Func<T, T>) : ICollection<T>;
 
 	/**
-	 * Casts collection to an array
-	 * @return {Array<T>} Outcome array
+	 * Computes maximum from elements using provided getter
+	 * @param  {Func<T, number>} getter Returns value to use for any element
+	 * @return {T} Maximum
 	 */
-	toArray() : Array<T>;
-
-	/**
-	 * Sums values from elements using provided getter
-	 * @param  {Func<T, number>} getter Returns value to sum for any element
-	 * @return {number} Amount
-	 */
-	sum(getter : Func<T, number>) : number;
+	max(getter : Func<T, number>) : T;
 
 	/**
 	 * Computes minimum from elements using provided getter
@@ -56,9 +43,36 @@ interface ICollection<T, S extends ICollection<any, any>> {
 	min(getter : Func<T, number>) : T;
 
 	/**
-	 * Computes maximum from elements using provided getter
-	 * @param  {Func<T, number>} getter Returns value to use for any element
-	 * @return {T} Maximum
+	 * Applies a filter on collection
+	 * @param  {Func<T, boolean>} selector Returns true if element must be kept
+	 * @return {S} New filtered collection
 	 */
-	max(getter : Func<T, number>) : T;
+	select(selector : Func<T, boolean>) : ICollection<T>;
+
+	/**
+	 * Sums values from elements using provided getter
+	 * @param  {Func<T, number>} getter Returns value to sum for any element
+	 * @return {number} Amount
+	 */
+	sum(getter : Func<T, number>) : number;
+
+	/**
+	 * Reproduces collection as an array
+	 * @return {Array<T>} Outcome array
+	 */
+	toArray() : Array<T>;
+
+	/**
+	 * Reproduces collection as a dictionary
+	 * @param {Func<T, K>} keyGetter Returns key from source element
+	 * @param {Func<T, V>} valueGetter Returns value from source element
+	 * @return {IDictionary<K, V>} Outcome IDictionary
+	 */
+	toDictionary<K, V>(keyGetter : Func<T, K>, valueGetter : Func<T, V>) : IDictionary<K, V>;
+
+	/**
+	 * Reproduces collection as a list
+	 * @return {IList<T>} Outcome IList
+	 */
+	toList() : IList<T>;
 }

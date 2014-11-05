@@ -173,8 +173,7 @@ module SortedListUtils {
  * @description Sorted list. Double typed: first one is for wrapped elements,
  * other one is for comparable value
  */
-class SortedList<A, B>
-	implements IListableCollection<A>, ISortableCollection<A, SortedList<A, B>> {
+class SortedList<A, B> implements IListableCollection<A> {
 	//region Fields
 
 	/**
@@ -427,7 +426,7 @@ class SortedList<A, B>
 
 	//region ISortableCollection
 
-	orderBy<C>(getter : Func<A, C>) : SortedList<A, C> {
+	orderBy<C>(getter : Func<A, C>) : ISortableCollection<A> {
 		var outcome : SortedList<A, C>;
 
 		outcome = new SortedList<A, C>(getter);
@@ -436,7 +435,7 @@ class SortedList<A, B>
 		return outcome;
 	}
 
-	orderByDesc<C>(getter : Func<A, C>) : SortedList<A, C> {
+	orderByDesc<C>(getter : Func<A, C>) : ISortableCollection<A> {
 		var outcome : SortedList<A, C>;
 
 		outcome = new SortedList<A, C>(getter, false);
@@ -445,7 +444,7 @@ class SortedList<A, B>
 		return outcome;
 	}
 
-	reverse() : SortedList<A, B> {
+	reverse() : ISortableCollection<A> {
 		var outcome : SortedList<A, B>;
 
 		outcome = new SortedList<A, B>(this._getter, !this._asc);
@@ -457,30 +456,6 @@ class SortedList<A, B>
 	//endregion ISortableCollection
 
 	//region ICollection
-
-	select(selector : Func<A, boolean>) : SortedList<A, B> {
-		var outcome : SortedList<A, B>;
-
-		outcome = new SortedList<A, B>(this._getter, this._asc);
-		this.forEach(
-			(e) => {
-				if (selector(e)) {
-					outcome.add(e);
-				}
-			}
-		);
-
-		return outcome;
-	}
-
-	forEach(action : Action<A>) : void {
-		this._forEach(
-			(cursor) => {
-				action(cursor.getCurrent().getContent());
-				return false;
-			}
-		);
-	}
 
 	find(selector : Func<A, boolean>) : A {
 		var outcome : A;
@@ -505,7 +480,16 @@ class SortedList<A, B>
 		return outcome;
 	}
 
-	map(action : Func<A, A>) : SortedList<A, B> {
+	forEach(action : Action<A>) : void {
+		this._forEach(
+			(cursor) => {
+				action(cursor.getCurrent().getContent());
+				return false;
+			}
+		);
+	}
+
+	map(action : Func<A, A>) : ICollection<A> {
 		var outcome : SortedList<A, B>;
 
 		outcome = new SortedList<A, B>(this._getter, this._asc);
@@ -519,22 +503,30 @@ class SortedList<A, B>
 		return outcome;
 	}
 
-	toArray() : Array<A> {
-		var outcome : Array<A>;
+	max(getter : Func<A, number>) : A {
+		var max : number;
+		var current : A;
 
-		outcome = new Array<A>();
-		this.forEach(e => outcome.push(e));
+		if (this.getLength() === 0) {
+			return null;
+		}
 
-		return outcome;
-	}
+		current = this._head.getContent();
+		max = getter(current);
 
-	sum(getter : Func<A, number>) : number {
-		var acc : number;
+		this.forEach(
+			(e) => {
+				var value : number;
 
-		acc = 0;
-		this.forEach(e => acc += getter(e));
+				value = getter(e);
+				if (value > max) {
+					max = value;
+					current = e;
+				}
+			}
+		);
 
-		return acc;
+		return current;
 	}
 
 	min(getter : Func<A, number>) : A {
@@ -563,30 +555,50 @@ class SortedList<A, B>
 		return current;
 	}
 
-	max(getter : Func<A, number>) : A {
-		var max : number;
-		var current : A;
+	select(selector : Func<A, boolean>) : ICollection<A> {
+		var outcome : SortedList<A, B>;
 
-		if (this.getLength() === 0) {
-			return null;
-		}
-
-		current = this._head.getContent();
-		max = getter(current);
-
+		outcome = new SortedList<A, B>(this._getter, this._asc);
 		this.forEach(
 			(e) => {
-				var value : number;
-
-				value = getter(e);
-				if (value > max) {
-					max = value;
-					current = e;
+				if (selector(e)) {
+					outcome.add(e);
 				}
 			}
 		);
 
-		return current;
+		return outcome;
+	}
+
+	sum(getter : Func<A, number>) : number {
+		var acc : number;
+
+		acc = 0;
+		this.forEach(e => acc += getter(e));
+
+		return acc;
+	}
+
+	toArray() : Array<A> {
+		var outcome : Array<A>;
+
+		outcome = new Array<A>();
+		this.forEach(e => outcome.push(e));
+
+		return outcome;
+	}
+
+	toDictionary<K, V>(keyGetter : Func<A, K>, valueGetter : Func<A, V>) : IDictionary<K, V> {
+		var outcome : IDictionary<K, V>;
+
+		outcome = new Dictionary<K, V>();
+		this.forEach(x => outcome.add(keyGetter(x), valueGetter(x)));
+
+		return outcome;
+	}
+
+	toList() : IList<A> {
+		return new ArrayList<A>(this);
 	}
 
 	//endregion ICollection

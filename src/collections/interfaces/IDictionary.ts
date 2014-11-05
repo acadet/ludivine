@@ -4,7 +4,7 @@
  * @class IDictionary
  * @brief Dictionary interface
  */
-interface IDictionary<K, V> extends ICollection<KeyValuePair<K, V>, IDictionary<K, V>> {
+interface IDictionary<K, V> extends ICollection<KeyValuePair<K, V>> {
 
 	/**
 	 * Adds new key/value pair. Throws error if key is already existing
@@ -25,6 +25,13 @@ interface IDictionary<K, V> extends ICollection<KeyValuePair<K, V>, IDictionary<
 	 * @return {number} Size
 	 */
 	getSize() : number;
+
+	/**
+	 * Tests if key exists
+	 * @param  {K}       key Key
+	 * @return {boolean}     True if key exists
+	 */
+	hasKey(key : K) : boolean;
 
 	/**
 	 * Removes pair from dictionary. Throws error if key does not exist
