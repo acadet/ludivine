@@ -16,6 +16,10 @@ class ArrayList<T> implements IList<T> {
 	
 	//region Constructors
 
+	/**
+	 * Builds new list
+	 * @param {ICollection<T>} source Optional data source
+	 */
 	constructor(source? : ICollection<T>) {
 		this._content = new Array<T>();
 

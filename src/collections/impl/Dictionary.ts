@@ -16,6 +16,10 @@ class Dictionary<K, V> implements IDictionary<K, V> {
 	
 	//region Constructors
 
+	/**
+	 * Builds new dictionary
+	 * @param {ICollection<KeyValuePair<K, V>>} source Optional data source
+	 */
 	constructor(source? : ICollection<KeyValuePair<K, V>>) {
 		this._content = new Array<KeyValuePair<K, V>>();
 

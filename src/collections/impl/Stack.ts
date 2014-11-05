@@ -108,6 +108,10 @@ class Stack<T> implements ISortableCollection<T> {
 	
 	//region Constructors
 
+	/**
+	 * Builds new stack
+	 * @param {ICollection<T>} source Optional data source
+	 */
 	constructor(source? : ICollection<T>) {
 		this._size = 0;
 
