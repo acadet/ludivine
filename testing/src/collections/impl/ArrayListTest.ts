@@ -30,11 +30,10 @@ class ArrayListTest extends UnitTestClass {
 	ArrayListConstructorWithSourceTest() : void {
 		// Arrange
 		var list : ArrayList<string>;
-		var source : ArrayList<string>;
+		var source : Mocks.Collection<string>;
 
-		source = new ArrayList<string>();
-		source.add('foo');
-		source.add('bar');
+		source = new Mocks.Collection<string>();
+		source.ForEachOutcome(['foo', 'bar']);
 	
 		// Act
 		list = new ArrayList<string>(source);
@@ -45,6 +44,7 @@ class ArrayListTest extends UnitTestClass {
 		Assert.areEqual(2, list.getLength());
 		Assert.areEqual('foo', list.getAt(0));
 		Assert.areEqual('bar', list.getAt(1));
+		Assert.areEqual(1, source.ForEachTimes());
 	}
 
 	ArrayListAddTest() : void {
@@ -356,6 +356,51 @@ class ArrayListTest extends UnitTestClass {
 
 	//region ICollection
 
+	ArrayListAverageTest() : void {
+		// Arrange
+		var outcome : number;
+
+		this._list.add(1);
+		this._list.add(2);
+		this._list.add(3);
+	
+		// Act
+		outcome = this._list.average(x => x * x);
+	
+		// Assert
+		Assert.areEqual(14 / 3.0, outcome);
+	}
+
+	ArrayListExistsTest() : void {
+		// Arrange
+		var outcome : boolean;
+	
+		this._list.add(1);
+		this._list.add(2);
+		this._list.add(3);
+
+		// Act
+		outcome = this._list.exists(x => x > 2);
+	
+		// Assert
+		Assert.isTrue(outcome);
+	}
+
+	ArrayListExistsFalseTest() : void {
+		// Arrange
+		var outcome : boolean;
+	
+		this._list.add(1);
+		this._list.add(2);
+		this._list.add(3);
+
+		// Act
+		outcome = this._list.exists(x => x > 10);
+	
+		// Assert
+		Assert.isFalse(outcome);
+	}
+
 	ArrayListFindTest() : void {
 		// Arrange
 		var outcome : number;
@@ -404,6 +449,64 @@ class ArrayListTest extends UnitTestClass {
 		Assert.areEqual(34, this._list.getAt(0));
 		Assert.areEqual(56, this._list.getAt(1));
 		Assert.areEqual(45, this._list.getAt(2));
+	}
+
+	ArrayListIntersectTest() : void {
+		// Arrange
+		var source : ArrayList<number>, outcome : ArrayList<number>;
+
+		source = new ArrayList<number>();
+		source.add(35);
+		source.add(32);
+		source.add(67);
+
+		this._list.add(35);
+		this._list.add(31);
+		this._list.add(32);
+	
+		// Act
+		outcome = this._toArrayList(this._list.intersect(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(2, outcome.getLength());
+		Assert.areEqual(35, outcome.getAt(0));
+		Assert.areEqual(32, outcome.getAt(1));
+	}
+
+	ArrayListInteresectEmptySourceTest() : void {
+		// Arrange
+		var source : ArrayList<number>, outcome : ArrayList<number>;
+
+		source = new ArrayList<number>();
+		source.add(43);
+		source.add(32);
+	
+		// Act
+		outcome = this._toArrayList(this._list.intersect(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(0, outcome.getLength());
+	}
+
+	ArrayListIntersectEmptyTargetTest() : void {
+		// Arrange
+		var source : ArrayList<number>, outcome : ArrayList<number>;
+
+		source = new ArrayList<number>();
+		this._list.add(56);
+		this._list.add(67);
+	
+		// Act
+		outcome = this._toArrayList(this._list.intersect(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(0, outcome.getLength());
 	}
 
 	ArrayListMapTest() : void {
@@ -549,6 +652,96 @@ class ArrayListTest extends UnitTestClass {
 		Assert.areEqual(4, outcome.getAt(0));
 		Assert.areEqual(56, outcome.getAt(1));
 		Assert.areEqual(67, outcome.getAt(2));
+	}
+
+	ArrayListUnionTest() : void {
+		// Arrange
+		var source : Mocks.Collection<number>, outcome : ArrayList<number>;
+
+		source = new Mocks.Collection<number>();
+		source.ForEachOutcome([20, 21, 22]);
+
+		this._list.add(20);
+		this._list.add(23);
+		this._list.add(24);
+	
+		// Act
+		outcome = this._toArrayList(this._list.union(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(1, source.ForEachTimes());
+		Assert.areEqual(5, outcome.getLength());
+		Assert.areEqual(20, outcome.getAt(0));
+		Assert.areEqual(23, outcome.getAt(1));
+		Assert.areEqual(24, outcome.getAt(2));
+		Assert.areEqual(21, outcome.getAt(3));
+		Assert.areEqual(22, outcome.getAt(4));
+	}
+
+	ArrayListUnionEmptySourceTest() : void {
+		// Arrange
+		var source : Mocks.Collection<number>, outcome : ArrayList<number>;
+
+		source = new Mocks.Collection<number>();
+		source.ForEachOutcome([1, 2, 3]);
+	
+		// Act
+		outcome = this._toArrayList(this._list.union(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(1, source.ForEachTimes());
+		Assert.areEqual(3, outcome.getLength());
+		Assert.areEqual(1, outcome.getAt(0));
+		Assert.areEqual(2, outcome.getAt(1));
+		Assert.areEqual(3, outcome.getAt(2));
+	}
+
+	ArrayListUnionEmptyTargetTest() : void {
+		// Arrange
+		var source : Mocks.Collection<number>, outcome : ArrayList<number>;
+
+		source = new Mocks.Collection<number>();
+		source.ForEachOutcome([]);
+
+		this._list.add(4);
+		this._list.add(5);
+		this._list.add(6);
+	
+		// Act
+		outcome = this._toArrayList(this._list.union(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(1, source.ForEachTimes());
+		Assert.areEqual(3, outcome.getLength());
+		Assert.areEqual(4, outcome.getAt(0));
+		Assert.areEqual(5, outcome.getAt(1));
+		Assert.areEqual(6, outcome.getAt(2));
+	}
+
+	ArrayListUniqTest() : void {
+		// Arrange
+		var outcome : ArrayList<number>;
+
+		this._list.add(45);
+		this._list.add(32);
+		this._list.add(32);
+		this._list.add(45);
+	
+		// Act
+		outcome = this._toArrayList(this._list.uniq());
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(2, outcome.getLength());
+		Assert.areEqual(45, outcome.getAt(0));
+		Assert.areEqual(32, outcome.getAt(1));
 	}
 
 	//endregion ICollection

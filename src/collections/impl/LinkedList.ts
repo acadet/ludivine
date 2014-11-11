@@ -296,10 +296,6 @@ class LinkedList<T> implements IList<T> {
 
 	//region ISortableCollection
 
-	average(getter : Func<T, number>) : number {
-		return CollectionUtils.CollectionHelper.average(this, getter);
-	}
-
 	orderBy<U>(getter : Func<T, U>) : ISortableCollection<T> {
 		var a : Array<T>;
 		var size : number;
@@ -362,6 +358,14 @@ class LinkedList<T> implements IList<T> {
 
 	//region ICollection
 
+	average(getter : Func<T, number>) : number {
+		return CollectionUtils.CollectionHelper.average(this, getter);
+	}
+
+	exists(selector : Func<T, boolean>) : boolean {
+		return this.find(selector) !== null;
+	}
+
 	find(selector : Func<T, boolean>) : T {
 		var cursor : LinkedListUtils.LinkedListElement<T>;
 		var e : T;
@@ -409,10 +413,7 @@ class LinkedList<T> implements IList<T> {
 		outcome = new LinkedList<T>();
 		this.forEach(
 			(x) => {
-				var result : T;
-
-				result = collection.forEach(e => e === x);
-				if (result !== null) {
+				if (collection.exists(e => e === x)) {
 					outcome.add(x);
 				}
 			}
@@ -475,10 +476,7 @@ class LinkedList<T> implements IList<T> {
 		outcome = new LinkedList<T>(this);
 		collection.forEach(
 			(x) => {
-				var result : T;
-
-				result = this.find(e => e === x);
-				if (result === null) {
+				if (!this.exists(e => e === x)) {
 					outcome.add(x);
 				}
 			}
@@ -493,10 +491,7 @@ class LinkedList<T> implements IList<T> {
 		outcome = new LinkedList<T>();
 		this.forEach(
 			(x) => {
-				var result : T;
-
-				result = outcome.find(e => e === x);
-				if (result === null) {
+				if (!outcome.exists(e => e === x)) {
 					outcome.add(x);
 				}
 			}

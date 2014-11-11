@@ -30,18 +30,21 @@ class DictionaryTest extends UnitTestClass {
 	DictionaryConstructorWithSourceTest() : void {
 		// Arrange
 		var dict : Dictionary<number, string>;
-		var source : ArrayList<KeyValuePair<number, string>>;
+		var source : Mocks.Collection<KeyValuePair<number, string>>;
 
-		source = new ArrayList<KeyValuePair<number, string>>();
-		source.add(new KeyValuePair<number, string>(34, 'foo'));
-		source.add(new KeyValuePair<number, string>(56, 'bar'));
-		source.add(new KeyValuePair<number, string>(67, 'foobar'));
+		source = new Mocks.Collection<KeyValuePair<number, string>>();
+		source.ForEachOutcome([
+			new KeyValuePair<number, string>(34, 'foo'),
+			new KeyValuePair<number, string>(56, 'bar'),
+			new KeyValuePair<number, string>(67, 'foobar')
+		]);
 	
 		// Act
 		dict = new Dictionary<number, string>(source);
 	
 		// Assert
 		Assert.isNotNull(dict);
+		Assert.areEqual(1, source.ForEachTimes());
 		Assert.areEqual(3, dict.getSize());
 		Assert.areEqual('foo', dict.get(34));
 		Assert.areEqual('bar', dict.get(56));
@@ -191,6 +194,51 @@ class DictionaryTest extends UnitTestClass {
 
 	//region ICollection
 
+	DictionaryAverageTest() : void {
+		// Arrange
+		var outcome : number;
+
+		this._dict.add('foo', 1);
+		this._dict.add('bar', 2);
+		this._dict.add('foobar', 3);
+	
+		// Act
+		outcome = this._dict.average(x => x.getValue());
+	
+		// Assert
+		Assert.areEqual(2, outcome);
+	}
+
+	DictionaryExistsTest() : void {
+		// Arrange
+		var outcome : boolean;
+
+		this._dict.add('foo', 34);
+		this._dict.add('bar', 35);
+		this._dict.add('foobar', 36);
+	
+		// Act
+		outcome = this._dict.exists(x => x.getKey().length > 2 && x.getValue() >= 35);
+	
+		// Assert
+		Assert.isTrue(outcome);
+	}
+
+	DictionaryExistsFalseTest() : void {
+		// Arrange
+		var outcome : boolean;
+
+		this._dict.add('foo', 34);
+		this._dict.add('bar', 35);
+		this._dict.add('foobar', 36);
+	
+		// Act
+		outcome = this._dict.exists(x => x.getValue() > 40);
+	
+		// Assert
+		Assert.isFalse(outcome);
+	}
+
 	DictionaryFindTest() : void {
 		// Arrange
 		var outcome : KeyValuePair<string, number>;
@@ -235,6 +283,62 @@ class DictionaryTest extends UnitTestClass {
 	
 		// Assert
 		Assert.areEqual(6, acc);
+	}
+
+	DictionaryIntersectTest() : void {
+		// Arrange
+		var source : Dictionary<string, number>, outcome : Dictionary<string, number>;
+
+		source = new Dictionary<string, number>();
+		source.add('foo', 45);
+		source.add('bar', 37);
+
+		this._dict.add('foo', 45);
+		this._dict.add('bar', 67);
+		this._dict.add('foobar', 56);
+	
+		// Act
+		outcome = this._toDictionary(this._dict.intersect(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._dict, outcome);
+		Assert.areEqual(1, outcome.getSize());
+		Assert.areEqual(45, outcome.get('foo'));
+	}
+
+	DictionaryIntersectEmptySourceTest() : void {
+		// Arrange
+		var source : Dictionary<string, number>, outcome : Dictionary<string, number>;
+
+		source = new Dictionary<string, number>();
+		source.add('foo', 67);
+		source.add('bar', 43);
+	
+		// Act
+		outcome = this._toDictionary(this._dict.intersect(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._dict, outcome);
+		Assert.areEqual(0, outcome.getSize());
+	}
+
+	DictionaryIntersectEmptyTargetTest() : void {
+		// Arrange
+		var source : Dictionary<string, number>, outcome : Dictionary<string, number>;
+
+		source = new Dictionary<string, number>();
+		this._dict.add('foo', 45);
+		this._dict.add('bar', 32);
+	
+		// Act
+		outcome = this._toDictionary(this._dict.intersect(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._dict, outcome);
+		Assert.areEqual(0, outcome.getSize());
 	}
 
 	DictionaryMapTest() : void {
@@ -391,6 +495,130 @@ class DictionaryTest extends UnitTestClass {
 		Assert.areEqual(23, outcome.getAt(1).getValue());
 		Assert.areEqual('foobar', outcome.getAt(2).getKey());
 		Assert.areEqual(12, outcome.getAt(2).getValue());
+	}
+
+	DictionaryUnionTest() : void {
+		// Arrange
+		var source : Mocks.Collection<KeyValuePair<string, number>>;
+		var outcome : Dictionary<string, number>;
+
+		source = new Mocks.Collection<KeyValuePair<string, number>>();
+		source.ForEachOutcome([
+			new KeyValuePair<string, number>('foo', 45),
+			new KeyValuePair<string, number>('bar', 21)
+		]);
+
+		this._dict.add('foo', 45);
+		this._dict.add('foobar', 32);
+	
+		// Act
+		outcome = this._toDictionary(this._dict.union(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(1, source.ForEachTimes());
+		Assert.areNotEqual(this._dict, outcome);
+		Assert.areEqual(3, outcome.getSize());
+		Assert.areEqual(45, outcome.get('foo'));
+		Assert.areEqual(21, outcome.get('bar'));
+		Assert.areEqual(32, outcome.get('foobar'));
+	}
+
+	DictionaryUnionKeyDuplicationTest() : void {
+		// Arrange
+		var source : Mocks.Collection<KeyValuePair<string, number>>;
+		var f : Action0;
+
+		source = new Mocks.Collection<KeyValuePair<string, number>>();
+		source.ForEachOutcome([
+			new KeyValuePair<string, number>('foo', 45),
+			new KeyValuePair<string, number>('bar', 35)
+		]);
+
+		this._dict.add('foo', 45);
+		this._dict.add('bar', 21);
+	
+		// Act
+		f = () => this._dict.union(source);
+	
+		// Assert
+		Assert.throws(f);
+	}
+
+	DictionaryUnionEmptySourceTest() : void {
+		// Arrange
+		var source : Mocks.Collection<KeyValuePair<string, number>>;
+		var outcome : Dictionary<string, number>;
+
+		source = new Mocks.Collection<KeyValuePair<string, number>>();
+		source.ForEachOutcome([
+			new KeyValuePair<string, number>('foo', 45),
+			new KeyValuePair<string, number>('bar', 31)
+		]);
+	
+		// Act
+		outcome = this._toDictionary(this._dict.union(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._dict, outcome);
+		Assert.areEqual(1, source.ForEachTimes());
+		Assert.areEqual(2, outcome.getSize());
+		Assert.areEqual(45, outcome.get('foo'));
+		Assert.areEqual(31, outcome.get('bar'));
+	}
+
+	DictionaryUnionEmptyTargetTest() : void {
+		// Arrange
+		var source : Mocks.Collection<KeyValuePair<string, number>>;
+		var outcome : Dictionary<string, number>;
+
+		source = new Mocks.Collection<KeyValuePair<string, number>>();
+		source.ForEachOutcome([]);
+		this._dict.add('foo', 34);
+		this._dict.add('bar', 31);
+	
+		// Act
+		outcome = this._toDictionary(this._dict.union(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._dict, outcome);
+		Assert.areEqual(1, source.ForEachTimes());
+		Assert.areEqual(2, outcome.getSize());
+		Assert.areEqual(34, outcome.get('foo'));
+		Assert.areEqual(31, outcome.get('bar'));
+	}
+
+	DictionaryUniqTest() : void {
+		// Arrange
+		var outcome : Dictionary<string, number>;
+
+		this._dict.add('foo', 45);
+		this._dict.add('bar', 99);
+	
+		// Act
+		outcome = this._toDictionary(this._dict.uniq());
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._dict, outcome);
+		Assert.areEqual(2, outcome.getSize());
+		Assert.areEqual(45, outcome.get('foo'));
+		Assert.areEqual(99, outcome.get('bar'));
+	}
+
+	DictionaryUniqEmptyTest() : void {
+		// Arrange
+		var outcome : Dictionary<string, number>;
+	
+		// Act
+		outcome = this._toDictionary(this._dict.uniq());
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._dict, outcome);
+		Assert.areEqual(0, outcome.getSize());
 	}
 
 	//endregion ICollection

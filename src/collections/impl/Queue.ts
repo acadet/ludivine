@@ -267,6 +267,14 @@ class Queue<T> implements ISortableCollection<T> {
 
 	//region ICollection
 
+	average(getter : Func<T, number>) : number {
+		return CollectionUtils.CollectionHelper.average(this, getter);
+	}
+
+	exists(selector : Func<T, boolean>) : boolean {
+		return this.find(selector) !== null;
+	}
+
 	find(selector : Func<T, boolean>) : T {
 		var cursor : QueueUtils.QueueElement<T>;
 		var e : T;
@@ -309,6 +317,21 @@ class Queue<T> implements ISortableCollection<T> {
 		}
 
 		action(cursor.getContent());
+	}
+
+	intersect(collection : ICollection<T>) : ICollection<T> {
+		var outcome : Queue<T>;
+
+		outcome = new Queue<T>();
+		this.forEach(
+			(x) => {
+				if (collection.exists(e => e === x)) {
+					outcome.push(x);
+				}
+			}
+		);
+
+		return outcome;
 	}
 
 	map(action : Func<T, T>) : ICollection<T> {
@@ -363,6 +386,36 @@ class Queue<T> implements ISortableCollection<T> {
 
 	toList() : IList<T> {
 		return new ArrayList<T>(this);
+	}
+
+	union(collection : ICollection<T>) : ICollection<T> {
+		var outcome : Queue<T>;
+
+		outcome = new Queue<T>(this);
+		collection.forEach(
+			(x) => {
+				if (!this.exists(e => e === x)) {
+					outcome.push(x);
+				}
+			}
+		);
+
+		return outcome;
+	}
+
+	uniq() : ICollection<T> {
+		var outcome : Queue<T>;
+
+		outcome = new Queue<T>();
+		this.forEach(
+			(x) => {
+				if (!outcome.exists(e => e === x)) {
+					outcome.push(x);
+				}
+			}
+		);
+
+		return outcome;
 	}
 
 	//endregionICollection

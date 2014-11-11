@@ -457,6 +457,14 @@ class SortedList<A, B> implements IListableCollection<A> {
 
 	//region ICollection
 
+	average(getter : Func<A, number>) : number {
+		return CollectionUtils.CollectionHelper.average(this, getter);
+	}
+
+	exists(selector : Func<A, boolean>) : boolean {
+		return this.find(selector) !== null;
+	}
+
 	find(selector : Func<A, boolean>) : A {
 		var outcome : A;
 
@@ -487,6 +495,21 @@ class SortedList<A, B> implements IListableCollection<A> {
 				return false;
 			}
 		);
+	}
+
+	intersect(collection : ICollection<A>) : ICollection<A> {
+		var outcome : SortedList<A, B>;
+
+		outcome = new SortedList<A, B>(this._getter, this._asc);
+		this.forEach(
+			(x) => {
+				if (collection.exists(e => e === x)) {
+					outcome.add(x);
+				}
+			}
+		);
+
+		return outcome;
 	}
 
 	map(action : Func<A, A>) : ICollection<A> {
@@ -540,6 +563,37 @@ class SortedList<A, B> implements IListableCollection<A> {
 
 	toList() : IList<A> {
 		return new ArrayList<A>(this);
+	}
+
+	union(collection : ICollection<A>) : ICollection<A> {
+		var outcome : SortedList<A, B>;
+
+		outcome = new SortedList<A, B>(this._getter, this._asc);
+		this.forEach(x => outcome.add(x));
+		collection.forEach(
+			(x) => {
+				if (!this.exists(e => e === x)) {
+					outcome.add(x);
+				}
+			}
+		);
+
+		return outcome;
+	}
+
+	uniq() : ICollection<A> {
+		var outcome : SortedList<A, B>;
+
+		outcome = new SortedList<A, B>(this._getter, this._asc);
+		this.forEach(
+			(x) => {
+				if (!outcome.exists(e => e === x)) {
+					outcome.add(x);
+				}
+			}
+		);
+
+		return outcome;
 	}
 
 	//endregion ICollection

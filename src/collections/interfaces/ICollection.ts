@@ -8,6 +8,8 @@
 interface ICollection<T> {
 	average(getter : Func<T, number>) : number;
 
+	exists(selector : Func<T, boolean>) : boolean;
+
 	/**
 	 * Finds first element matching condition. Default result is null
 	 * @param  {Func<T, boolean>} selector Condition to match

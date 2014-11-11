@@ -104,12 +104,10 @@ class LinkedListTest extends UnitTestClass {
 	LinkedListConstructorWithSourceTest() : void {
 		// Arrange
 		var list : LinkedList<string>;
-		var source : ArrayList<string>;
+		var source : Mocks.Collection<string>;
 
-		source = new ArrayList<string>();
-		source.add('foo');
-		source.add('bar');
-		source.add('foobar');
+		source = new Mocks.Collection<string>();
+		source.ForEachOutcome(['foo', 'bar', 'foobar']);
 	
 		// Act
 		list = new LinkedList<string>(source);
@@ -117,6 +115,7 @@ class LinkedListTest extends UnitTestClass {
 		// Assert
 		Assert.isNotNull(list);
 		Assert.areNotEqual(source, list);
+		Assert.areEqual(1, source.ForEachTimes());
 		Assert.areEqual(3, list.getLength());
 		Assert.areEqual('foo', list.getAt(0));
 		Assert.areEqual('bar', list.getAt(1));
@@ -604,6 +603,50 @@ class LinkedListTest extends UnitTestClass {
 
 	//region ICollection
 
+	LinkedListAverageTest() : void {
+		// Arrange
+		var outcome : number;
+
+		this._list.add(1);
+		this._list.add(2);
+		this._list.add(3);
+	
+		// Act
+		outcome = this._list.average(x => x * x);
+	
+		// Assert
+		Assert.areEqual(14 / 3, outcome);
+	}
+
+	LinkedListExistsTest() : void {
+		// Arrange
+		var outcome : boolean;
+
+		this._list.add(23);
+		this._list.add(24);
+		this._list.add(25);
+	
+		// Act
+		outcome = this._list.exists(x => x === 25);
+	
+		// Assert
+		Assert.isTrue(outcome);
+	}
+
+	LinkedListExistsFalseTest() : void {
+		// Arrange
+		var outcome : boolean;
+
+		this._list.add(45);
+		this._list.add(56);
+	
+		// Act
+		outcome = this._list.exists(x => x > 100);
+	
+		// Assert
+		Assert.isFalse(outcome);
+	}
+
 	LinkedListFindTest() : void {
 		// Arrange
 		var outcome : number;
@@ -691,6 +734,65 @@ class LinkedListTest extends UnitTestClass {
 	
 		// Assert
 		Assert.areEqual(0, acc);
+	}
+
+	LinkedListIntersectTest() : void {
+		// Arrange
+		var outcome : LinkedList<number>;
+		var source : LinkedList<number>;
+
+		source = new LinkedList<number>();
+		source.add(5);
+		source.add(6);
+		source.add(7);
+
+		this._list.add(4);
+		this._list.add(6);
+		this._list.add(8);
+	
+		// Act
+		outcome = this._toLinkedList(this._list.intersect(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(1, outcome.getLength());
+		Assert.areEqual(6, outcome.getAt(0));
+	}
+
+	LinkedListIntersectEmptySourceTest() : void {
+		// Arrange
+		var outcome : LinkedList<number>, source : LinkedList<number>;
+
+		source = new LinkedList<number>();
+		source.add(4);
+		source.add(6);
+	
+		// Act
+		outcome = this._toLinkedList(this._list.intersect(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(0, outcome.getLength());
+	}
+
+	LinkedListIntersectEmptyTargetTest() : void {
+		// Arrange
+		var outcome : LinkedList<number>, source : LinkedList<number>;
+
+		source = new LinkedList<number>();
+		this._list.add(56);
+		this._list.add(57);
+		this._list.add(58);
+	
+		// Act
+		outcome = this._toLinkedList(this._list.intersect(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(0, outcome.getLength());
 	}
 
 	LinkedListMapTest() : void {
@@ -834,6 +936,114 @@ class LinkedListTest extends UnitTestClass {
 		Assert.areEqual(34, outcome.getAt(0));
 		Assert.areEqual(99, outcome.getAt(1));
 		Assert.areEqual(32, outcome.getAt(2));
+	}
+
+	LinkedListUnionTest() : void {
+		// Arrange
+		var source : Mocks.Collection<number>;
+		var outcome : LinkedList<number>;
+
+		source = new Mocks.Collection<number>();
+		source.ForEachOutcome([1, 2, 3]);
+
+		this._list.add(3);
+		this._list.add(4);
+		this._list.add(5);
+	
+		// Act
+		outcome = this._toLinkedList(this._list.union(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(1, source.ForEachTimes());
+		Assert.areEqual(5, outcome.getLength());
+		Assert.areEqual(3, outcome.getAt(0));
+		Assert.areEqual(4, outcome.getAt(1));
+		Assert.areEqual(5, outcome.getAt(2));
+		Assert.areEqual(1, outcome.getAt(3));
+		Assert.areEqual(2, outcome.getAt(4));
+	}
+
+	LinkedListUnionEmptySourceTest() : void {
+		// Arrange
+		var source : Mocks.Collection<number>;
+		var outcome : LinkedList<number>;
+
+		source = new Mocks.Collection<number>();
+		source.ForEachOutcome([1, 2, 3]);
+	
+		// Act
+		outcome = this._toLinkedList(this._list.union(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(1, source.ForEachTimes());
+		Assert.areEqual(3, outcome.getLength());
+		Assert.areEqual(1, outcome.getAt(0));
+		Assert.areEqual(2, outcome.getAt(1));
+		Assert.areEqual(3, outcome.getAt(2));
+	}
+
+	LinkedListUnionEmptyTargetTest() : void {
+		// Arrange
+		var source : Mocks.Collection<number>;
+		var outcome : LinkedList<number>;
+
+		source = new Mocks.Collection<number>();
+		source.ForEachOutcome([]);
+
+		this._list.add(1);
+		this._list.add(2);
+		this._list.add(3);
+	
+		// Act
+		outcome = this._toLinkedList(this._list.union(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(1, source.ForEachTimes());
+		Assert.areEqual(3, outcome.getLength());
+		Assert.areEqual(1, outcome.getAt(0));
+		Assert.areEqual(2, outcome.getAt(1));
+		Assert.areEqual(3, outcome.getAt(2));
+	}
+
+	LinkedListUniqTest() : void {
+		// Arrange
+		var outcome : LinkedList<number>;
+
+		this._list.add(1);
+		this._list.add(2);
+		this._list.add(2);
+		this._list.add(3);
+		this._list.add(1);
+	
+		// Act
+		outcome = this._toLinkedList(this._list.uniq());
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(3, outcome.getLength());
+		Assert.areEqual(1, outcome.getAt(0));
+		Assert.areEqual(2, outcome.getAt(1));
+		Assert.areEqual(3, outcome.getAt(2));
+	}
+
+	LinkedListUniqEmptyTest() : void {
+		// Arrange
+		var outcome : LinkedList<number>;
+	
+		// Act
+		outcome = this._toLinkedList(this._list.uniq());
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._list, outcome);
+		Assert.areEqual(0, outcome.getLength());
 	}
 
 	//endregion ICollection

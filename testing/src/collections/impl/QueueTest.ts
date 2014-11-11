@@ -102,18 +102,17 @@ class QueueTest extends UnitTestClass {
 	QueueConstructorWithSourceTest() : void {
 		// Arrange
 		var queue : Queue<string>;
-		var source : ArrayList<string>;
+		var source : Mocks.Collection<string>;
 
-		source = new ArrayList<string>();
-		source.add('foo');
-		source.add('bar');
-		source.add('barbar');
+		source = new Mocks.Collection<string>();
+		source.ForEachOutcome(['foo', 'bar', 'barbar']);
 	
 		// Act
 		queue = new Queue<string>(source);
 	
 		// Assert
 		Assert.isNotNull(queue);
+		Assert.areEqual(1, source.ForEachTimes());
 		Assert.areEqual(3, queue.getSize());
 		Assert.areEqual('foo', queue.pop());
 		Assert.areEqual('bar', queue.pop());
@@ -368,6 +367,51 @@ class QueueTest extends UnitTestClass {
 
 	//region ICollection
 
+	QueueAverageTest() : void {
+		// Arrange
+		var outcome : number;
+
+		this._queue.push(-1);
+		this._queue.push(-2);
+		this._queue.push(-3);
+	
+		// Act
+		outcome = this._queue.average(x => -x);
+	
+		// Assert
+		Assert.areEqual(2, outcome);
+	}
+
+	QueueExistsTest() : void {
+		// Arrange
+		var outcome : boolean;
+
+		this._queue.push(56);
+		this._queue.push(57);
+		this._queue.push(58);
+	
+		// Act
+		outcome = this._queue.exists(x => x > 50);
+	
+		// Assert
+		Assert.isTrue(outcome);
+	}
+
+	QueueExistsFalseTest() : void {
+		// Arrange
+		var outcome : boolean;
+
+		this._queue.push(56);
+		this._queue.push(57);
+		this._queue.push(58);
+	
+		// Act
+		outcome = this._queue.exists(x => x > 100);
+	
+		// Assert
+		Assert.isFalse(outcome);
+	}
+
 	QueueFindTest() : void {
 		// Arrange
 		var outcome : number;
@@ -454,6 +498,66 @@ class QueueTest extends UnitTestClass {
 	
 		// Assert
 		Assert.areEqual(0, acc);
+	}
+
+	QueueIntersectTest() : void {
+		// Arrange
+		var source : Queue<number>, outcome : Queue<number>;
+
+		source = new Queue<number>();
+		source.push(2);
+		source.push(3);
+		source.push(4);
+
+		this._queue.push(1);
+		this._queue.push(2);
+		this._queue.push(3);
+	
+		// Act
+		outcome = this._toQueue(this._queue.intersect(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._queue, outcome);
+		Assert.areEqual(2, outcome.getSize());
+		Assert.areEqual(2, outcome.pop());
+		Assert.areEqual(3, outcome.pop());
+	}
+
+	QueueIntersectEmptySourceTest() : void {
+		// Arrange
+		var source : Queue<number>, outcome : Queue<number>;
+
+		source = new Queue<number>();
+		source.push(1);
+		source.push(2);
+		source.push(3);
+	
+		// Act
+		outcome = this._toQueue(this._queue.intersect(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._queue, outcome);
+		Assert.areEqual(0, outcome.getSize());
+	}
+
+	QueueIntersectEmptyTargetTest() : void {
+		// Arrange
+		var source : Queue<number>, outcome : Queue<number>;
+
+		source = new Queue<number>();
+		this._queue.push(1);
+		this._queue.push(2);
+		this._queue.push(3);
+	
+		// Act
+		outcome = this._toQueue(this._queue.intersect(source));
+	
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._queue, outcome);
+		Assert.areEqual(0, outcome.getSize());
 	}
 
 	QueueMapTest() : void {

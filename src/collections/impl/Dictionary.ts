@@ -136,6 +136,10 @@ class Dictionary<K, V> implements IDictionary<K, V> {
 		return CollectionUtils.CollectionHelper.average(this, getter);
 	}
 
+	exists(selector : Func<KeyValuePair<K, V>, boolean>) : boolean {
+		return this.find(selector) !== null;
+	}
+
 	find(selector : Func<KeyValuePair<K, V>, boolean>) : KeyValuePair<K, V> {
 		var size : number;
 
@@ -167,10 +171,7 @@ class Dictionary<K, V> implements IDictionary<K, V> {
 		outcome = new Dictionary<K, V>();
 		this.forEach(
 			(x) => {
-				var result : KeyValuePair<K, V>;
-
-				result = collection.find(e => e === x);
-				if (result !== null) {
+				if (collection.exists(e => (e.getKey() === x.getKey()) && (e.getValue() === x.getValue()))) {
 					outcome.add(x.getKey(), x.getValue());
 				}
 			}
@@ -246,10 +247,7 @@ class Dictionary<K, V> implements IDictionary<K, V> {
 		outcome = new Dictionary<K, V>(this);
 		collection.forEach(
 			(x) => {
-				var result : KeyValuePair<K, V>;
-
-				result = this.find(e => e === x);
-				if (result === null) {
+				if (!this.exists(e => (e.getKey() === x.getKey()) && (e.getValue() === x.getValue()))) {
 					outcome.add(x.getKey(), x.getValue());
 				}
 			}
@@ -259,7 +257,7 @@ class Dictionary<K, V> implements IDictionary<K, V> {
 	}
 
 	uniq() : ICollection<KeyValuePair<K, V>> {
-		return this;
+		return new Dictionary<K, V>(this);
 	}
 
 	//endregion ICollection

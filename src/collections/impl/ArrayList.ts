@@ -222,6 +222,10 @@ class ArrayList<T> implements IList<T> {
 		return CollectionUtils.CollectionHelper.average(this, getter);
 	}
 
+	exists(selector : Func<T, boolean>) : boolean {
+		return this.find(selector) !== null;
+	}
+
 	find(selector : Func<T, boolean>) : T {
 		var size : number;
 
@@ -255,10 +259,7 @@ class ArrayList<T> implements IList<T> {
 		outcome = new ArrayList<T>();
 		this.forEach(
 			(x) => {
-				var result : T;
-
-				result = collection.find(e => e === x);
-				if (result !== null) {
+				if (collection.exists(e => e === x)) {
 					outcome.add(x);
 				}
 			}
@@ -322,10 +323,7 @@ class ArrayList<T> implements IList<T> {
 		outcome = new ArrayList<T>(this);
 		collection.forEach(
 			(x) => {
-				var result : T;
-
-				result = this.find(e => e === x);
-				if (result === null) {
+				if (!this.exists(e => e === x)) {
 					outcome.add(x);
 				}
 			}
@@ -340,10 +338,7 @@ class ArrayList<T> implements IList<T> {
 		outcome = new ArrayList<T>();
 		this.forEach(
 			(x) => {
-				var result : T;
-
-				result = outcome.find(e => e === x);
-				if (result === null) {
+				if (!outcome.exists(e => e === x)) {
 					outcome.add(x);
 				}
 			}
