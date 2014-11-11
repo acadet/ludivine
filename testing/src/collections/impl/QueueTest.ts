@@ -491,17 +491,6 @@ class QueueTest extends UnitTestClass {
 		Assert.areEqual(-90, outcome);
 	}
 
-	QueueMaxEmptyTest() : void {
-		// Arrange
-		var outcome : number;
-	
-		// Act
-		outcome = this._queue.max(x => x);
-	
-		// Assert
-		Assert.isNull(outcome);
-	}
-
 	QueueMinTest() : void {
 		// Arrange
 		var outcome : number;
@@ -515,17 +504,6 @@ class QueueTest extends UnitTestClass {
 	
 		// Assert
 		Assert.areEqual(5, outcome);
-	}
-
-	QueueMinEmptyTest() : void {
-		// Arrange
-		var outcome : number;
-	
-		// Act
-		outcome = this._queue.min(x => x);
-	
-		// Assert
-		Assert.isNull(outcome);
 	}
 
 	QueueSelectTest() : void {

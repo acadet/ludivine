@@ -6,6 +6,7 @@
  * Returns new instance of called collection everytime.
  */
 interface ICollection<T> {
+	average(getter : Func<T, number>) : number;
 
 	/**
 	 * Finds first element matching condition. Default result is null
@@ -20,6 +21,8 @@ interface ICollection<T> {
 	 * @param {Action<T>} action Application
 	 */
 	forEach(action : Action<T>) : void;
+
+	intersect(collection : ICollection<T>) : ICollection<T>;
 
 	/**
 	 * Applies operation to each element and returns edited collection
@@ -75,4 +78,8 @@ interface ICollection<T> {
 	 * @return {IList<T>} Outcome IList
 	 */
 	toList() : IList<T>;
+
+	union(collection : ICollection<T>) : ICollection<T>;
+
+	uniq() : ICollection<T>;
 }

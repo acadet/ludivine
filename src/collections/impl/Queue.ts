@@ -326,57 +326,11 @@ class Queue<T> implements ISortableCollection<T> {
 	}
 
 	max(getter : Func<T, number>) : T {
-		var max : number;
-		var outcome : T;
-
-		if (this.getSize() === 0) {
-			return null;
-		}
-
-		outcome = this._top.getContent();
-		max = getter(outcome);
-
-		this.forEach(
-			(e) => {
-				var value : number;
-
-				value = getter(e);
-
-				if (value > max) {
-					max = value;
-					outcome = e;
-				}
-			}
-		);
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.max(this, getter);
 	}
 
 	min(getter : Func<T, number>) : T {
-		var min : number;
-		var outcome : T;
-
-		if (this.getSize() === 0) {
-			return null;
-		}
-
-		outcome = this._top.getContent();
-		min = getter(outcome);
-
-		this.forEach(
-			(e) => {
-				var value : number;
-
-				value = getter(e);
-
-				if (value < min) {
-					min = value;
-					outcome = e;
-				}
-			}
-		);
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.min(this, getter);
 	}
 
 	select(selector : Func<T, boolean>) : ICollection<T> {
@@ -396,30 +350,15 @@ class Queue<T> implements ISortableCollection<T> {
 	}
 
 	sum(getter : Func<T, number>) : number {
-		var total : number;
-
-		total = 0;
-		this.forEach(e => total += getter(e));
-
-		return total;
+		return CollectionUtils.CollectionHelper.sum(this, getter);
 	}
 
 	toArray() : Array<T> {
-		var outcome : Array<T>;
-
-		outcome = new Array<T>();
-		this.forEach(x => outcome.push(x));
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.toArray(this);
 	}
 
 	toDictionary<K, V>(keyGetter : Func<T, K>, valueGetter : Func<T, V>) : IDictionary<K, V> {
-		var outcome : IDictionary<K, V>;
-
-		outcome = new Dictionary<K, V>();
-		this.forEach(x => outcome.add(keyGetter(x), valueGetter(x)));
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.toDictionary(this, keyGetter, valueGetter);
 	}
 
 	toList() : IList<T> {

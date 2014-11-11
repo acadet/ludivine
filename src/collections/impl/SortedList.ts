@@ -504,55 +504,11 @@ class SortedList<A, B> implements IListableCollection<A> {
 	}
 
 	max(getter : Func<A, number>) : A {
-		var max : number;
-		var current : A;
-
-		if (this.getLength() === 0) {
-			return null;
-		}
-
-		current = this._head.getContent();
-		max = getter(current);
-
-		this.forEach(
-			(e) => {
-				var value : number;
-
-				value = getter(e);
-				if (value > max) {
-					max = value;
-					current = e;
-				}
-			}
-		);
-
-		return current;
+		return CollectionUtils.CollectionHelper.max(this, getter);
 	}
 
 	min(getter : Func<A, number>) : A {
-		var min : number;
-		var current : A;
-
-		if (this.getLength() === 0) {
-			return null;
-		}
-
-		current = this._head.getContent();
-		min = getter(current);
-
-		this.forEach(
-			(e) => {
-				var value : number;
-
-				value = getter(e);
-				if (value < min) {
-					min = value;
-					current = e;
-				}
-			}
-		);
-
-		return current;
+		return CollectionUtils.CollectionHelper.min(this, getter);
 	}
 
 	select(selector : Func<A, boolean>) : ICollection<A> {
@@ -571,30 +527,15 @@ class SortedList<A, B> implements IListableCollection<A> {
 	}
 
 	sum(getter : Func<A, number>) : number {
-		var acc : number;
-
-		acc = 0;
-		this.forEach(e => acc += getter(e));
-
-		return acc;
+		return CollectionUtils.CollectionHelper.sum(this, getter);
 	}
 
 	toArray() : Array<A> {
-		var outcome : Array<A>;
-
-		outcome = new Array<A>();
-		this.forEach(e => outcome.push(e));
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.toArray(this);
 	}
 
 	toDictionary<K, V>(keyGetter : Func<A, K>, valueGetter : Func<A, V>) : IDictionary<K, V> {
-		var outcome : IDictionary<K, V>;
-
-		outcome = new Dictionary<K, V>();
-		this.forEach(x => outcome.add(keyGetter(x), valueGetter(x)));
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.toDictionary(this, keyGetter, valueGetter);
 	}
 
 	toList() : IList<A> {

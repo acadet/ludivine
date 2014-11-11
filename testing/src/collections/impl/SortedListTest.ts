@@ -578,17 +578,6 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foobar', outcome);
 	}
 
-	SortedListAscMaxEmptyTest() : void {
-		// Arrange
-		var outcome : string;
-	
-		// Act
-		outcome = this._ascList.max(x => x.length);
-	
-		// Assert
-		Assert.isNull(outcome);
-	}
-
 	SortedListAscMinTest() : void {
 		// Arrange
 		var outcome : string;
@@ -601,17 +590,6 @@ class SortedListTest extends UnitTestClass {
 	
 		// Assert
 		Assert.areEqual('foobar', outcome);
-	}
-
-	SortedListAscMinEmptyTest() : void {
-		// Arrange
-		var outcome : string;
-	
-		// Act
-		outcome = this._ascList.min(x => x.length);
-	
-		// Assert
-		Assert.isNull(outcome);
 	}
 
 	SortedListAscSelectTest() : void {
@@ -1124,17 +1102,6 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foobar', outcome);
 	}
 
-	SortedListDescMaxEmptyTest() : void {
-		// Arrange
-		var outcome : string;
-	
-		// Act
-		outcome = this._descList.max(x => x.length);
-	
-		// Assert
-		Assert.isNull(outcome);
-	}
-
 	SortedListDescMinTest() : void {
 		// Arrange
 		var outcome : string;
@@ -1147,17 +1114,6 @@ class SortedListTest extends UnitTestClass {
 	
 		// Assert
 		Assert.areEqual('foobar', outcome);
-	}
-
-	SortedListDescMinEmptyTest() : void {
-		// Arrange
-		var outcome : string;
-	
-		// Act
-		outcome = this._descList.min(x => x.length);
-	
-		// Assert
-		Assert.isNull(outcome);
 	}
 
 	SortedListDescSelectTest() : void {

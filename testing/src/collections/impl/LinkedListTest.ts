@@ -727,17 +727,6 @@ class LinkedListTest extends UnitTestClass {
 		Assert.areEqual(-56, outcome);
 	}
 
-	LinkedListMaxEmptyTest() : void {
-		// Arrange
-		var outcome : number;
-	
-		// Act
-		outcome = this._list.max(x => x);
-	
-		// Assert
-		Assert.isNull(outcome);
-	}
-
 	LinkedListMinTest() : void {
 		// Arrange
 		var outcome : number;
@@ -751,17 +740,6 @@ class LinkedListTest extends UnitTestClass {
 	
 		// Assert
 		Assert.areEqual(2, outcome);
-	}
-
-	LinkedListMinEmptyTest() : void {
-		// Arrange
-		var outcome : number;
-	
-		// Act
-		outcome = this._list.min(x => x);
-	
-		// Assert
-		Assert.isNull(outcome);
 	}
 
 	LinkedListSelectTest() : void {

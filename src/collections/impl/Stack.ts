@@ -321,55 +321,11 @@ class Stack<T> implements ISortableCollection<T> {
 	}
 
 	max(getter : Func<T, number>) : T {
-		var max : number;
-		var e : T;
-
-		if (this.getSize() === 0) {
-			return null;
-		}
-
-		e = this._tail.getContent();
-		max = getter(e);
-
-		this.forEach(
-			(x) => {
-				var value : number;
-
-				value = getter(x);
-				if (value > max) {
-					max = value;
-					e = x;
-				}
-			}
-		);
-
-		return e;
+		return CollectionUtils.CollectionHelper.max(this, getter);
 	}
 
 	min(getter : Func<T, number>) : T {
-		var min : number;
-		var e : T;
-
-		if (this.getSize() === 0) {
-			return null;
-		}
-
-		e = this._tail.getContent();
-		min = getter(e);
-
-		this.forEach(
-			(x) => {
-				var value : number;
-
-				value = getter(x);
-				if (value < min) {
-					min = value;
-					e = x;
-				}
-			}
-		);
-
-		return e;
+		return CollectionUtils.CollectionHelper.min(this, getter);
 	}
 
 	select(selector : Func<T, boolean>) : ICollection<T> {
@@ -389,30 +345,15 @@ class Stack<T> implements ISortableCollection<T> {
 	}
 
 	sum(getter : Func<T, number>) : number {
-		var total : number;
-
-		total = 0;
-		this.forEach(x => total += getter(x));
-
-		return total;
+		return CollectionUtils.CollectionHelper.sum(this, getter);
 	}
 
 	toArray() : Array<T> {
-		var outcome : Array<T>;
-
-		outcome = new Array<T>();
-		this.forEach(x => outcome.push(x));
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.toArray(this);
 	}
 
 	toDictionary<K, V>(keyGetter : Func<T, K>, valueGetter : Func<T, V>) : IDictionary<K, V> {
-		var outcome : IDictionary<K, V>;
-
-		outcome = new Dictionary<K, V>();
-		this.forEach(x => outcome.add(keyGetter(x), valueGetter(x)));
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.toDictionary(this, keyGetter, valueGetter);
 	}
 
 	toList() : IList<T> {

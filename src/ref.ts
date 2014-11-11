@@ -21,4 +21,5 @@
 /// <reference path="collections/interfaces/ISortableCollection.ts" />
 /// <reference path="collections/utils/ArrayUtils.ts" />
 /// <reference path="collections/utils/CollectionError.ts" />
+/// <reference path="collections/utils/CollectionHelper.ts" />
 //grunt-end

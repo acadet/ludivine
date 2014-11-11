@@ -453,17 +453,6 @@ class StackTest extends UnitTestClass {
 		Assert.areEqual(-10, outcome);
 	}
 
-	StackMaxEmptyTest() : void {
-		// Arrange
-		var outcome : number;
-	
-		// Act
-		outcome = this._stack.max(x => x);
-	
-		// Assert
-		Assert.isNull(outcome);
-	}
-
 	StackMinTest() : void {
 		// Arrange
 		var outcome : number;
@@ -477,17 +466,6 @@ class StackTest extends UnitTestClass {
 	
 		// Assert
 		Assert.areEqual(1, outcome);
-	}
-
-	StackMinEmptyTest() : void {
-		// Arrange
-		var outcome : number;
-	
-		// Act
-		outcome = this._stack.min(x => x);
-	
-		// Assert
-		Assert.isNull(outcome);
 	}
 
 	StackSelectTest() : void {

@@ -278,17 +278,6 @@ class DictionaryTest extends UnitTestClass {
 		Assert.areEqual(99, outcome.getValue());
 	}
 
-	DictionaryMaxEmptyTest() : void {
-		// Arrange
-		var outcome : KeyValuePair<string, number>;
-	
-		// Act
-		outcome = this._dict.max(x => x.getKey().length * 2);
-	
-		// Assert
-		Assert.isNull(outcome);
-	}
-
 	DictionaryMinTest() : void {
 		// Arrange
 		var outcome : KeyValuePair<string, number>;
@@ -304,17 +293,6 @@ class DictionaryTest extends UnitTestClass {
 		Assert.isNotNull(outcome);
 		Assert.areEqual('bar', outcome.getKey());
 		Assert.areEqual(32, outcome.getValue());
-	}
-
-	DictionaryMinEmptyTest() : void {
-		// Arrange
-		var outcome : KeyValuePair<string, number>;
-	
-		// Act
-		outcome = this._dict.min(x => x.getKey().length);
-	
-		// Assert
-		Assert.isNull(outcome);
 	}
 
 	DictionarySelectTest() : void {

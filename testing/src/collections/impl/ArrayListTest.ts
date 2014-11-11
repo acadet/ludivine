@@ -440,17 +440,6 @@ class ArrayListTest extends UnitTestClass {
 		Assert.areEqual(-56, outcome);
 	}
 
-	ArrayListMaxEmptyTest() : void {
-		// Arrange
-		var outcome : number;
-	
-		// Act
-		outcome = this._list.max(x => x);
-	
-		// Assert
-		Assert.isNull(outcome);
-	}
-
 	ArrayListMinTest() : void {
 		// Arrange
 		var outcome : number;
@@ -464,17 +453,6 @@ class ArrayListTest extends UnitTestClass {
 	
 		// Assert
 		Assert.areEqual(2, outcome);
-	}
-
-	ArrayListMinEmptyTest() : void {
-		// Arrange
-		var outcome : number;
-	
-		// Act
-		outcome = this._list.min(x => x);
-	
-		// Assert
-		Assert.isNull(outcome);
 	}
 
 	ArrayListSelectTest() : void {
