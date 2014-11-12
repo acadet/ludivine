@@ -21,24 +21,24 @@ module StackUtils {
 		 * Wrapped content
 		 */
 		private _content : T;
-		
+
 		//endregion Fields
-		
+
 		//region Constructors
 
 		constructor(content? : T) {
 			this._content = content;
 			this._prev = null;
 		}
-		
+
 		//endregion Constructors
-		
+
 		//region Methods
-		
+
 		//region Private Methods
-		
+
 		//endregion Private Methods
-		
+
 		//region Public Methods
 
 		/**
@@ -80,9 +80,9 @@ module StackUtils {
 		hasPrev() : boolean {
 			return this._prev !== null && this._prev !== undefined;
 		}
-		
+
 		//endregion Public Methods
-		
+
 		//endregion Methods
 	}
 }
@@ -103,9 +103,9 @@ class Stack<T> implements ISortableCollection<T> {
 	 * Current size
 	 */
 	private _size : number;
-	
+
 	//endregion Fields
-	
+
 	//region Constructors
 
 	/**
@@ -119,11 +119,11 @@ class Stack<T> implements ISortableCollection<T> {
 			source.forEach(x => this.push(x));
 		}
 	}
-	
+
 	//endregion Constructors
-	
+
 	//region Methods
-	
+
 	//region Private Methods
 
 	/**
@@ -133,6 +133,10 @@ class Stack<T> implements ISortableCollection<T> {
 	private _forEachInversed(action : Action<T>) : void {
 		var a : Array<T>;
 		var cursor : StackUtils.StackElement<T>;
+
+		if (this.getSize() === 0) {
+			return;
+		}
 
 		a = new Array<T>();
 		cursor = this._tail;
@@ -148,9 +152,9 @@ class Stack<T> implements ISortableCollection<T> {
 			action(a[i]);
 		}
 	}
-	
+
 	//endregion Private Methods
-	
+
 	//region Public Methods
 
 	/**
@@ -192,7 +196,7 @@ class Stack<T> implements ISortableCollection<T> {
 	}
 
 	/**
-	 * Adds new value to stack 
+	 * Adds new value to stack
 	 * @param {T} value Value
 	 */
 	push(value : T) : void {
@@ -415,8 +419,8 @@ class Stack<T> implements ISortableCollection<T> {
 	}
 
 	//endregion ICollection
-	
+
 	//endregion Public Methods
-	
+
 	//endregion Methods
 }

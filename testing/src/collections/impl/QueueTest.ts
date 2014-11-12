@@ -23,10 +23,10 @@ class QueueTest extends UnitTestClass {
 	QueueElementConstructorTest() : void {
 		// Arrange
 		var e : QueueUtils.QueueElement<string>;
-	
+
 		// Act
 		e = new QueueUtils.QueueElement<string>('foo');
-	
+
 		// Assert
 		Assert.isNotNull(e);
 		Assert.areEqual('foo', e.getContent());
@@ -38,11 +38,11 @@ class QueueTest extends UnitTestClass {
 		var value : string, outcome : string;
 
 		value = 'foo';
-	
+
 		// Act
 		this._queueElement.setContent(value);
 		outcome = this._queueElement.getContent();
-	
+
 		// Assert
 		Assert.areEqual(value, outcome);
 	}
@@ -52,11 +52,11 @@ class QueueTest extends UnitTestClass {
 		var value : QueueUtils.QueueElement<string>, outcome : QueueUtils.QueueElement<string>;
 
 		value = new QueueUtils.QueueElement<string>();
-	
+
 		// Act
 		this._queueElement.setNext(value);
 		outcome = this._queueElement.getNext();
-	
+
 		// Assert
 		Assert.areEqual(value, outcome);
 	}
@@ -66,10 +66,10 @@ class QueueTest extends UnitTestClass {
 		var outcome : boolean;
 
 		this._queueElement.setNext(new QueueUtils.QueueElement<string>());
-	
+
 		// Act
 		outcome = this._queueElement.hasNext();
-	
+
 		// Assert
 		Assert.isTrue(outcome);
 	}
@@ -77,10 +77,10 @@ class QueueTest extends UnitTestClass {
 	QueueElementHasNextNoElementTest() : void {
 		// Arrange
 		var outcome : boolean;
-	
+
 		// Act
 		outcome = this._queueElement.hasNext();
-	
+
 		// Assert
 		Assert.isFalse(outcome);
 	}
@@ -90,10 +90,10 @@ class QueueTest extends UnitTestClass {
 	QueueConstructorTest() : void {
 		// Arrange
 		var queue : Queue<number>;
-	
+
 		// Act
 		queue = new Queue<number>();
-	
+
 		// Assert
 		Assert.isNotNull(queue);
 		Assert.areEqual(0, queue.getSize());
@@ -106,10 +106,10 @@ class QueueTest extends UnitTestClass {
 
 		source = new Mocks.Collection<string>();
 		source.ForEachOutcome(['foo', 'bar', 'barbar']);
-	
+
 		// Act
 		queue = new Queue<string>(source);
-	
+
 		// Assert
 		Assert.isNotNull(queue);
 		Assert.areEqual(1, source.ForEachTimes());
@@ -122,10 +122,10 @@ class QueueTest extends UnitTestClass {
 	QueueGetSizeEmptyTest() : void {
 		// Arrange
 		var outcome : number;
-	
+
 		// Act
 		outcome = this._queue.getSize();
-	
+
 		// Assert
 		Assert.areEqual(0, outcome);
 	}
@@ -136,10 +136,10 @@ class QueueTest extends UnitTestClass {
 
 		this._queue.push(3);
 		this._queue.push(4);
-	
+
 		// Act
 		outcome = this._queue.getSize();
-	
+
 		// Assert
 		Assert.areEqual(2, outcome);
 	}
@@ -151,10 +151,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(3);
 		this._queue.push(4);
 		this._queue.top();
-	
+
 		// Act
 		outcome = this._queue.getSize();
-	
+
 		// Assert
 		Assert.areEqual(2, outcome);
 	}
@@ -166,10 +166,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(3);
 		this._queue.push(4);
 		this._queue.pop();
-	
+
 		// Act
 		outcome = this._queue.getSize();
-	
+
 		// Assert
 		Assert.areEqual(1, outcome);
 	}
@@ -180,10 +180,10 @@ class QueueTest extends UnitTestClass {
 
 		this._queue.push(65);
 		this._queue.push(43);
-	
+
 		// Act
 		outcome = this._queue.top();
-	
+
 		// Assert
 		Assert.areEqual(65, outcome);
 		Assert.areEqual(outcome, this._queue.top());
@@ -192,10 +192,10 @@ class QueueTest extends UnitTestClass {
 	QueueTopEmptyTest() : void {
 		// Arrange
 		var outcome : number;
-	
+
 		// Act
 		outcome = this._queue.top();
-	
+
 		// Assert
 		Assert.isNull(outcome);
 	}
@@ -206,10 +206,10 @@ class QueueTest extends UnitTestClass {
 
 		this._queue.push(65);
 		this._queue.push(45);
-	
+
 		// Act
 		outcome = this._queue.pop();
-	
+
 		// Assert
 		Assert.areEqual(65, outcome);
 		Assert.areEqual(45, this._queue.top());
@@ -218,10 +218,10 @@ class QueueTest extends UnitTestClass {
 	QueuePopEmptyTest() : void {
 		// Arrange
 		var outcome : number;
-	
+
 		// Act
 		outcome = this._queue.pop();
-	
+
 		// Assert
 		Assert.isNull(outcome);
 	}
@@ -231,7 +231,7 @@ class QueueTest extends UnitTestClass {
 		var outcome : number;
 
 		this._queue.push(65);
-	
+
 		// Act
 		outcome = this._queue.pop();
 
@@ -242,21 +242,21 @@ class QueueTest extends UnitTestClass {
 
 	QueuePushTest() : void {
 		// Arrange
-	
+
 		// Act
 		this._queue.push(65);
-	
+
 		// Assert
 		Assert.areEqual(65, this._queue.top());
 	}
 
 	QueuePushMultipleTest() : void {
 		// Arrange
-	
+
 		// Act
 		this._queue.push(65);
 		this._queue.push(56);
-	
+
 		// Assert
 		Assert.areEqual(65, this._queue.pop());
 		Assert.areEqual(56, this._queue.pop());
@@ -272,10 +272,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(43);
 		this._queue.push(78);
 		this._queue.push(2);
-	
+
 		// Act
 		outcome = this._toQueue(this._queue.orderBy(x => x));
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
 		Assert.areNotEqual(this._queue, outcome);
@@ -288,10 +288,10 @@ class QueueTest extends UnitTestClass {
 	QueueOrderByEmptyTest() : void {
 		// Arrange
 		var outcome : Queue<number>;
-	
+
 		// Act
 		outcome = this._toQueue(this._queue.orderBy(x => x));
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
 		Assert.areNotEqual(this._queue, outcome);
@@ -306,10 +306,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(67);
 		this._queue.push(87);
 		this._queue.push(3);
-	
+
 		// Act
 		outcome = this._toQueue(this._queue.orderByDesc(x => x));
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
 		Assert.areNotEqual(this._queue, outcome);
@@ -322,10 +322,10 @@ class QueueTest extends UnitTestClass {
 	QueueOrderByDescEmptyTest() : void {
 		// Arrange
 		var outcome : Queue<number>;
-	
+
 		// Act
 		outcome = this._toQueue(this._queue.orderByDesc(x => x));
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
 		Assert.areNotEqual(this._queue, outcome);
@@ -338,10 +338,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(45);
 		this._queue.push(43);
 		this._queue.push(67);
-	
+
 		// Act
 		outcome = this._toQueue(this._queue.reverse());
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
 		Assert.areNotEqual(this._queue, outcome);
@@ -353,10 +353,10 @@ class QueueTest extends UnitTestClass {
 	QueueReverseEmptyTest() : void {
 		// Arrange
 		var outcome : Queue<number>;
-	
+
 		// Act
 		outcome = this._toQueue(this._queue.reverse());
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
 		Assert.areEqual(0, outcome.getSize());
@@ -374,10 +374,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(-1);
 		this._queue.push(-2);
 		this._queue.push(-3);
-	
+
 		// Act
 		outcome = this._queue.average(x => -x);
-	
+
 		// Assert
 		Assert.areEqual(2, outcome);
 	}
@@ -389,10 +389,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(56);
 		this._queue.push(57);
 		this._queue.push(58);
-	
+
 		// Act
 		outcome = this._queue.exists(x => x > 50);
-	
+
 		// Assert
 		Assert.isTrue(outcome);
 	}
@@ -404,10 +404,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(56);
 		this._queue.push(57);
 		this._queue.push(58);
-	
+
 		// Act
 		outcome = this._queue.exists(x => x > 100);
-	
+
 		// Assert
 		Assert.isFalse(outcome);
 	}
@@ -419,10 +419,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(5);
 		this._queue.push(3);
 		this._queue.push(4);
-	
+
 		// Act
 		outcome = this._queue.find(x => x <= 4);
-	
+
 		// Assert
 		Assert.areEqual(3, outcome);
 	}
@@ -434,10 +434,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(5);
 		this._queue.push(3);
 		this._queue.push(4);
-	
+
 		// Act
 		outcome = this._queue.find(x => x === 4);
-	
+
 		// Assert
 		Assert.areEqual(4, outcome);
 	}
@@ -449,10 +449,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(5);
 		this._queue.push(3);
 		this._queue.push(4);
-	
+
 		// Act
 		outcome = this._queue.find(x => x > 10);
-	
+
 		// Assert
 		Assert.isNull(outcome);
 	}
@@ -460,10 +460,10 @@ class QueueTest extends UnitTestClass {
 	QueueFindEmptyTest() : void {
 		// Arrange
 		var outcome : number;
-	
+
 		// Act
 		outcome = this._queue.find(x => true);
-	
+
 		// Assert
 		Assert.isNull(outcome);
 	}
@@ -476,10 +476,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(1);
 		this._queue.push(2);
 		this._queue.push(3);
-	
+
 		// Act
 		this._queue.forEach(x => acc.push(x));
-	
+
 		// Assert
 		Assert.areEqual(3, acc.length);
 		Assert.areEqual(1, acc[0]);
@@ -492,10 +492,10 @@ class QueueTest extends UnitTestClass {
 		var acc : number;
 
 		acc = 0;
-	
+
 		// Act
 		this._queue.forEach(x => acc += x);
-	
+
 		// Assert
 		Assert.areEqual(0, acc);
 	}
@@ -512,10 +512,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(1);
 		this._queue.push(2);
 		this._queue.push(3);
-	
+
 		// Act
 		outcome = this._toQueue(this._queue.intersect(source));
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
 		Assert.areNotEqual(this._queue, outcome);
@@ -532,10 +532,10 @@ class QueueTest extends UnitTestClass {
 		source.push(1);
 		source.push(2);
 		source.push(3);
-	
+
 		// Act
 		outcome = this._toQueue(this._queue.intersect(source));
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
 		Assert.areNotEqual(this._queue, outcome);
@@ -550,10 +550,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(1);
 		this._queue.push(2);
 		this._queue.push(3);
-	
+
 		// Act
 		outcome = this._toQueue(this._queue.intersect(source));
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
 		Assert.areNotEqual(this._queue, outcome);
@@ -567,10 +567,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(1);
 		this._queue.push(2);
 		this._queue.push(3);
-	
+
 		// Act
 		outcome = this._toQueue(this._queue.map(x => x * x));
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
 		Assert.areNotEqual(this._queue, outcome);
@@ -587,10 +587,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(56);
 		this._queue.push(-90);
 		this._queue.push(67);
-	
+
 		// Act
 		outcome = this._queue.max(x => x * x);
-	
+
 		// Assert
 		Assert.areEqual(-90, outcome);
 	}
@@ -600,12 +600,12 @@ class QueueTest extends UnitTestClass {
 		var outcome : number;
 
 		this._queue.push(56);
-		this._queue.push(5);		
+		this._queue.push(5);
 		this._queue.push(-60);
-	
+
 		// Act
 		outcome = this._queue.min(x => x * x);
-	
+
 		// Assert
 		Assert.areEqual(5, outcome);
 	}
@@ -618,10 +618,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(3);
 		this._queue.push(67);
 		this._queue.push(34);
-	
+
 		// Act
 		outcome = this._toQueue(this._queue.select(x => x > 40));
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
 		Assert.areNotEqual(this._queue, outcome);
@@ -637,10 +637,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(2);
 		this._queue.push(-2);
 		this._queue.push(5);
-	
+
 		// Act
 		outcome = this._queue.sum(x => x);
-	
+
 		// Assert
 		Assert.areEqual(5, outcome);
 	}
@@ -652,10 +652,10 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(45);
 		this._queue.push(67);
 		this._queue.push(32);
-	
+
 		// Act
 		outcome = this._queue.toArray();
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
 		Assert.areEqual(3, outcome.length);
@@ -671,13 +671,13 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(34);
 		this._queue.push(45);
 		this._queue.push(33);
-	
+
 		// Act
 		outcome = this._queue.toDictionary(
 			(x) => { return x; },
 			(x) => { return x % 2; }
 		);
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
 		Assert.areEqual(3, outcome.getSize());
@@ -693,16 +693,124 @@ class QueueTest extends UnitTestClass {
 		this._queue.push(45);
 		this._queue.push(32);
 		this._queue.push(21);
-	
+
 		// Act
 		outcome = this._queue.toList();
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
 		Assert.areEqual(3, outcome.getLength());
 		Assert.areEqual(45, outcome.getAt(0));
 		Assert.areEqual(32, outcome.getAt(1));
 		Assert.areEqual(21, outcome.getAt(2));
+	}
+
+	QueueUnionTest() : void {
+		// Arrange
+		var source : Mocks.Collection<number>;
+		var outcome : Queue<number>;
+
+		source = new Mocks.Collection<number>();
+		source.ForEachOutcome([3, 4, 5]);
+
+		this._queue.push(1);
+		this._queue.push(2);
+		this._queue.push(3);
+
+		// Act
+		outcome = this._toQueue(this._queue.union(source));
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._queue, outcome);
+		Assert.areEqual(1, source.ForEachTimes());
+		Assert.areEqual(5, outcome.getSize());
+		Assert.areEqual(1, outcome.pop());
+		Assert.areEqual(2, outcome.pop());
+		Assert.areEqual(3, outcome.pop());
+		Assert.areEqual(4, outcome.pop());
+		Assert.areEqual(5, outcome.pop());
+	}
+
+	QueueUnionEmptySourceTest() : void {
+		// Arrange
+		var source : Mocks.Collection<number>;
+		var outcome : Queue<number>;
+
+		source = new Mocks.Collection<number>();
+		source.ForEachOutcome([3, 4, 5]);
+
+		// Act
+		outcome = this._toQueue(this._queue.union(source));
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._queue, outcome);
+		Assert.areEqual(1, source.ForEachTimes());
+		Assert.areEqual(3, outcome.getSize());
+		Assert.areEqual(3, outcome.pop());
+		Assert.areEqual(4, outcome.pop());
+		Assert.areEqual(5, outcome.pop());
+	}
+
+	QueueUnionEmptyTargetTest() : void {
+		// Arrange
+		var source : Mocks.Collection<number>;
+		var outcome : Queue<number>;
+
+		source = new Mocks.Collection<number>();
+		source.ForEachOutcome([]);
+
+		this._queue.push(1);
+		this._queue.push(2);
+		this._queue.push(3);
+
+		// Act
+		outcome = this._toQueue(this._queue.union(source));
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._queue, outcome);
+		Assert.areEqual(1, source.ForEachTimes());
+		Assert.areEqual(3, outcome.getSize());
+		Assert.areEqual(1, outcome.pop());
+		Assert.areEqual(2, outcome.pop());
+		Assert.areEqual(3, outcome.pop());
+	}
+
+	QueueUniqTest() : void {
+		// Arrange
+		var outcome : Queue<number>;
+
+		this._queue.push(1);
+		this._queue.push(2);
+		this._queue.push(2);
+		this._queue.push(3);
+		this._queue.push(3);
+
+		// Act
+		outcome = this._toQueue(this._queue.uniq());
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._queue, outcome);
+		Assert.areEqual(3, outcome.getSize());
+		Assert.areEqual(1, outcome.pop());
+		Assert.areEqual(2, outcome.pop());
+		Assert.areEqual(3, outcome.pop());
+	}
+
+	QueueUniqEmptyTest() : void {
+		// Arrange
+		var outcome : Queue<number>;
+
+		// Act
+		outcome = this._toQueue(this._queue.uniq());
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._queue, outcome);
+		Assert.areEqual(0, outcome.getSize());
 	}
 
 	//endregion ICollection
