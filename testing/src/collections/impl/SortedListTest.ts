@@ -205,7 +205,7 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foo', this._ascList.getAt(0));
 	}
 
-	SortedListAscAddFirstElementTest() : void {
+	SortedListAscAddFirstTest() : void {
 		// Arrange
 		this._ascList.add('foobar');
 
@@ -218,7 +218,7 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foobar', this._ascList.getAt(1));
 	}
 
-	SortedListAscAddLastElementTest() : void {
+	SortedListAscAddLastTest() : void {
 		// Arrange
 		this._ascList.add('foo');
 		this._ascList.add('barbar');
@@ -245,6 +245,36 @@ class SortedListTest extends UnitTestClass {
 
 		// Assert
 		Assert.areEqual('bar', outcome);
+	}
+
+	SortedListGetAtFirstTest() : void {
+		// Arrange
+		var outcome : string;
+
+		this._ascList.add('foobar');
+		this._ascList.add('bar');
+		this._ascList.add('foo');
+
+		// Act
+		outcome = this._ascList.getAt(0);
+
+		// Assert
+		Assert.areEqual('bar', outcome);
+	}
+
+	SortedListGetAtLastTest() : void {
+		// Arrange
+		var outcome : string;
+
+		this._ascList.add('foobar');
+		this._ascList.add('foo');
+		this._ascList.add('barbar');
+
+		// Act
+		outcome = this._ascList.getAt(2);
+
+		// Assert
+		Assert.areEqual('barbar', outcome);
 	}
 
 	SortedListAscGetAtNegativeIndexTest() : void {
@@ -305,7 +335,7 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foobar', this._ascList.getAt(1));
 	}
 
-	SortedListAscRemoveFirstElementTest() : void {
+	SortedListAscRemoveFirstTest() : void {
 		// Arrange
 		this._ascList.add('foo');
 		this._ascList.add('bar');
@@ -320,6 +350,32 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foobar', this._ascList.getAt(1));
 	}
 
+	SortedListAscRemoveLastTest() : void {
+		// Arrange
+		this._ascList.add('foobar');
+		this._ascList.add('foo');
+		this._ascList.add('bar');
+
+		// Act
+		this._ascList.remove('foobar');
+
+		// Assert
+		Assert.areEqual(2, this._ascList.getLength());
+		Assert.areEqual('foo', this._ascList.getAt(0));
+		Assert.areEqual('bar', this._ascList.getAt(1));
+	}
+
+	SortedListAscRemoveSingleTest() : void {
+		// Arrange
+		this._ascList.add('foo');
+
+		// Act
+		this._ascList.remove('foo');
+
+		// Assert
+		Assert.areEqual(0, this._ascList.getLength());
+	}
+
 	SortedListAscRemoveNoElementTest() : void {
 		// Arrange
 		this._ascList.add('foo');
@@ -332,6 +388,16 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual(2, this._ascList.getLength());
 		Assert.areEqual('foo', this._ascList.getAt(0));
 		Assert.areEqual('bar', this._ascList.getAt(1));
+	}
+
+	SortedListAscRemoveEmptyTest() : void {
+		// Arrange
+
+		// Act
+		this._ascList.remove('foo');
+
+		// Assert
+		Assert.areEqual(0, this._ascList.getLength());
 	}
 
 	SortedListAscRemoveAtTest() : void {
@@ -349,7 +415,7 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foobar', this._ascList.getAt(1));
 	}
 
-	SortedListAscRemoveAtHeadTest() : void {
+	SortedListAscRemoveAtFirstTest() : void {
 		// Arrange
 		this._ascList.add('foo');
 		this._ascList.add('foobar');
@@ -362,6 +428,21 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual(2, this._ascList.getLength());
 		Assert.areEqual('bar', this._ascList.getAt(0));
 		Assert.areEqual('foobar', this._ascList.getAt(1));
+	}
+
+	SortedListAscRemoveAtLastTest() : void {
+		// Arrange
+		this._ascList.add('foo');
+		this._ascList.add('foobar');
+		this._ascList.add('bar');
+
+		// Act
+		this._ascList.removeAt(2);
+
+		// Assert
+		Assert.areEqual(2, this._ascList.getLength());
+		Assert.areEqual('foo', this._ascList.getAt(0));
+		Assert.areEqual('bar', this._ascList.getAt(1));
 	}
 
 	SortedListAscRemoveAtNegativeIndexTest() : void {
@@ -402,7 +483,7 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('f', this._ascList.getAt(0));
 	}
 
-	SortedListAscRemoveIfFirstElementTest() : void {
+	SortedListAscRemoveIfFirstTest() : void {
 		// Arrange
 		this._ascList.add('foo');
 		this._ascList.add('foobar');
@@ -416,18 +497,56 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foobar', this._ascList.getAt(0));
 	}
 
-	SortedListAscRemoveIgnoreTest() : void {
+	SortedListAscRemoveIfLastTest() : void {
 		// Arrange
 		this._ascList.add('foo');
-		this._ascList.add('foobar');
-		this._ascList.add('foobarbar');
+		this._ascList.add('barbar');
+		this._ascList.add('bar');
 
 		// Act
-		this._ascList.removeIf(x => x.length < 4 || x.length > 7);
+		this._ascList.removeIf(x => x.length > 5);
 
 		// Assert
-		Assert.areEqual(1, this._ascList.getLength());
-		Assert.areEqual('foobar', this._ascList.getAt(0));
+		Assert.areEqual(2, this._ascList.getLength());
+		Assert.areEqual('foo', this._ascList.getAt(0));
+		Assert.areEqual('bar', this._ascList.getAt(1));
+	}
+
+	SortedListAscRemoveIfSingleTest() : void {
+		// Arrange
+		this._ascList.add('foo');
+
+		// Act
+		this._ascList.removeIf(x => true);
+
+		// Assert
+		Assert.areEqual(0, this._ascList.getLength());
+	}
+
+	SortedListAscRemoveIfNothingTest() : void {
+		// Arrange
+		this._ascList.add('foo');
+		this._ascList.add('bar');
+		this._ascList.add('barbar');
+
+		// Act
+		this._ascList.removeIf(x => x.length > 100);
+
+		// Assert
+		Assert.areEqual(3, this._ascList.getLength());
+		Assert.areEqual('foo', this._ascList.getAt(0));
+		Assert.areEqual('bar', this._ascList.getAt(1));
+		Assert.areEqual('barbar', this._ascList.getAt(2));
+	}
+
+	SortedListAscRemoveIfEmptyTest() : void {
+		// Arrange
+
+		// Act
+		this._ascList.removeIf(x => true);
+
+		// Assert
+		Assert.areEqual(0, this._ascList.getLength());
 	}
 
 	//region Ascending ISortableCollection

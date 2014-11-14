@@ -51,6 +51,23 @@ class DictionaryTest extends UnitTestClass {
 		Assert.areEqual('foobar', dict.get(67));
 	}
 
+	DictionaryConstructorWithEmptySourceTest() : void {
+		// Arrange
+		var outcome : Dictionary<string, Mocks.Person>;
+		var source : Mocks.Collection<KeyValuePair<string, Mocks.Person>>;
+
+		source = new Mocks.Collection<KeyValuePair<string, Mocks.Person>>();
+		source.ForEachOutcome([]);
+
+		// Act
+		outcome = new Dictionary<string, Mocks.Person>(source);
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(1, source.ForEachTimes());
+		Assert.areEqual(0, outcome.getSize());
+	}
+
 	//region IDictionary
 
 	DictionaryAddTest() : void {
@@ -200,6 +217,17 @@ class DictionaryTest extends UnitTestClass {
 		Assert.throws(f);
 	}
 
+	DictionaryRemoveSingleElementTest() : void {
+		// Arrange
+		this._dict.add('foo', 45);
+
+		// Act
+		this._dict.remove('foo');
+
+		// Assert
+		Assert.areEqual(0, this._dict.getSize());
+	}
+
 	DictionaryRemoveEmptyTest() : void {
 		// Arrange
 		var f : Action0;
@@ -227,6 +255,17 @@ class DictionaryTest extends UnitTestClass {
 		Assert.throws(() => this._dict.get('foobar'));
 	}
 
+	DictionaryRemoveIfSingleElementTest() : void {
+		// Arrange
+		this._dict.add('foo', 42);
+
+		// Act
+		this._dict.removeIf(x => true);
+
+		// Assert
+		Assert.areEqual(0, this._dict.getSize());
+	}
+
 	DictionaryRemoveIfEmptyTest() : void {
 		// Arrange
 
@@ -235,6 +274,22 @@ class DictionaryTest extends UnitTestClass {
 
 		// Assert
 		Assert.areEqual(0, this._dict.getSize());
+	}
+
+	DictionaryRemoveIfNothingTest() : void {
+		// Arrange
+		this._dict.add('foo', 34);
+		this._dict.add('bar', 45);
+		this._dict.add('barbar', 34);
+
+		// Act
+		this._dict.removeIf(x => x === null);
+
+		// Assert
+		Assert.areEqual(3, this._dict.getSize());
+		Assert.areEqual(34, this._dict.get('foo'));
+		Assert.areEqual(45, this._dict.get('bar'));
+		Assert.areEqual(34, this._dict.get('barbar'));
 	}
 
 	//endregion IDictionary
@@ -516,6 +571,23 @@ class DictionaryTest extends UnitTestClass {
 		Assert.areEqual(0, this._dict.getSize());
 	}
 
+	DictionarySelectNothingTest() : void {
+		// Arrange
+		var outcome : Dictionary<string, number>;
+
+		this._dict.add('foo', 34);
+		this._dict.add('bar', 45);
+		this._dict.add('foobar', 12);
+
+		// Act
+		outcome = this._toDictionary(this._dict.select(x => x.getValue() > 100));
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._dict, outcome);
+		Assert.areEqual(0, outcome.getSize());
+	}
+
 	DictionarySumTest() : void {
 		// Arrange
 		var outcome : number;
@@ -718,7 +790,7 @@ class DictionaryTest extends UnitTestClass {
 		Assert.areEqual(0, outcome.getSize());
 	}
 
-	DictionaryUniqEmptyTwiceTest() : void {
+	DictionaryUniqTwiceTest() : void {
 		// Arrange
 		var outcome : Dictionary<string, number>;
 

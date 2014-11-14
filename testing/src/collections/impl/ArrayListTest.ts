@@ -47,6 +47,23 @@ class ArrayListTest extends UnitTestClass {
 		Assert.areEqual(1, source.ForEachTimes());
 	}
 
+	ArrayListConstructorWithEmptySourceTest() : void {
+		// Arrange
+		var outcome : ArrayList<string>;
+		var source : Mocks.Collection<string>;
+
+		source = new Mocks.Collection<string>();
+		source.ForEachOutcome([]);
+
+		// Act
+		outcome = new ArrayList<string>(source);
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areEqual(1, source.ForEachTimes());
+		Assert.areEqual(0, outcome.getLength());
+	}
+
 	ArrayListAddTest() : void {
 		// Arrange
 
@@ -75,6 +92,36 @@ class ArrayListTest extends UnitTestClass {
 		// Assert
 		Assert.areEqual(2, outcome1);
 		Assert.areEqual(65, outcome2);
+	}
+
+	ArrayListGetAtFirstTest() : void {
+		// Arrange
+		var outcome : number;
+
+		this._list.add(3);
+		this._list.add(4);
+		this._list.add(5);
+
+		// Act
+		outcome = this._list.getAt(0);
+
+		// Assert
+		Assert.areEqual(3, outcome);
+	}
+
+	ArrayListGetAtLastTest() : void {
+		// Arrange
+		var outcome : number;
+
+		this._list.add(45);
+		this._list.add(46);
+		this._list.add(47);
+
+		// Act
+		outcome = this._list.getAt(2);
+
+		// Assert
+		Assert.areEqual(47, outcome);
 	}
 
 	ArrayListGetAtNegativeIndexTest() : void {
@@ -299,6 +346,17 @@ class ArrayListTest extends UnitTestClass {
 		Assert.areEqual(11, this._list.getAt(1));
 	}
 
+	ArrayListRemoveSingleElementTest() : void {
+		// Arrange
+		this._list.add(43);
+
+		// Act
+		this._list.remove(43);
+
+		// Assert
+		Assert.areEqual(0, this._list.getLength());
+	}
+
 	ArrayListRemoveAtNegativeIndexTest() : void {
 		// Arrange
 		var f : Action0;
@@ -365,6 +423,17 @@ class ArrayListTest extends UnitTestClass {
 		Assert.areEqual(16, this._list.getAt(1));
 	}
 
+	ArrayListRemoveIfSingleElementTest() : void {
+		// Arrange
+		this._list.add(42);
+
+		// Act
+		this._list.removeIf(x => true);
+
+		// Assert
+		Assert.areEqual(0, this._list.getLength());
+	}
+
 	ArrayListRemoveIfEmptyTest() : void {
 		// Arrange
 
@@ -373,6 +442,22 @@ class ArrayListTest extends UnitTestClass {
 
 		// Assert
 		Assert.areEqual(0, this._list.getLength());
+	}
+
+	ArrayListRemoveIfNothingTest() : void {
+		// Arrange
+		this._list.add(5);
+		this._list.add(6);
+		this._list.add(7);
+
+		// Act
+		this._list.removeIf(x => x > 20);
+
+		// Assert
+		Assert.areEqual(3, this._list.getLength());
+		Assert.areEqual(5, this._list.getAt(0));
+		Assert.areEqual(6, this._list.getAt(1));
+		Assert.areEqual(7, this._list.getAt(2));
 	}
 
 	//region ISortableCollection
