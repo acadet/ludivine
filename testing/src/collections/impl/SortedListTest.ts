@@ -445,6 +445,17 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('bar', this._ascList.getAt(1));
 	}
 
+	SortedListAscRemoveSingleElementTest() : void {
+		// Arrange
+		this._ascList.add('foo');
+
+		// Act
+		this._ascList.removeAt(0);
+
+		// Assert
+		Assert.areEqual(0, this._ascList.getLength());
+	}
+
 	SortedListAscRemoveAtNegativeIndexTest() : void {
 		// Arrange
 		var f : Action0;
@@ -571,6 +582,19 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foobar', outcome.getAt(2));
 	}
 
+	SortedListAscOrderByEmptyTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._ascList.orderBy(x => x.length));
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(outcome, this._ascList);
+		Assert.areEqual(0, this._ascList.getLength());
+	}
+
 	SortedListAscOrderByDescTest() : void {
 		// Arrange
 		var outcome : SortedList<string, number>;
@@ -591,6 +615,19 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('bar', outcome.getAt(2));
 	}
 
+	SortedListAscOrderByDescEmptyTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._ascList.orderByDesc(x => x.length));
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._ascList, outcome);
+		Assert.areEqual(0, this._ascList.getLength());
+	}
+
 	SortedListAscReverseTest() : void {
 		// Arrange
 		var outcome : SortedList<string, number>;
@@ -609,6 +646,39 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foobar', outcome.getAt(0));
 		Assert.areEqual('foo', outcome.getAt(1));
 		Assert.areEqual('bar', outcome.getAt(2));
+	}
+
+	SortedListAscReverseEmptyTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._ascList.reverse());
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._ascList, outcome);
+		Assert.areEqual(0, outcome.getLength());
+	}
+
+	SortedListAscReverseTwiceTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		this._ascList.add('foobar');
+		this._ascList.add('bar');
+		this._ascList.add('foo');
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._ascList.reverse().reverse());
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._ascList, outcome);
+		Assert.areEqual(3, outcome.getLength());
+		Assert.areEqual('bar', outcome.getAt(0));
+		Assert.areEqual('foo', outcome.getAt(1));
+		Assert.areEqual('foobar', outcome.getAt(2));
 	}
 
 	//endregion Ascending ISortableCollection
@@ -679,6 +749,19 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foobar', acc[2]);
 	}
 
+	SortedListAscForEachEmptyTest() : void {
+		// Arrange
+		var acc : number;
+
+		acc = 0;
+
+		// Act
+		this._ascList.forEach(x => acc++);
+
+		// Assert
+		Assert.areEqual(0, acc);
+	}
+
 	SortedListAscFindTest() : void {
 		// Arrange
 		var outcome : string;
@@ -703,6 +786,17 @@ class SortedListTest extends UnitTestClass {
 
 		// Act
 		outcome = this._ascList.find(x => x.length < 3);
+
+		// Assert
+		Assert.isNull(outcome);
+	}
+
+	SortedListAscFindEmptyTest() : void {
+		// Arrange
+		var outcome : string;
+
+		// Act
+		outcome = this._ascList.find(x => true);
 
 		// Assert
 		Assert.isNull(outcome);
@@ -788,6 +882,19 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foobarfoobar', outcome.getAt(2));
 	}
 
+	SortedListAscMapEmptyTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._ascList.map(x => x));
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._ascList, outcome);
+		Assert.areEqual(0, outcome.getLength());
+	}
+
 	SortedListAscMaxTest() : void {
 		// Arrange
 		var outcome : string;
@@ -833,6 +940,36 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual(2, outcome.getLength());
 		Assert.areEqual('foo', outcome.getAt(0));
 		Assert.areEqual('bar', outcome.getAt(1));
+	}
+
+	SortedListAscSelectEmptyTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._ascList.select(x => true));
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._ascList, outcome);
+		Assert.areEqual(0, outcome.getLength());
+	}
+
+	SortedListAscSelectNothingTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		this._ascList.add('foobar');
+		this._ascList.add('foo');
+		this._ascList.add('barbar');
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._ascList.select(x => x.length < 0));
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._ascList, outcome);
+		Assert.areEqual(0, outcome.getLength());
 	}
 
 	SortedListAscSumTest() : void {
@@ -1017,6 +1154,28 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual(0, outcome.getLength());
 	}
 
+	SortedListAscUniqTwiceTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		this._ascList.add('foobar');
+		this._ascList.add('foobar');
+		this._ascList.add('barbar');
+		this._ascList.add('foo');
+		this._ascList.add('foo');
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._ascList.uniq().uniq());
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._ascList, outcome);
+		Assert.areEqual(3, outcome.getLength());
+		Assert.areEqual('foo', outcome.getAt(0));
+		Assert.areEqual('foobar', outcome.getAt(1));
+		Assert.areEqual('barbar', outcome.getAt(2));
+	}
+
 	//endregion Ascending ICollection
 
 	//endregion Ascending SortedList
@@ -1144,6 +1303,17 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual(2, outcome);
 	}
 
+	SortedListDescGetEmptyTest() : void {
+		// Arrange
+		var outcome : number;
+
+		// Act
+		outcome = this._descList.getLength();
+
+		// Assert
+		Assert.areEqual(0, outcome);
+	}
+
 	SortedListDescRemoveTest() : void {
 		// Arrange
 		this._descList.add('foo');
@@ -1159,7 +1329,7 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foo', this._descList.getAt(1));
 	}
 
-	SortedListDescRemoveFirstElementTest() : void {
+	SortedListDescRemoveFirstTest() : void {
 		// Arrange
 		this._descList.add('foo');
 		this._descList.add('bar');
@@ -1174,6 +1344,21 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('bar', this._descList.getAt(1));
 	}
 
+	SortedListDescRemoveLastTest() : void {
+		// Arrange
+		this._descList.add('foo');
+		this._descList.add('bar');
+		this._descList.add('foobar');
+
+		// Act
+		this._descList.remove('bar');
+
+		// Assert
+		Assert.areEqual(2, this._descList.getLength());
+		Assert.areEqual('foobar', this._descList.getAt(0));
+		Assert.areEqual('foo', this._descList.getAt(1));
+	}
+
 	SortedListDescRemoveNoElementTest() : void {
 		// Arrange
 		this._descList.add('foo');
@@ -1186,6 +1371,27 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual(2, this._descList.getLength());
 		Assert.areEqual('foo', this._descList.getAt(0));
 		Assert.areEqual('bar', this._descList.getAt(1));
+	}
+
+	SortedListDescRemoveSingleElementTest() : void {
+		// Arrange
+		this._descList.add('foobar');
+
+		// Act
+		this._descList.remove('foobar');
+
+		// Assert
+		Assert.areEqual(0, this._descList.getLength());
+	}
+
+	SortedListDescRemoveEmptyTest() : void {
+		// Arrange
+
+		// Act
+		this._descList.remove('foo');
+
+		// Assert
+		Assert.areEqual(0, this._descList.getLength());
 	}
 
 	SortedListDescRemoveAtTest() : void {
@@ -1203,7 +1409,7 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foo', this._descList.getAt(1));
 	}
 
-	SortedListDescRemoveAtHeadTest() : void {
+	SortedListDescRemoveAtFirstTest() : void {
 		// Arrange
 		this._descList.add('foo');
 		this._descList.add('bar');
@@ -1216,6 +1422,21 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual(2, this._descList.getLength());
 		Assert.areEqual('foo', this._descList.getAt(0));
 		Assert.areEqual('bar', this._descList.getAt(1));
+	}
+
+	SortedListDescRemoveAtLastTest() : void {
+		// Arrange
+		this._descList.add('foobar');
+		this._descList.add('foo');
+		this._descList.add('barbar');
+
+		// Act
+		this._descList.removeAt(2);
+
+		// Assert
+		Assert.areEqual(2, this._descList.getLength());
+		Assert.areEqual('foobar', this._descList.getAt(0));
+		Assert.areEqual('barbar', this._descList.getAt(1));
 	}
 
 	SortedListDescRemoveAtNegativeIndexTest() : void {
@@ -1242,6 +1463,17 @@ class SortedListTest extends UnitTestClass {
 		Assert.throws(f);
 	}
 
+	SortedListDescRemoveAtSingleElementTest() : void {
+		// Arrange
+		this._descList.add('foo');
+
+		// Act
+		this._descList.removeAt(0);
+
+		// Assert
+		Assert.areEqual(0, this._descList.getLength());
+	}
+
 	SortedListDescRemoveIfTest() : void {
 		// Arrange
 		this._descList.add('foo');
@@ -1256,7 +1488,7 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('f', this._descList.getAt(0));
 	}
 
-	SortedListDescRemoveIfFirstElementTest() : void {
+	SortedListDescRemoveIfFirstTest() : void {
 		// Arrange
 		this._descList.add('foo');
 		this._descList.add('foobar');
@@ -1269,6 +1501,42 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual(2, this._descList.getLength());
 		Assert.areEqual('foo', this._descList.getAt(0));
 		Assert.areEqual('bar', this._descList.getAt(1));
+	}
+
+	SortedListDescRemoveIfLastTest() : void {
+		// Arrange
+		this._descList.add('foo');
+		this._descList.add('foobar');
+		this._descList.add('barbar');
+
+		// Act
+		this._descList.removeIf(x => x.length < 5);
+
+		// Assert
+		Assert.areEqual(2, this._descList.getLength());
+		Assert.areEqual('foobar', this._descList.getAt(0));
+		Assert.areEqual('barbar', this._descList.getAt(1));
+	}
+
+	SortedListDescRemoveIfSingleElementTest() : void {
+		// Arrange
+		this._descList.add('foo');
+
+		// Act
+		this._descList.removeIf(x => true);
+
+		// Assert
+		Assert.areEqual(0, this._descList.getLength());
+	}
+
+	SortedListDescRemoveIfEmptyTest() : void {
+		// Arrange
+
+		// Act
+		this._descList.removeIf(x => true);
+
+		// Assert
+		Assert.areEqual(0, this._descList.getLength());
 	}
 
 	SortedListDescRemoveIgnoreTest() : void {
@@ -1307,6 +1575,19 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foobar', outcome.getAt(2));
 	}
 
+	SortedListDescOrderByEmptyTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._descList.orderBy(x => x.length));
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._descList, outcome);
+		Assert.areEqual(0, outcome.getLength());
+	}
+
 	SortedListDescOrderByDescTest() : void {
 		// Arrange
 		var outcome : SortedList<string, number>;
@@ -1327,6 +1608,19 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('bar', outcome.getAt(2));
 	}
 
+	SortedListDescOrderByDescEmptyTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._descList.orderByDesc(x => x.length));
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._descList, outcome);
+		Assert.areEqual(0, outcome.getLength());
+	}
+
 	SortedListDescReverseTest() : void {
 		// Arrange
 		var outcome : SortedList<string, number>;
@@ -1345,6 +1639,39 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foo', outcome.getAt(0));
 		Assert.areEqual('bar', outcome.getAt(1));
 		Assert.areEqual('foobar', outcome.getAt(2));
+	}
+
+	SortedListDescReverseEmptyTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._descList.reverse());
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._descList, outcome);
+		Assert.areEqual(0, outcome.getLength());
+	}
+
+	SortedListDescReverseTwiceTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		this._descList.add('foo');
+		this._descList.add('foobar');
+		this._descList.add('barbar');
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._descList.reverse().reverse());
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._descList, outcome);
+		Assert.areEqual(3, outcome.getLength());
+		Assert.areEqual('foobar', outcome.getAt(0));
+		Assert.areEqual('barbar', outcome.getAt(1));
+		Assert.areEqual('foo', outcome.getAt(2));
 	}
 
 	//endregion Descending ISortableCollection
@@ -1425,6 +1752,17 @@ class SortedListTest extends UnitTestClass {
 		Assert.isNull(outcome);
 	}
 
+	SortedListDescFindEmptyTest() : void {
+		// Arrange
+		var outcome : string;
+
+		// Act
+		outcome = this._descList.find(x => true);
+
+		// Assert
+		Assert.isNull(outcome);
+	}
+
 	SortedListDescForEachTest() : void {
 		// Arrange
 		var acc : Array<string>;
@@ -1442,6 +1780,19 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foobar', acc[0]);
 		Assert.areEqual('bar', acc[1]);
 		Assert.areEqual('foo', acc[2]);
+	}
+
+	SortedListDescForEachEmptyTest() : void {
+		// Arrange
+		var acc : number;
+
+		acc = 0;
+
+		// Act
+		this._descList.forEach(x => acc++);
+
+		// Assert
+		Assert.areEqual(0, acc);
 	}
 
 	SortedListDescIntersectTest() : void {
@@ -1524,6 +1875,19 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual('foofoo', outcome.getAt(2));
 	}
 
+	SortedListDescMapEmptyTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._descList.map(x => x));
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._descList, outcome);
+		Assert.areEqual(0, outcome.getLength());
+	}
+
 	SortedListDescMaxTest() : void {
 		// Arrange
 		var outcome : string;
@@ -1569,6 +1933,36 @@ class SortedListTest extends UnitTestClass {
 		Assert.areEqual(2, outcome.getLength());
 		Assert.areEqual('foo', outcome.getAt(0));
 		Assert.areEqual('bar', outcome.getAt(1));
+	}
+
+	SortedListDescSelectEmptyTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._descList.select(x => true));
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._descList, outcome);
+		Assert.areEqual(0, outcome.getLength());
+	}
+
+	SortedListDescSelectNothingTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		this._descList.add('foo');
+		this._descList.add('barbar');
+		this._descList.add('foobar');
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._descList.select(x => x.length < 0));
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._descList, outcome);
+		Assert.areEqual(0, outcome.getLength());
 	}
 
 	SortedListDescSumTest() : void {
@@ -1749,6 +2143,28 @@ class SortedListTest extends UnitTestClass {
 		Assert.isNotNull(outcome);
 		Assert.areNotEqual(this._descList, outcome);
 		Assert.areEqual(0, outcome.getLength());
+	}
+
+	SortedListDescUniqTwiceTest() : void {
+		// Arrange
+		var outcome : SortedList<string, number>;
+
+		this._descList.add('foobar');
+		this._descList.add('foo');
+		this._descList.add('foo');
+		this._descList.add('barbar');
+		this._descList.add('barbar');
+
+		// Act
+		outcome = this._toSortedList<string, number>(this._descList.uniq().uniq());
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._descList, outcome);
+		Assert.areEqual(3, outcome.getLength());
+		Assert.areEqual('foobar', outcome.getAt(0));
+		Assert.areEqual('barbar', outcome.getAt(1));
+		Assert.areEqual('foo', outcome.getAt(2));
 	}
 
 	//endregion Descending ICollection

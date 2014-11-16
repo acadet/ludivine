@@ -301,6 +301,17 @@ class ArrayListTest extends UnitTestClass {
 		Assert.areEqual(0, this._list.getLength());
 	}
 
+	ArrayListRemoveSingleElementTest() : void {
+		// Arrange
+		this._list.add(43);
+
+		// Act
+		this._list.remove(43);
+
+		// Assert
+		Assert.areEqual(0, this._list.getLength());
+	}
+
 	ArrayListRemoveAtTest() : void {
 		// Arrange
 		this._list.add(34);
@@ -346,12 +357,12 @@ class ArrayListTest extends UnitTestClass {
 		Assert.areEqual(11, this._list.getAt(1));
 	}
 
-	ArrayListRemoveSingleElementTest() : void {
+	ArrayListRemoveAtSingleElementTest() : void {
 		// Arrange
-		this._list.add(43);
+		this._list.add(45);
 
 		// Act
-		this._list.remove(43);
+		this._list.removeAt(0);
 
 		// Assert
 		Assert.areEqual(0, this._list.getLength());
