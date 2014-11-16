@@ -6,17 +6,17 @@
  */
 class Guid {
 	//region Fields
-	
+
 	//endregion Fields
-	
+
 	//region Constructors
-	
+
 	//endregion Constructors
-	
+
 	//region Methods
-	
+
 	//region Private Methods
-	
+
 	/**
 	 * Returns a random string using provided charset
 	 * @param  {number} length Desired length
@@ -41,9 +41,9 @@ class Guid {
 	}
 
 	//endregion Private Methods
-	
+
 	//region Public Methods
-	
+
 	/**
 	 * Produces a new guid
 	 * @return {string} [description]
@@ -66,6 +66,6 @@ class Guid {
 	}
 
 	//endregion Public Methods
-	
+
 	//endregion Methods
 }

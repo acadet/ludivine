@@ -21,24 +21,24 @@ module QueueUtils {
 		 * Neighbor
 		 */
 		private _next : QueueElement<T>;
-		
+
 		//endregion Fields
-		
+
 		//region Constructors
 
 		constructor(content? : T) {
 			this._content = content;
 			this._next = null;
 		}
-		
+
 		//endregion Constructors
-		
+
 		//region Methods
-		
+
 		//region Private Methods
-		
+
 		//endregion Private Methods
-		
+
 		//region Public Methods
 
 		/**
@@ -80,9 +80,9 @@ module QueueUtils {
 		hasNext() : boolean {
 			return (this._next !== null && this._next !== undefined);
 		}
-		
+
 		//endregion Public Methods
-		
+
 		//endregion Methods
 	}
 }
@@ -108,9 +108,9 @@ class Queue<T> implements ISortableCollection<T> {
 	 * Current size
 	 */
 	private _size : number;
-	
+
 	//endregion Fields
-	
+
 	//region Constructors
 
 	/**
@@ -124,15 +124,15 @@ class Queue<T> implements ISortableCollection<T> {
 			source.forEach(x => this.push(x));
 		}
 	}
-	
+
 	//endregion Constructors
-	
+
 	//region Methods
-	
+
 	//region Private Methods
-	
+
 	//endregion Private Methods
-	
+
 	//region Public Methods
 
 	/**
@@ -267,6 +267,14 @@ class Queue<T> implements ISortableCollection<T> {
 
 	//region ICollection
 
+	average(getter : Func<T, number>) : number {
+		return CollectionUtils.CollectionHelper.average(this, getter);
+	}
+
+	exists(selector : Func<T, boolean>) : boolean {
+		return this.find(selector) !== null;
+	}
+
 	find(selector : Func<T, boolean>) : T {
 		var cursor : QueueUtils.QueueElement<T>;
 		var e : T;
@@ -311,6 +319,21 @@ class Queue<T> implements ISortableCollection<T> {
 		action(cursor.getContent());
 	}
 
+	intersect(collection : ICollection<T>) : ICollection<T> {
+		var outcome : Queue<T>;
+
+		outcome = new Queue<T>();
+		this.forEach(
+			(x) => {
+				if (collection.exists(e => e === x)) {
+					outcome.push(x);
+				}
+			}
+		);
+
+		return outcome;
+	}
+
 	map(action : Func<T, T>) : ICollection<T> {
 		var outcome : Queue<T>;
 
@@ -326,57 +349,11 @@ class Queue<T> implements ISortableCollection<T> {
 	}
 
 	max(getter : Func<T, number>) : T {
-		var max : number;
-		var outcome : T;
-
-		if (this.getSize() === 0) {
-			return null;
-		}
-
-		outcome = this._top.getContent();
-		max = getter(outcome);
-
-		this.forEach(
-			(e) => {
-				var value : number;
-
-				value = getter(e);
-
-				if (value > max) {
-					max = value;
-					outcome = e;
-				}
-			}
-		);
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.max(this, getter);
 	}
 
 	min(getter : Func<T, number>) : T {
-		var min : number;
-		var outcome : T;
-
-		if (this.getSize() === 0) {
-			return null;
-		}
-
-		outcome = this._top.getContent();
-		min = getter(outcome);
-
-		this.forEach(
-			(e) => {
-				var value : number;
-
-				value = getter(e);
-
-				if (value < min) {
-					min = value;
-					outcome = e;
-				}
-			}
-		);
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.min(this, getter);
 	}
 
 	select(selector : Func<T, boolean>) : ICollection<T> {
@@ -396,39 +373,54 @@ class Queue<T> implements ISortableCollection<T> {
 	}
 
 	sum(getter : Func<T, number>) : number {
-		var total : number;
-
-		total = 0;
-		this.forEach(e => total += getter(e));
-
-		return total;
+		return CollectionUtils.CollectionHelper.sum(this, getter);
 	}
 
 	toArray() : Array<T> {
-		var outcome : Array<T>;
-
-		outcome = new Array<T>();
-		this.forEach(x => outcome.push(x));
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.toArray(this);
 	}
 
 	toDictionary<K, V>(keyGetter : Func<T, K>, valueGetter : Func<T, V>) : IDictionary<K, V> {
-		var outcome : IDictionary<K, V>;
+		return CollectionUtils.CollectionHelper.toDictionary(this, keyGetter, valueGetter);
+	}
 
-		outcome = new Dictionary<K, V>();
-		this.forEach(x => outcome.add(keyGetter(x), valueGetter(x)));
+	toList() : IList<T> {
+		return CollectionUtils.CollectionHelper.toList(this);
+	}
+
+	union(collection : ICollection<T>) : ICollection<T> {
+		var outcome : Queue<T>;
+
+		outcome = new Queue<T>(this);
+		collection.forEach(
+			(x) => {
+				if (!this.exists(e => e === x)) {
+					outcome.push(x);
+				}
+			}
+		);
 
 		return outcome;
 	}
 
-	toList() : IList<T> {
-		return new ArrayList<T>(this);
+	uniq() : ICollection<T> {
+		var outcome : Queue<T>;
+
+		outcome = new Queue<T>();
+		this.forEach(
+			(x) => {
+				if (!outcome.exists(e => e === x)) {
+					outcome.push(x);
+				}
+			}
+		);
+
+		return outcome;
 	}
 
 	//endregionICollection
-	
+
 	//endregion Public Methods
-	
+
 	//endregion Methods
 }

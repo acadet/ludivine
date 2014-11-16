@@ -21,24 +21,24 @@ module StackUtils {
 		 * Wrapped content
 		 */
 		private _content : T;
-		
+
 		//endregion Fields
-		
+
 		//region Constructors
 
 		constructor(content? : T) {
 			this._content = content;
 			this._prev = null;
 		}
-		
+
 		//endregion Constructors
-		
+
 		//region Methods
-		
+
 		//region Private Methods
-		
+
 		//endregion Private Methods
-		
+
 		//region Public Methods
 
 		/**
@@ -80,9 +80,9 @@ module StackUtils {
 		hasPrev() : boolean {
 			return this._prev !== null && this._prev !== undefined;
 		}
-		
+
 		//endregion Public Methods
-		
+
 		//endregion Methods
 	}
 }
@@ -103,9 +103,9 @@ class Stack<T> implements ISortableCollection<T> {
 	 * Current size
 	 */
 	private _size : number;
-	
+
 	//endregion Fields
-	
+
 	//region Constructors
 
 	/**
@@ -119,11 +119,11 @@ class Stack<T> implements ISortableCollection<T> {
 			source.forEach(x => this.push(x));
 		}
 	}
-	
+
 	//endregion Constructors
-	
+
 	//region Methods
-	
+
 	//region Private Methods
 
 	/**
@@ -133,6 +133,10 @@ class Stack<T> implements ISortableCollection<T> {
 	private _forEachInversed(action : Action<T>) : void {
 		var a : Array<T>;
 		var cursor : StackUtils.StackElement<T>;
+
+		if (this.getSize() === 0) {
+			return;
+		}
 
 		a = new Array<T>();
 		cursor = this._tail;
@@ -148,9 +152,9 @@ class Stack<T> implements ISortableCollection<T> {
 			action(a[i]);
 		}
 	}
-	
+
 	//endregion Private Methods
-	
+
 	//region Public Methods
 
 	/**
@@ -192,7 +196,7 @@ class Stack<T> implements ISortableCollection<T> {
 	}
 
 	/**
-	 * Adds new value to stack 
+	 * Adds new value to stack
 	 * @param {T} value Value
 	 */
 	push(value : T) : void {
@@ -267,6 +271,14 @@ class Stack<T> implements ISortableCollection<T> {
 
 	//region ICollection
 
+	average(getter : Func<T, number>) : number {
+		return CollectionUtils.CollectionHelper.average(this, getter);
+	}
+
+	exists(selector : Func<T, boolean>) : boolean {
+		return this.find(selector) !== null;
+	}
+
 	find(selector : Func<T, boolean>) : T {
 		var cursor : StackUtils.StackElement<T>;
 		var e : T;
@@ -310,6 +322,21 @@ class Stack<T> implements ISortableCollection<T> {
 		action(cursor.getContent());
 	}
 
+	intersect(collection : ICollection<T>) : ICollection<T> {
+		var outcome : Stack<T>;
+
+		outcome = new Stack<T>();
+		this._forEachInversed(
+			(x) => {
+				if (collection.exists(e => e === x)) {
+					outcome.push(x);
+				}
+			}
+		);
+
+		return outcome;
+	}
+
 	map(action : Func<T, T>) : ICollection<T> {
 		var outcome : Stack<T>;
 
@@ -321,55 +348,11 @@ class Stack<T> implements ISortableCollection<T> {
 	}
 
 	max(getter : Func<T, number>) : T {
-		var max : number;
-		var e : T;
-
-		if (this.getSize() === 0) {
-			return null;
-		}
-
-		e = this._tail.getContent();
-		max = getter(e);
-
-		this.forEach(
-			(x) => {
-				var value : number;
-
-				value = getter(x);
-				if (value > max) {
-					max = value;
-					e = x;
-				}
-			}
-		);
-
-		return e;
+		return CollectionUtils.CollectionHelper.max(this, getter);
 	}
 
 	min(getter : Func<T, number>) : T {
-		var min : number;
-		var e : T;
-
-		if (this.getSize() === 0) {
-			return null;
-		}
-
-		e = this._tail.getContent();
-		min = getter(e);
-
-		this.forEach(
-			(x) => {
-				var value : number;
-
-				value = getter(x);
-				if (value < min) {
-					min = value;
-					e = x;
-				}
-			}
-		);
-
-		return e;
+		return CollectionUtils.CollectionHelper.min(this, getter);
 	}
 
 	select(selector : Func<T, boolean>) : ICollection<T> {
@@ -389,39 +372,55 @@ class Stack<T> implements ISortableCollection<T> {
 	}
 
 	sum(getter : Func<T, number>) : number {
-		var total : number;
-
-		total = 0;
-		this.forEach(x => total += getter(x));
-
-		return total;
+		return CollectionUtils.CollectionHelper.sum(this, getter);
 	}
 
 	toArray() : Array<T> {
-		var outcome : Array<T>;
-
-		outcome = new Array<T>();
-		this.forEach(x => outcome.push(x));
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.toArray(this);
 	}
 
 	toDictionary<K, V>(keyGetter : Func<T, K>, valueGetter : Func<T, V>) : IDictionary<K, V> {
-		var outcome : IDictionary<K, V>;
+		return CollectionUtils.CollectionHelper.toDictionary(this, keyGetter, valueGetter);
+	}
 
-		outcome = new Dictionary<K, V>();
-		this.forEach(x => outcome.add(keyGetter(x), valueGetter(x)));
+	toList() : IList<T> {
+		return CollectionUtils.CollectionHelper.toList(this);
+	}
+
+	union(collection : ICollection<T>) : ICollection<T> {
+		var outcome : Stack<T>;
+
+		outcome = new Stack<T>();
+		this._forEachInversed(x => outcome.push(x));
+		collection.forEach(
+			(x) => {
+				if (!this.exists(e => e === x)) {
+					outcome.push(x);
+				}
+			}
+		);
 
 		return outcome;
 	}
 
-	toList() : IList<T> {
-		return new ArrayList<T>(this);
+	uniq() : ICollection<T> {
+		var outcome : Stack<T>;
+
+		outcome = new Stack<T>();
+		this._forEachInversed(
+			(x) => {
+				if (!outcome.exists(e => e === x)) {
+					outcome.push(x);
+				}
+			}
+		);
+
+		return outcome;
 	}
 
 	//endregion ICollection
-	
+
 	//endregion Public Methods
-	
+
 	//endregion Methods
 }

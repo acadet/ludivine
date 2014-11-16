@@ -20,24 +20,24 @@ module LinkedListUtils {
 		 * Next element
 		 */
 		private _next : LinkedListElement<T>;
-		
+
 		//endregion Fields
-		
+
 		//region Constructors
 
 		constructor(content? : T) {
 			this._content = content;
 			this._next = null;
 		}
-		
+
 		//endregion Constructors
-		
+
 		//region Methods
-		
+
 		//region Private Methods
-		
+
 		//endregion Private Methods
-		
+
 		//region Public Methods
 
 		/**
@@ -79,9 +79,9 @@ module LinkedListUtils {
 		hasNext() : boolean {
 			return this._next !== null && this._next !== undefined;
 		}
-		
+
 		//endregion Public Methods
-		
+
 		//endregion Methods
 	}
 }
@@ -96,9 +96,9 @@ class LinkedList<T> implements IList<T> {
 	private _head : LinkedListUtils.LinkedListElement<T>;
 	private _tail : LinkedListUtils.LinkedListElement<T>;
 	private _size : number;
-	
+
 	//endregion Fields
-	
+
 	//region Constructors
 
 	/**
@@ -112,15 +112,15 @@ class LinkedList<T> implements IList<T> {
 			source.forEach(x => this.add(x));
 		}
 	}
-	
+
 	//endregion Constructors
-	
+
 	//region Methods
-	
+
 	//region Private Methods
-	
+
 	//endregion Private Methods
-	
+
 	//region Public Methods
 
 	//region IList
@@ -281,13 +281,13 @@ class LinkedList<T> implements IList<T> {
 					// If last element has been removed, update tail
 					this._tail = prev;
 				}
-				
+
 				this._size--;
 			} else {
 				// Go further if no element has been removed
 				prev = current;
 			}
-			
+
 			current = current.getNext();
 		}
 	}
@@ -358,6 +358,14 @@ class LinkedList<T> implements IList<T> {
 
 	//region ICollection
 
+	average(getter : Func<T, number>) : number {
+		return CollectionUtils.CollectionHelper.average(this, getter);
+	}
+
+	exists(selector : Func<T, boolean>) : boolean {
+		return this.find(selector) !== null;
+	}
+
 	find(selector : Func<T, boolean>) : T {
 		var cursor : LinkedListUtils.LinkedListElement<T>;
 		var e : T;
@@ -399,6 +407,21 @@ class LinkedList<T> implements IList<T> {
 		action(cursor.getContent());
 	}
 
+	intersect(collection : ICollection<T>) : ICollection<T> {
+		var outcome : LinkedList<T>;
+
+		outcome = new LinkedList<T>();
+		this.forEach(
+			(x) => {
+				if (collection.exists(e => e === x)) {
+					outcome.add(x);
+				}
+			}
+		);
+
+		return outcome;
+	}
+
 	map(action : Func<T, T>) : ICollection<T> {
 		var outcome : LinkedList<T>;
 
@@ -409,57 +432,11 @@ class LinkedList<T> implements IList<T> {
 	}
 
 	max(getter : Func<T, number>) : T {
-		var max : number;
-		var current : T;
-
-		if (this.getLength() === 0) {
-			return null;
-		}
-
-		current = this._head.getContent();
-		max = getter(current);
-
-		this.forEach(
-			(e) => {
-				var value : number;
-
-				value = getter(e);
-
-				if (value > max) {
-					max = value;
-					current = e;
-				}
-			}
-		);
-
-		return current;
+		return CollectionUtils.CollectionHelper.max(this, getter);
 	}
 
 	min(getter : Func<T, number>) : T {
-		var min : number;
-		var current : T;
-
-		if (this.getLength() === 0) {
-			return null;
-		}
-
-		current = this._head.getContent();
-		min = getter(current);
-
-		this.forEach(
-			(e) => {
-				var value : number;
-
-				value = getter(e);
-
-				if (value < min) {
-					min = value;
-					current = e;
-				}
-			}
-		);
-
-		return current;
+		return CollectionUtils.CollectionHelper.min(this, getter);
 	}
 
 	select(selector : Func<T, boolean>) : ICollection<T> {
@@ -478,39 +455,54 @@ class LinkedList<T> implements IList<T> {
 	}
 
 	sum(getter : Func<T, number>) : number {
-		var acc : number;
-
-		acc = 0;
-		this.forEach(x => acc += getter(x));
-
-		return acc;
+		return CollectionUtils.CollectionHelper.sum(this, getter);
 	}
 
 	toArray() : Array<T> {
-		var outcome : Array<T>;
-
-		outcome = new Array<T>();
-		this.forEach(x => outcome.push(x));
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.toArray(this);
 	}
 
 	toDictionary<K, V>(keyGetter : Func<T, K>, valueGetter : Func<T, V>) : IDictionary<K, V> {
-		var outcome : IDictionary<K, V>;
+		return CollectionUtils.CollectionHelper.toDictionary(this, keyGetter, valueGetter);
+	}
 
-		outcome = new Dictionary<K, V>();
-		this.forEach(x => outcome.add(keyGetter(x), valueGetter(x)));
+	toList() : IList<T> {
+		return CollectionUtils.CollectionHelper.toList(this);
+	}
+
+	union(collection : ICollection<T>) : ICollection<T> {
+		var outcome : LinkedList<T>;
+
+		outcome = new LinkedList<T>(this);
+		collection.forEach(
+			(x) => {
+				if (!this.exists(e => e === x)) {
+					outcome.add(x);
+				}
+			}
+		);
 
 		return outcome;
 	}
 
-	toList() : IList<T> {
-		return new ArrayList<T>(this);
+	uniq() : ICollection<T> {
+		var outcome : LinkedList<T>;
+
+		outcome = new LinkedList<T>();
+		this.forEach(
+			(x) => {
+				if (!outcome.exists(e => e === x)) {
+					outcome.add(x);
+				}
+			}
+		);
+
+		return outcome;
 	}
 
 	//endregion ICollection
-	
+
 	//endregion Public Methods
-	
+
 	//endregion Methods
 }

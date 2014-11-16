@@ -11,9 +11,9 @@ class ArrayList<T> implements IList<T> {
 	 * Inner content
 	 */
 	private _content : Array<T>;
-	
+
 	//endregion Fields
-	
+
 	//region Constructors
 
 	/**
@@ -27,15 +27,15 @@ class ArrayList<T> implements IList<T> {
 			source.forEach(x => this.add(x));
 		}
 	}
-	
+
 	//endregion Constructors
-	
+
 	//region Methods
-	
+
 	//region Private Methods
-	
+
 	//endregion Private Methods
-	
+
 	//region Public Methods
 
 	//region IList
@@ -173,7 +173,7 @@ class ArrayList<T> implements IList<T> {
 		a = new Array<T>();
 		this.forEach(e => a.push(e));
 		CollectionUtils.ArrayUtils.sort(a, getter);
-		
+
 		for (var i = 0; i < a.length; i++) {
 			outcome.add(a[i]);
 		}
@@ -194,7 +194,7 @@ class ArrayList<T> implements IList<T> {
 		a = new Array<T>();
 		this.forEach(e => a.push(e));
 		CollectionUtils.ArrayUtils.sort(a, getter, false);
-		
+
 		for (var i = 0; i < a.length; i++) {
 			outcome.add(a[i]);
 		}
@@ -217,6 +217,14 @@ class ArrayList<T> implements IList<T> {
 	//endregion ISortableCollection
 
 	//region ICollection
+
+	average(getter : Func<T, number>) : number {
+		return CollectionUtils.CollectionHelper.average(this, getter);
+	}
+
+	exists(selector : Func<T, boolean>) : boolean {
+		return this.find(selector) !== null;
+	}
 
 	find(selector : Func<T, boolean>) : T {
 		var size : number;
@@ -245,6 +253,21 @@ class ArrayList<T> implements IList<T> {
 		}
 	}
 
+	intersect(collection : ICollection<T>) : ICollection<T> {
+		var outcome : ArrayList<T>;
+
+		outcome = new ArrayList<T>();
+		this.forEach(
+			(x) => {
+				if (collection.exists(e => e === x)) {
+					outcome.add(x);
+				}
+			}
+		);
+
+		return outcome;
+	}
+
 	map(action : Func<T, T>) : ICollection<T> {
 		var outcome : ArrayList<T>;
 
@@ -255,57 +278,11 @@ class ArrayList<T> implements IList<T> {
 	}
 
 	max(getter : Func<T, number>) : T {
-		var max : number;
-		var current : T;
-
-		if (this.getLength() === 0) {
-			return null;
-		}
-
-		current = this.getAt(0);
-		max = getter(current);
-
-		this.forEach(
-			(e) => {
-				var value : number;
-
-				value = getter(e);
-
-				if (value > max) {
-					max = value;
-					current = e;
-				}
-			}
-		);
-
-		return current;
+		return CollectionUtils.CollectionHelper.max(this, getter);
 	}
 
 	min(getter : Func<T, number>) : T {
-		var min : number;
-		var current : T;
-
-		if (this.getLength() === 0) {
-			return null;
-		}
-
-		current = this.getAt(0);
-		min = getter(current);
-
-		this.forEach(
-			(e) => {
-				var value : number;
-
-				value = getter(e);
-
-				if (value < min) {
-					min = value;
-					current = e;
-				}
-			}
-		);
-
-		return current;
+		return CollectionUtils.CollectionHelper.min(this, getter);
 	}
 
 	select(selector : Func<T, boolean>) : ICollection<T> {
@@ -325,39 +302,54 @@ class ArrayList<T> implements IList<T> {
 	}
 
 	sum(getter : Func<T, number>) : number {
-		var acc : number;
-
-		acc = 0;
-		this.forEach(e => acc += getter(e));
-
-		return acc;
+		return CollectionUtils.CollectionHelper.sum(this, getter);
 	}
 
 	toArray() : Array<T> {
-		var outcome : Array<T>;
-
-		outcome = new Array<T>();
-		this.forEach(x => outcome.push(x));
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.toArray(this);
 	}
 
 	toDictionary<K, V>(keyGetter : Func<T, K>, valueGetter : Func<T, V>) : IDictionary<K, V> {
-		var outcome : IDictionary<K, V>;
+		return CollectionUtils.CollectionHelper.toDictionary(this, keyGetter, valueGetter);
+	}
 
-		outcome = new Dictionary<K, V>();
-		this.forEach(x => outcome.add(keyGetter(x), valueGetter(x)));
+	toList() : IList<T> {
+		return CollectionUtils.CollectionHelper.toList(this);
+	}
+
+	union(collection : ICollection<T>) : ICollection<T> {
+		var outcome : ArrayList<T>;
+
+		outcome = new ArrayList<T>(this);
+		collection.forEach(
+			(x) => {
+				if (!this.exists(e => e === x)) {
+					outcome.add(x);
+				}
+			}
+		);
 
 		return outcome;
 	}
 
-	toList() : IList<T> {
-		return new ArrayList<T>(this);
+	uniq() : ICollection<T> {
+		var outcome : ArrayList<T>;
+
+		outcome = new ArrayList<T>();
+		this.forEach(
+			(x) => {
+				if (!outcome.exists(e => e === x)) {
+					outcome.add(x);
+				}
+			}
+		);
+
+		return outcome;
 	}
 
 	//endregion ICollection
-	
+
 	//endregion Public Methods
-	
+
 	//endregion Methods
 }

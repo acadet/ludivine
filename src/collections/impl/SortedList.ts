@@ -21,24 +21,24 @@ module SortedListUtils {
 		 * Neighbor
 		 */
 		private _next : SortedListElement<T>;
-		
+
 		//endregion Fields
-		
+
 		//region Constructors
 
 		constructor(content? : T) {
 			this._content = content;
 			this._next = null;
 		}
-		
+
 		//endregion Constructors
-		
+
 		//region Methods
-		
+
 		//region Private Methods
-		
+
 		//endregion Private Methods
-		
+
 		//region Public Methods
 
 		/**
@@ -80,9 +80,9 @@ module SortedListUtils {
 		hasNext() : boolean {
 			return this._next !== null && this._next !== undefined;
 		}
-		
+
 		//endregion Public Methods
-		
+
 		//endregion Methods
 	}
 
@@ -102,24 +102,24 @@ module SortedListUtils {
 		 * Current element
 		 */
 		private _current : SortedListElement<T>;
-		
+
 		//endregion Fields
-		
+
 		//region Constructors
 
 		constructor(previous? : SortedListElement<T>, current? : SortedListElement<T>) {
 			this._previous = previous;
 			this._current = current;
 		}
-		
+
 		//endregion Constructors
-		
+
 		//region Methods
-		
+
 		//region Private Methods
-		
+
 		//endregion Private Methods
-		
+
 		//region Public Methods
 
 		/**
@@ -161,9 +161,9 @@ module SortedListUtils {
 		setCurrent(value : SortedListElement<T>) : void {
 			this._current = value;
 		}
-		
+
 		//endregion Public Methods
-		
+
 		//endregion Methods
 	}
 }
@@ -195,9 +195,9 @@ class SortedList<A, B> implements IListableCollection<A> {
 	 * True if list is ascending sorted
 	 */
 	private _asc : boolean;
-	
+
 	//endregion Fields
-	
+
 	//region Constructors
 
 	/**
@@ -215,11 +215,11 @@ class SortedList<A, B> implements IListableCollection<A> {
 			this._asc = true;
 		}
 	}
-	
+
 	//endregion Constructors
-	
+
 	//region Methods
-	
+
 	//region Private Methods
 
 	/**
@@ -248,9 +248,9 @@ class SortedList<A, B> implements IListableCollection<A> {
 
 		return func(new SortedListUtils.SortedListCursor(prev, current));
 	}
-	
+
 	//endregion Private Methods
-	
+
 	//region Public Methods
 
 	//region IListableCollection
@@ -457,6 +457,14 @@ class SortedList<A, B> implements IListableCollection<A> {
 
 	//region ICollection
 
+	average(getter : Func<A, number>) : number {
+		return CollectionUtils.CollectionHelper.average(this, getter);
+	}
+
+	exists(selector : Func<A, boolean>) : boolean {
+		return this.find(selector) !== null;
+	}
+
 	find(selector : Func<A, boolean>) : A {
 		var outcome : A;
 
@@ -489,6 +497,21 @@ class SortedList<A, B> implements IListableCollection<A> {
 		);
 	}
 
+	intersect(collection : ICollection<A>) : ICollection<A> {
+		var outcome : SortedList<A, B>;
+
+		outcome = new SortedList<A, B>(this._getter, this._asc);
+		this.forEach(
+			(x) => {
+				if (collection.exists(e => e === x)) {
+					outcome.add(x);
+				}
+			}
+		);
+
+		return outcome;
+	}
+
 	map(action : Func<A, A>) : ICollection<A> {
 		var outcome : SortedList<A, B>;
 
@@ -504,55 +527,11 @@ class SortedList<A, B> implements IListableCollection<A> {
 	}
 
 	max(getter : Func<A, number>) : A {
-		var max : number;
-		var current : A;
-
-		if (this.getLength() === 0) {
-			return null;
-		}
-
-		current = this._head.getContent();
-		max = getter(current);
-
-		this.forEach(
-			(e) => {
-				var value : number;
-
-				value = getter(e);
-				if (value > max) {
-					max = value;
-					current = e;
-				}
-			}
-		);
-
-		return current;
+		return CollectionUtils.CollectionHelper.max(this, getter);
 	}
 
 	min(getter : Func<A, number>) : A {
-		var min : number;
-		var current : A;
-
-		if (this.getLength() === 0) {
-			return null;
-		}
-
-		current = this._head.getContent();
-		min = getter(current);
-
-		this.forEach(
-			(e) => {
-				var value : number;
-
-				value = getter(e);
-				if (value < min) {
-					min = value;
-					current = e;
-				}
-			}
-		);
-
-		return current;
+		return CollectionUtils.CollectionHelper.min(this, getter);
 	}
 
 	select(selector : Func<A, boolean>) : ICollection<A> {
@@ -571,39 +550,55 @@ class SortedList<A, B> implements IListableCollection<A> {
 	}
 
 	sum(getter : Func<A, number>) : number {
-		var acc : number;
-
-		acc = 0;
-		this.forEach(e => acc += getter(e));
-
-		return acc;
+		return CollectionUtils.CollectionHelper.sum(this, getter);
 	}
 
 	toArray() : Array<A> {
-		var outcome : Array<A>;
-
-		outcome = new Array<A>();
-		this.forEach(e => outcome.push(e));
-
-		return outcome;
+		return CollectionUtils.CollectionHelper.toArray(this);
 	}
 
 	toDictionary<K, V>(keyGetter : Func<A, K>, valueGetter : Func<A, V>) : IDictionary<K, V> {
-		var outcome : IDictionary<K, V>;
+		return CollectionUtils.CollectionHelper.toDictionary(this, keyGetter, valueGetter);
+	}
 
-		outcome = new Dictionary<K, V>();
-		this.forEach(x => outcome.add(keyGetter(x), valueGetter(x)));
+	toList() : IList<A> {
+		return CollectionUtils.CollectionHelper.toList(this);
+	}
+
+	union(collection : ICollection<A>) : ICollection<A> {
+		var outcome : SortedList<A, B>;
+
+		outcome = new SortedList<A, B>(this._getter, this._asc);
+		this.forEach(x => outcome.add(x));
+		collection.forEach(
+			(x) => {
+				if (!this.exists(e => e === x)) {
+					outcome.add(x);
+				}
+			}
+		);
 
 		return outcome;
 	}
 
-	toList() : IList<A> {
-		return new ArrayList<A>(this);
+	uniq() : ICollection<A> {
+		var outcome : SortedList<A, B>;
+
+		outcome = new SortedList<A, B>(this._getter, this._asc);
+		this.forEach(
+			(x) => {
+				if (!outcome.exists(e => e === x)) {
+					outcome.add(x);
+				}
+			}
+		);
+
+		return outcome;
 	}
 
 	//endregion ICollection
-	
+
 	//endregion Public Methods
-	
+
 	//endregion Methods
 }
