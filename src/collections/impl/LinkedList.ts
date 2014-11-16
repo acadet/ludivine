@@ -20,24 +20,24 @@ module LinkedListUtils {
 		 * Next element
 		 */
 		private _next : LinkedListElement<T>;
-		
+
 		//endregion Fields
-		
+
 		//region Constructors
 
 		constructor(content? : T) {
 			this._content = content;
 			this._next = null;
 		}
-		
+
 		//endregion Constructors
-		
+
 		//region Methods
-		
+
 		//region Private Methods
-		
+
 		//endregion Private Methods
-		
+
 		//region Public Methods
 
 		/**
@@ -79,9 +79,9 @@ module LinkedListUtils {
 		hasNext() : boolean {
 			return this._next !== null && this._next !== undefined;
 		}
-		
+
 		//endregion Public Methods
-		
+
 		//endregion Methods
 	}
 }
@@ -96,9 +96,9 @@ class LinkedList<T> implements IList<T> {
 	private _head : LinkedListUtils.LinkedListElement<T>;
 	private _tail : LinkedListUtils.LinkedListElement<T>;
 	private _size : number;
-	
+
 	//endregion Fields
-	
+
 	//region Constructors
 
 	/**
@@ -112,15 +112,15 @@ class LinkedList<T> implements IList<T> {
 			source.forEach(x => this.add(x));
 		}
 	}
-	
+
 	//endregion Constructors
-	
+
 	//region Methods
-	
+
 	//region Private Methods
-	
+
 	//endregion Private Methods
-	
+
 	//region Public Methods
 
 	//region IList
@@ -281,13 +281,13 @@ class LinkedList<T> implements IList<T> {
 					// If last element has been removed, update tail
 					this._tail = prev;
 				}
-				
+
 				this._size--;
 			} else {
 				// Go further if no element has been removed
 				prev = current;
 			}
-			
+
 			current = current.getNext();
 		}
 	}
@@ -467,7 +467,7 @@ class LinkedList<T> implements IList<T> {
 	}
 
 	toList() : IList<T> {
-		return new ArrayList<T>(this);
+		return CollectionUtils.CollectionHelper.toList(this);
 	}
 
 	union(collection : ICollection<T>) : ICollection<T> {
@@ -501,8 +501,8 @@ class LinkedList<T> implements IList<T> {
 	}
 
 	//endregion ICollection
-	
+
 	//endregion Public Methods
-	
+
 	//endregion Methods
 }

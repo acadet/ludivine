@@ -384,7 +384,7 @@ class Stack<T> implements ISortableCollection<T> {
 	}
 
 	toList() : IList<T> {
-		return new ArrayList<T>(this);
+		return CollectionUtils.CollectionHelper.toList(this);
 	}
 
 	union(collection : ICollection<T>) : ICollection<T> {

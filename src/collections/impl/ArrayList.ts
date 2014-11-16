@@ -11,9 +11,9 @@ class ArrayList<T> implements IList<T> {
 	 * Inner content
 	 */
 	private _content : Array<T>;
-	
+
 	//endregion Fields
-	
+
 	//region Constructors
 
 	/**
@@ -27,15 +27,15 @@ class ArrayList<T> implements IList<T> {
 			source.forEach(x => this.add(x));
 		}
 	}
-	
+
 	//endregion Constructors
-	
+
 	//region Methods
-	
+
 	//region Private Methods
-	
+
 	//endregion Private Methods
-	
+
 	//region Public Methods
 
 	//region IList
@@ -173,7 +173,7 @@ class ArrayList<T> implements IList<T> {
 		a = new Array<T>();
 		this.forEach(e => a.push(e));
 		CollectionUtils.ArrayUtils.sort(a, getter);
-		
+
 		for (var i = 0; i < a.length; i++) {
 			outcome.add(a[i]);
 		}
@@ -194,7 +194,7 @@ class ArrayList<T> implements IList<T> {
 		a = new Array<T>();
 		this.forEach(e => a.push(e));
 		CollectionUtils.ArrayUtils.sort(a, getter, false);
-		
+
 		for (var i = 0; i < a.length; i++) {
 			outcome.add(a[i]);
 		}
@@ -314,7 +314,7 @@ class ArrayList<T> implements IList<T> {
 	}
 
 	toList() : IList<T> {
-		return new ArrayList<T>(this);
+		return CollectionUtils.CollectionHelper.toList(this);
 	}
 
 	union(collection : ICollection<T>) : ICollection<T> {
@@ -348,8 +348,8 @@ class ArrayList<T> implements IList<T> {
 	}
 
 	//endregion ICollection
-	
+
 	//endregion Public Methods
-	
+
 	//endregion Methods
 }

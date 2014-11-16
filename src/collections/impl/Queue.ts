@@ -21,24 +21,24 @@ module QueueUtils {
 		 * Neighbor
 		 */
 		private _next : QueueElement<T>;
-		
+
 		//endregion Fields
-		
+
 		//region Constructors
 
 		constructor(content? : T) {
 			this._content = content;
 			this._next = null;
 		}
-		
+
 		//endregion Constructors
-		
+
 		//region Methods
-		
+
 		//region Private Methods
-		
+
 		//endregion Private Methods
-		
+
 		//region Public Methods
 
 		/**
@@ -80,9 +80,9 @@ module QueueUtils {
 		hasNext() : boolean {
 			return (this._next !== null && this._next !== undefined);
 		}
-		
+
 		//endregion Public Methods
-		
+
 		//endregion Methods
 	}
 }
@@ -108,9 +108,9 @@ class Queue<T> implements ISortableCollection<T> {
 	 * Current size
 	 */
 	private _size : number;
-	
+
 	//endregion Fields
-	
+
 	//region Constructors
 
 	/**
@@ -124,15 +124,15 @@ class Queue<T> implements ISortableCollection<T> {
 			source.forEach(x => this.push(x));
 		}
 	}
-	
+
 	//endregion Constructors
-	
+
 	//region Methods
-	
+
 	//region Private Methods
-	
+
 	//endregion Private Methods
-	
+
 	//region Public Methods
 
 	/**
@@ -385,7 +385,7 @@ class Queue<T> implements ISortableCollection<T> {
 	}
 
 	toList() : IList<T> {
-		return new ArrayList<T>(this);
+		return CollectionUtils.CollectionHelper.toList(this);
 	}
 
 	union(collection : ICollection<T>) : ICollection<T> {
@@ -419,8 +419,8 @@ class Queue<T> implements ISortableCollection<T> {
 	}
 
 	//endregionICollection
-	
+
 	//endregion Public Methods
-	
+
 	//endregion Methods
 }

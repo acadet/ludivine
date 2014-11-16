@@ -11,9 +11,9 @@ class Dictionary<K, V> implements IDictionary<K, V> {
 	 * Inner content
 	 */
 	private _content : Array<KeyValuePair<K, V>>;
-	
+
 	//endregion Fields
-	
+
 	//region Constructors
 
 	/**
@@ -27,15 +27,15 @@ class Dictionary<K, V> implements IDictionary<K, V> {
 			source.forEach(x => this.add(x.getKey(), x.getValue()));
 		}
 	}
-	
+
 	//endregion Constructors
-	
+
 	//region Methods
-	
+
 	//region Private Methods
-	
+
 	//endregion Private Methods
-	
+
 	//region Public Methods
 
 	//region IDictionary
@@ -238,7 +238,7 @@ class Dictionary<K, V> implements IDictionary<K, V> {
 	 * @return {IList<T>} Outcome IList
 	 */
 	toList() : IList<KeyValuePair<K, V>> {
-		return new ArrayList<KeyValuePair<K, V>>(this);
+		return CollectionUtils.CollectionHelper.toList(this);
 	}
 
 	union(collection : ICollection<KeyValuePair<K, V>>) : ICollection<KeyValuePair<K, V>> {
@@ -261,8 +261,8 @@ class Dictionary<K, V> implements IDictionary<K, V> {
 	}
 
 	//endregion ICollection
-	
+
 	//endregion Public Methods
-	
+
 	//endregion Methods
 }

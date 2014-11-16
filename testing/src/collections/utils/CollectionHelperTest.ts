@@ -16,10 +16,10 @@ class CollectionHelperTest extends UnitTestClass {
 		var outcome : number;
 
 		this._collection.ForEachOutcome([10, 15, 20]);
-	
+
 		// Act
 		outcome = CollectionUtils.CollectionHelper.average(this._collection, x => x + 5);
-	
+
 		// Assert
 		Assert.areEqual(20, outcome);
 	}
@@ -29,10 +29,10 @@ class CollectionHelperTest extends UnitTestClass {
 		var outcome : number;
 
 		this._collection.ForEachOutcome([]);
-	
+
 		// Act
 		outcome = CollectionUtils.CollectionHelper.average(this._collection, x => x);
-	
+
 		// Assert
 		Assert.areEqual(0, outcome);
 	}
@@ -42,10 +42,10 @@ class CollectionHelperTest extends UnitTestClass {
 		var outcome : number;
 
 		this._collection.ForEachOutcome([34, -56, 23]);
-	
+
 		// Act
 		outcome = CollectionUtils.CollectionHelper.max(this._collection, x => x * x);
-	
+
 		// Assert
 		Assert.areEqual(-56, outcome);
 	}
@@ -55,10 +55,10 @@ class CollectionHelperTest extends UnitTestClass {
 		var outcome : number;
 
 		this._collection.ForEachOutcome([]);
-	
+
 		// Act
 		outcome = CollectionUtils.CollectionHelper.max(this._collection, x => x);
-	
+
 		// Assert
 		Assert.isNull(outcome);
 	}
@@ -68,10 +68,10 @@ class CollectionHelperTest extends UnitTestClass {
 		var outcome : number;
 
 		this._collection.ForEachOutcome([-32, 21, 31]);
-	
+
 		// Act
 		outcome = CollectionUtils.CollectionHelper.min(this._collection, x => x * x);
-	
+
 		// Assert
 		Assert.areEqual(21, outcome);
 	}
@@ -81,10 +81,10 @@ class CollectionHelperTest extends UnitTestClass {
 		var outcome : number;
 
 		this._collection.ForEachOutcome([]);
-	
+
 		// Act
 		outcome = CollectionUtils.CollectionHelper.min(this._collection, x => x);
-	
+
 		// Assert
 		Assert.isNull(outcome);
 	}
@@ -94,10 +94,10 @@ class CollectionHelperTest extends UnitTestClass {
 		var outcome : number;
 
 		this._collection.ForEachOutcome([1, 2, 3]);
-	
+
 		// Act
 		outcome = CollectionUtils.CollectionHelper.sum(this._collection, x => x * x);
-	
+
 		// Assert
 		Assert.areEqual(1 + 4 + 9, outcome);
 	}
@@ -107,10 +107,10 @@ class CollectionHelperTest extends UnitTestClass {
 		var outcome : number;
 
 		this._collection.ForEachOutcome([]);
-	
+
 		// Act
 		outcome = CollectionUtils.CollectionHelper.sum(this._collection, x => x);
-	
+
 		// Assert
 		Assert.areEqual(0, outcome);
 	}
@@ -120,12 +120,13 @@ class CollectionHelperTest extends UnitTestClass {
 		var outcome : Array<number>;
 
 		this._collection.ForEachOutcome([12, 34, 45]);
-	
+
 		// Act
 		outcome = CollectionUtils.CollectionHelper.toArray(this._collection);
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._collection, outcome);
 		Assert.areEqual(3, outcome.length);
 		Assert.areEqual(12, outcome[0]);
 		Assert.areEqual(34, outcome[1]);
@@ -137,12 +138,13 @@ class CollectionHelperTest extends UnitTestClass {
 		var outcome : Array<number>;
 
 		this._collection.ForEachOutcome([]);
-	
+
 		// Act
 		outcome = CollectionUtils.CollectionHelper.toArray(this._collection);
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._collection, outcome);
 		Assert.areEqual(0, outcome.length);
 	}
 
@@ -151,16 +153,17 @@ class CollectionHelperTest extends UnitTestClass {
 		var outcome : IDictionary<number, number>;
 
 		this._collection.ForEachOutcome([21, 12, -67]);
-	
+
 		// Act
 		outcome = CollectionUtils.CollectionHelper.toDictionary(
 			this._collection,
 			x => x,
 			x => x * x
 		);
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._collection, outcome);
 		Assert.areEqual(3, outcome.getSize());
 		Assert.areEqual(21 * 21, outcome.get(21));
 		Assert.areEqual(12 * 12, outcome.get(12));
@@ -172,16 +175,50 @@ class CollectionHelperTest extends UnitTestClass {
 		var outcome : IDictionary<number, string>;
 
 		this._collection.ForEachOutcome([]);
-	
+
 		// Act
 		outcome = CollectionUtils.CollectionHelper.toDictionary(
 			this._collection,
 			x => x * x,
 			x => 'foo'
 		);
-	
+
 		// Assert
 		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._collection, outcome);
 		Assert.areEqual(0, outcome.getSize());
+	}
+
+	CollectionHelperToListTest() : void {
+		// Arrange
+		var outcome : IList<number>;
+
+		this._collection.ForEachOutcome([23, 45, 67]);
+
+		// Act
+		outcome = CollectionUtils.CollectionHelper.toList(this._collection);
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._collection, outcome);
+		Assert.areEqual(3, outcome.getLength());
+		Assert.areEqual(23, outcome.getAt(0));
+		Assert.areEqual(45, outcome.getAt(1));
+		Assert.areEqual(67, outcome.getAt(2));
+	}
+
+	CollectionHelperToListEmptyTest() : void {
+		// Arrange
+		var outcome : IList<number>;
+
+		this._collection.ForEachOutcome([]);
+
+		// Act
+		outcome = CollectionUtils.CollectionHelper.toList(this._collection);
+
+		// Assert
+		Assert.isNotNull(outcome);
+		Assert.areNotEqual(this._collection, outcome);
+		Assert.areEqual(0, outcome.getLength());
 	}
 }

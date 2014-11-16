@@ -21,24 +21,24 @@ module SortedListUtils {
 		 * Neighbor
 		 */
 		private _next : SortedListElement<T>;
-		
+
 		//endregion Fields
-		
+
 		//region Constructors
 
 		constructor(content? : T) {
 			this._content = content;
 			this._next = null;
 		}
-		
+
 		//endregion Constructors
-		
+
 		//region Methods
-		
+
 		//region Private Methods
-		
+
 		//endregion Private Methods
-		
+
 		//region Public Methods
 
 		/**
@@ -80,9 +80,9 @@ module SortedListUtils {
 		hasNext() : boolean {
 			return this._next !== null && this._next !== undefined;
 		}
-		
+
 		//endregion Public Methods
-		
+
 		//endregion Methods
 	}
 
@@ -102,24 +102,24 @@ module SortedListUtils {
 		 * Current element
 		 */
 		private _current : SortedListElement<T>;
-		
+
 		//endregion Fields
-		
+
 		//region Constructors
 
 		constructor(previous? : SortedListElement<T>, current? : SortedListElement<T>) {
 			this._previous = previous;
 			this._current = current;
 		}
-		
+
 		//endregion Constructors
-		
+
 		//region Methods
-		
+
 		//region Private Methods
-		
+
 		//endregion Private Methods
-		
+
 		//region Public Methods
 
 		/**
@@ -161,9 +161,9 @@ module SortedListUtils {
 		setCurrent(value : SortedListElement<T>) : void {
 			this._current = value;
 		}
-		
+
 		//endregion Public Methods
-		
+
 		//endregion Methods
 	}
 }
@@ -195,9 +195,9 @@ class SortedList<A, B> implements IListableCollection<A> {
 	 * True if list is ascending sorted
 	 */
 	private _asc : boolean;
-	
+
 	//endregion Fields
-	
+
 	//region Constructors
 
 	/**
@@ -215,11 +215,11 @@ class SortedList<A, B> implements IListableCollection<A> {
 			this._asc = true;
 		}
 	}
-	
+
 	//endregion Constructors
-	
+
 	//region Methods
-	
+
 	//region Private Methods
 
 	/**
@@ -248,9 +248,9 @@ class SortedList<A, B> implements IListableCollection<A> {
 
 		return func(new SortedListUtils.SortedListCursor(prev, current));
 	}
-	
+
 	//endregion Private Methods
-	
+
 	//region Public Methods
 
 	//region IListableCollection
@@ -562,7 +562,7 @@ class SortedList<A, B> implements IListableCollection<A> {
 	}
 
 	toList() : IList<A> {
-		return new ArrayList<A>(this);
+		return CollectionUtils.CollectionHelper.toList(this);
 	}
 
 	union(collection : ICollection<A>) : ICollection<A> {
@@ -597,8 +597,8 @@ class SortedList<A, B> implements IListableCollection<A> {
 	}
 
 	//endregion ICollection
-	
+
 	//endregion Public Methods
-	
+
 	//endregion Methods
 }

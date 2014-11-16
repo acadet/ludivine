@@ -6,8 +6,18 @@
  * Returns new instance of called collection everytime.
  */
 interface ICollection<T> {
+	/**
+	 * Computes average value from element using provided getter
+	 * @param {Func<T, number>} getter Returns value to compute for any element
+	 * @return {number} Average value
+	 */
 	average(getter : Func<T, number>) : number;
 
+	/**
+	 * Tests if there is an element matching condition
+	 * @param {Func<T, boolean>} selector Condition to match
+	 * @return {boolean} True if element exists
+	 */
 	exists(selector : Func<T, boolean>) : boolean;
 
 	/**
@@ -24,6 +34,11 @@ interface ICollection<T> {
 	 */
 	forEach(action : Action<T>) : void;
 
+	/**
+	 * Intesects two collections
+	 * @param {ICollection<T>} collection Data source
+	 * @return {ICollection<T>} Intersected colletions
+	 */
 	intersect(collection : ICollection<T>) : ICollection<T>;
 
 	/**
@@ -81,7 +96,16 @@ interface ICollection<T> {
 	 */
 	toList() : IList<T>;
 
+	/**
+	 * Gathers two collections. Duplicates are removed
+	 * @param {ICollection<T>} collection Data source
+	 * @return {ICollection<T>} Unified collection
+	 */
 	union(collection : ICollection<T>) : ICollection<T>;
 
+	/**
+	 * Removes duplicates from collection
+	 * @return {ICollection<T>} Collection without duplicates
+	 */
 	uniq() : ICollection<T>;
 }
