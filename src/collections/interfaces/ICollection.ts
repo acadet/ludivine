@@ -14,7 +14,7 @@ interface ICollection<T> {
 	average(getter : Func<T, number>) : number;
 
 	/**
-	 * Tests if there is an element matching condition
+	 * Tests if there is an element matching provided condition
 	 * @param {Func<T, boolean>} selector Condition to match
 	 * @return {boolean} True if element exists
 	 */
@@ -35,7 +35,7 @@ interface ICollection<T> {
 	forEach(action : Action<T>) : void;
 
 	/**
-	 * Intesects two collections
+	 * Computes intersection of two collections
 	 * @param {ICollection<T>} collection Data source
 	 * @return {ICollection<T>} Intersected colletions
 	 */
